@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -84,6 +85,7 @@ function TaskTemplateManager({
   onUpdated,
   onDeleted,
 }: TaskTemplateManagerProps) {
+  const t = useT();
   const [selectedID, setSelectedID] = React.useState<number | null>(null);
   const [draft, setDraft] = React.useState<TemplateDraft>(emptyDraft);
   const [saving, setSaving] = React.useState(false);
@@ -161,12 +163,12 @@ function TaskTemplateManager({
         onCreated(created);
         setSelectedID(created.id);
         setDraft(templateDraft(created));
-        toast.success("模板已创建");
+        toast.success(t("模板已创建"));
       } else {
         const updated = await api.updateTaskTemplate(selectedID, input);
         onUpdated(updated);
         setDraft(templateDraft(updated));
-        toast.success("模板已更新");
+        toast.success(t("模板已更新"));
       }
     } catch (error) {
       toast.error(`保存失败：${(error as Error).message}`);
@@ -190,7 +192,7 @@ function TaskTemplateManager({
         startNew();
       }
       setDeleteOpen(false);
-      toast.success("模板已删除");
+      toast.success(t("模板已删除"));
     } catch (error) {
       toast.error(`删除失败：${(error as Error).message}`);
     } finally {
@@ -250,7 +252,7 @@ function TaskTemplateManager({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="task-template-description">描述</FieldLabel>
+                  <FieldLabel htmlFor="task-template-description">{"描述"}</FieldLabel>
                   <Textarea
                     id="task-template-description"
                     className="min-h-28"
@@ -260,7 +262,7 @@ function TaskTemplateManager({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="task-template-goal">目标</FieldLabel>
+                  <FieldLabel htmlFor="task-template-goal">{"目标"}</FieldLabel>
                   <Textarea
                     id="task-template-goal"
                     className="min-h-28"
@@ -270,7 +272,7 @@ function TaskTemplateManager({
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="task-template-category">任务分类</FieldLabel>
+                  <FieldLabel htmlFor="task-template-category">{"任务分类"}</FieldLabel>
                   <NativeSelect
                     id="task-template-category"
                     className="w-full"
@@ -279,7 +281,7 @@ function TaskTemplateManager({
                       patchDraft({ categoryID: event.target.value === "" ? null : Number(event.target.value) })
                     }
                   >
-                    <NativeSelectOption value="">未分类</NativeSelectOption>
+                    <NativeSelectOption value="">{"未分类"}</NativeSelectOption>
                     {categories.map((c) => (
                       <NativeSelectOption key={c.id} value={String(c.id)}>
                         {c.name}
@@ -325,7 +327,7 @@ function TaskTemplateManager({
             <AlertDialogDescription>已由该模板创建的任务不会受到影响。</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>取消</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{"取消"}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               disabled={deleting}
@@ -365,6 +367,7 @@ export function TaskTemplateControls({
   onApply,
   portalContainer,
 }: TaskTemplateControlsProps) {
+  const t = useT();
   const [templates, setTemplates] = React.useState<TaskTemplate[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [templateInputValue, setTemplateInputValue] = React.useState("");
@@ -515,7 +518,7 @@ export function TaskTemplateControls({
             <AlertDialogDescription>当前已填写的描述和目标将被模板内容覆盖。</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogCancel>{"取消"}</AlertDialogCancel>
             <AlertDialogAction onClick={() => pendingTemplate && applyTemplate(pendingTemplate)}>
               覆盖并使用
             </AlertDialogAction>

@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -12,6 +13,7 @@ import { api } from "@/lib/api";
 import { copyText } from "@/lib/utils";
 
 export function ReportTab({ taskId }: { taskId: string }) {
+  const t = useT();
   const [report, setReport] = React.useState<string>("");
   const [loading, setLoading] = React.useState(true);
   const [copied, setCopied] = React.useState(false);
@@ -40,10 +42,10 @@ export function ReportTab({ taskId }: { taskId: string }) {
     const ok = await copyText(report);
     if (ok) {
       setCopied(true);
-      toast.success("已复制 Markdown");
+      toast.success(t("已复制 Markdown"));
       setTimeout(() => setCopied(false), 1500);
     } else {
-      toast.error("复制失败，请手动选择文本复制");
+      toast.error(t("复制失败，请手动选择文本复制"));
     }
   }
 

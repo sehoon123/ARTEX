@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -180,7 +181,7 @@ function ToolEditor({
       onSaved();
       onClose();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error(t("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -192,7 +193,7 @@ function ToolEditor({
       onSaved();
       onClose();
     } catch (e) {
-      toast.error("恢复失败：" + (e as Error).message);
+      toast.error(t("恢复失败：") + (e as Error).message);
     }
   }
 
@@ -273,7 +274,7 @@ function ToolEditor({
               </div>
               <div className="grid gap-2">
                 <div className="grid gap-1">
-                  <Label className="text-muted-foreground text-[11px]">描述</Label>
+                  <Label className="text-muted-foreground text-[11px]">{t("描述")}</Label>
                   <Input
                     className="text-xs"
                     value={r.description}
@@ -364,6 +365,7 @@ function ToolGridCard({ tool, onClick }: { tool: Tool; onClick: () => void }) {
 }
 
 export default function ToolsPage() {
+  const t = useT();
   const [tools, setTools] = React.useState<Tool[]>([]);
   const [agents, setAgents] = React.useState<Agent[]>([]);
   const [captureOn, setCaptureOn] = React.useState(false);
@@ -402,14 +404,14 @@ export default function ToolsPage() {
     <div className="flex flex-1 flex-col gap-4 md:gap-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">工具</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{"工具"}</h1>
           <p className="text-muted-foreground text-sm">系统工具的描述/绑定，以及自定义工具(command/script/http)</p>
         </div>
         <div className="relative w-64">
           <SearchIcon className="text-muted-foreground absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2" />
           <Input
             className="h-8 pl-8 text-sm"
-            placeholder="搜索工具名、描述、Agent…"
+            placeholder={"搜索工具名、描述、Agent…"}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -418,14 +420,14 @@ export default function ToolsPage() {
 
       <Tabs defaultValue="system">
         <TabsList>
-          <TabsTrigger value="system">系统工具</TabsTrigger>
-          <TabsTrigger value="custom">自定义工具</TabsTrigger>
+          <TabsTrigger value="system">{"系统工具"}</TabsTrigger>
+          <TabsTrigger value="custom">{"自定义工具"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="system">
           <Card>
             <CardHeader>
-              <CardTitle>系统工具</CardTitle>
+              <CardTitle>{"系统工具"}</CardTitle>
               <CardDescription>
                 {query.trim()
                   ? `${systemTools.length} / ${allSystemCount} 个匹配，点击卡片编辑描述、参数默认值与 Agent 绑定`
@@ -453,7 +455,7 @@ export default function ToolsPage() {
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <CardTitle>自定义工具</CardTitle>
+                  <CardTitle>{"自定义工具"}</CardTitle>
                   <CardDescription>
                     {query.trim()
                       ? `shell/command/script/http，${customTools.length} / ${allCustomCount} 个匹配，点击卡片编辑`
@@ -634,7 +636,7 @@ function CustomToolDialog({
       toast.success(isNew ? "已创建自定义工具" : "已保存");
       onSaved();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error(t("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -643,10 +645,10 @@ function CustomToolDialog({
     if (!tool) return;
     try {
       await api.deleteCustomTool(tool.key);
-      toast.success("已删除");
+      toast.success(t("已删除"));
       onSaved();
     } catch (e) {
-      toast.error("删除失败：" + (e as Error).message);
+      toast.error(t("删除失败：") + (e as Error).message);
     }
   }
   // runTest dry-runs the CURRENT form (unsaved) with the sample params, so a
@@ -694,7 +696,7 @@ function CustomToolDialog({
           </div>
 
           <div className="grid gap-1.5">
-            <Label className="text-xs">类型</Label>
+            <Label className="text-xs">{"类型"}</Label>
             <Select value={kind} onValueChange={(v) => setKind(v as "shell" | "command" | "script" | "http")}>
               <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
               <SelectContent>

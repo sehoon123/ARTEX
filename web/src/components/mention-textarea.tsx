@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -26,6 +27,7 @@ type Props = Omit<React.ComponentProps<"textarea">, "value" | "onChange" | "ref"
 };
 
 export function MentionTextarea({ value, onValueChange, onKeyDown, className, inputGroup, disabled, ...props }: Props) {
+  const t = useT();
   const textarea = React.useRef<HTMLTextAreaElement>(null);
   const composing = React.useRef(false);
   const pendingKeyboardIndex = React.useRef<number | null>(null);
@@ -230,7 +232,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
           onInteractOutside={(event) => {
             if (event.target === textarea.current) event.preventDefault();
           }}
-          aria-label="选择引用记录"
+          aria-label={"选择引用记录"}
         >
           <div className="flex items-center justify-between px-2 py-1 text-muted-foreground text-xs">
             <span>
@@ -243,7 +245,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
           <div
             id={listId}
             role="listbox"
-            aria-label="引用候选"
+            aria-label={"引用候选"}
             className="max-h-60 overflow-y-auto"
             onScroll={(event) => {
               const list = event.currentTarget;
@@ -310,7 +312,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
           </div>
           {!categories.length && (
             <p className="px-2 py-1 text-muted-foreground text-xs">
-              {loadingMore && <span role="status">正在加载更多…</span>}
+              {loadingMore && <span role="status">{t("正在加载更多…")}</span>}
               {!loadingMore && nextCursor && (
                 <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={loadMore}>
                   {pageError ? "加载失败，点击重试" : `已显示 ${items.length} 条，向下滚动加载更多`}

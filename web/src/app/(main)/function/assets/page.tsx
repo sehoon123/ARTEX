@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -108,6 +109,7 @@ const TABS: { key: string; label: string; icon: LucideIcon }[] = [
 ];
 
 export default function AssetsPage() {
+  const t = useT();
   const [rows, setRows] = React.useState<Asset[]>([]);
   const [total, setTotal] = React.useState(0);
   const [companies, setCompanies] = React.useState<Company[]>([]);
@@ -196,7 +198,7 @@ export default function AssetsPage() {
       setSelected(new Set());
       refresh();
     } catch (e) {
-      toast.error("删除失败：" + String((e as Error)?.message ?? e));
+      toast.error(t("删除失败：") + String((e as Error)?.message ?? e));
     } finally {
       setDeleting(false);
       setDeleteOpen(false);
@@ -215,7 +217,7 @@ export default function AssetsPage() {
       toast.success(msg);
       refresh();
     } catch (e) {
-      toast.error("删除失败：" + String((e as Error)?.message ?? e));
+      toast.error(t("删除失败：") + String((e as Error)?.message ?? e));
     } finally {
       setCompanyDeleting(false);
       setCompanyDeleteTarget(null);
@@ -316,7 +318,7 @@ export default function AssetsPage() {
     <div className="flex h-[calc(100vh-6rem)] min-h-0 flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">资产</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{"资产"}</h1>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">
@@ -354,10 +356,10 @@ export default function AssetsPage() {
               <Table>
                 <TableHeader className="sticky top-0 z-10 bg-card">
                   <TableRow>
-                    <TableHead>企业</TableHead>
+                    <TableHead>{"企业"}</TableHead>
                     <TableHead className="w-24 text-right">资产数</TableHead>
-                    <TableHead>资产范围</TableHead>
-                    <TableHead className="w-36 text-right">操作</TableHead>
+                    <TableHead>{"资产范围"}</TableHead>
+                    <TableHead className="w-36 text-right">{"操作"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -737,14 +739,14 @@ export default function AssetsPage() {
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>确认删除</AlertDialogTitle>
+            <AlertDialogTitle>{"确认删除"}</AlertDialogTitle>
             <AlertDialogDescription>
               将永久删除 <span className="font-semibold tabular-nums">{deleteIds.length}</span>{" "}
               条资产记录，此操作不可撤销。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>取消</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{"取消"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -792,7 +794,7 @@ export default function AssetsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={companyDeleting}>取消</AlertDialogCancel>
+            <AlertDialogCancel disabled={companyDeleting}>{"取消"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -973,6 +975,7 @@ function savedScopeText(company: Company): string {
 
 // 新增企业使用与任务、LLM 编辑一致的右侧抽屉。
 function CompanyDialog({ onSaved }: { onSaved: () => void }) {
+  const t = useT();
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [scopeText, setScopeText] = React.useState("");
@@ -987,7 +990,7 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
 
   const submit = async () => {
     if (!name.trim()) {
-      toast.error("请填写企业名称");
+      toast.error(t("请填写企业名称"));
       return;
     }
     if (parsedScope.errors.length > 0) {

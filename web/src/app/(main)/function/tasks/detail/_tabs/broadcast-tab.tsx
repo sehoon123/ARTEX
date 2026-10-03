@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -43,43 +44,43 @@ type KindMeta = { label: string; icon: LucideIcon; dot: string; chip: string };
 // 播报是流水视角(时间轴行),两边的信息密度和配色需求不同,各自演进更省事。
 const KIND_META: Record<string, KindMeta> = {
   begin: {
-    label: "起点",
+    label: t("起点"),
     icon: FlagIcon,
     dot: "bg-slate-500",
     chip: "bg-slate-500/15 text-slate-600 dark:text-slate-300",
   },
   task: {
-    label: "根任务",
+    label: t("根任务"),
     icon: FlagIcon,
     dot: "bg-slate-500",
     chip: "bg-slate-500/15 text-slate-600 dark:text-slate-300",
   },
   goal: {
-    label: "目标",
+    label: t("目标"),
     icon: TargetIcon,
     dot: "bg-emerald-500",
     chip: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
   },
   intent: {
-    label: "意图",
+    label: t("意图"),
     icon: CompassIcon,
     dot: "bg-blue-500",
     chip: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
   },
   fact: {
-    label: "事实",
+    label: t("事实"),
     icon: FlaskConicalIcon,
     dot: "bg-amber-500",
     chip: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
   },
   finding: {
-    label: "漏洞",
+    label: t("漏洞"),
     icon: BugIcon,
     dot: "bg-rose-500",
     chip: "bg-rose-500/15 text-rose-600 dark:text-rose-400",
   },
   hint: {
-    label: "提示",
+    label: t("提示"),
     icon: LightbulbIcon,
     dot: "bg-violet-500",
     chip: "bg-violet-500/15 text-violet-600 dark:text-violet-400",
@@ -107,21 +108,21 @@ const REL_LABEL: Record<string, string> = {
 // 图和播报里出现,这里补一份。
 const STATE_META: Record<string, Record<string, { label: string; tone: Tone }>> = {
   fact: {
-    origin: { label: "起点", tone: "slate" },
-    confirmed: { label: "已确认", tone: "green" },
-    dismissed: { label: "已否定", tone: "slate" },
+    origin: { label: t("起点"), tone: "slate" },
+    confirmed: { label: t("已确认"), tone: "green" },
+    dismissed: { label: t("已否定"), tone: "slate" },
   },
   finding: {
-    confirmed: { label: "已确认", tone: "red" },
-    dismissed: { label: "已排除", tone: "slate" },
+    confirmed: { label: t("已确认"), tone: "red" },
+    dismissed: { label: t("已排除"), tone: "slate" },
   },
   hint: {
-    active: { label: "待采纳", tone: "violet" },
-    consumed: { label: "已采纳", tone: "slate" },
+    active: { label: t("待采纳"), tone: "violet" },
+    consumed: { label: t("已采纳"), tone: "slate" },
   },
   digest: {
-    active: { label: "生效中", tone: "green" },
-    superseded: { label: "已替代", tone: "slate" },
+    active: { label: t("生效中"), tone: "green" },
+    superseded: { label: t("已替代"), tone: "slate" },
   },
 };
 
@@ -432,6 +433,7 @@ function BroadcastRow({
 }
 
 export function BroadcastTab({ taskId }: { taskId: string }) {
+  const t = useT();
   const [kinds, setKinds] = React.useState<ExploreKind[]>([]);
   const [queryInput, setQueryInput] = React.useState("");
   const [query, setQuery] = React.useState("");
@@ -573,9 +575,9 @@ export function BroadcastTab({ taskId }: { taskId: string }) {
           <Input
             value={queryInput}
             onChange={(e) => setQueryInput(e.target.value)}
-            placeholder="搜索内容 / 来源 / 节点 id"
+            placeholder={"搜索内容 / 来源 / 节点 id"}
             className="h-8 pl-8"
-            aria-label="搜索播报"
+            aria-label={"搜索播报"}
           />
         </div>
         <div className="flex flex-wrap items-center gap-1">
@@ -711,7 +713,7 @@ export function BroadcastTab({ taskId }: { taskId: string }) {
             size="icon-sm"
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            aria-label="上一页"
+            aria-label={"上一页"}
           >
             <ChevronLeftIcon />
           </Button>
@@ -723,7 +725,7 @@ export function BroadcastTab({ taskId }: { taskId: string }) {
             size="icon-sm"
             disabled={page >= pageCount}
             onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-            aria-label="下一页"
+            aria-label={"下一页"}
           >
             <ChevronRightIcon />
           </Button>

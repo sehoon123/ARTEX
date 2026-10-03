@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -78,7 +79,7 @@ export function FindingTrafficPanel({
       setData(await action());
       setEditing(null);
       onChanged();
-      toast.success("流量证据已更新");
+      toast.success(t("流量证据已更新"));
     } catch (e) {
       toast.error((e as Error).message);
       setReload((n) => n + 1);

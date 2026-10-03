@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -479,6 +480,7 @@ function WorkerAssetBadge({ assets }: { assets: IntentAsset[] }) {
 }
 
 export function SessionsTab({ taskId }: { taskId: string }) {
+  const t = useT();
   const approvalFocus = useApprovalFocus({ taskId });
   const [selectedSessionId, setActiveId] = React.useState(MAIN_ID);
   const focusSession = React.useMemo<Session | undefined>(() => {
@@ -596,7 +598,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
     async (session: Session, action: "pause" | "resume" | "cancel", reason?: string, mode?: "soft" | "hard") => {
       if (!session.intent_id || session.inherited || controllingIntent) return;
       if (action === "cancel" && !reason?.trim()) {
-        toast.error("请填写删除原因");
+        toast.error(t("请填写删除原因"));
         return;
       }
       setControllingIntent(session.intent_id);
@@ -1789,7 +1791,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                 </span>
               )}
               {activeState?.hasMore && (
-                <span className="text-[10px] text-muted-foreground" title="向上滚动加载更早历史">
+                <span className="text-[10px] text-muted-foreground" title={t("向上滚动加载更早历史")}>
                   ↑ 更早历史
                 </span>
               )}
@@ -1925,7 +1927,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                           type="button"
                           className="ml-0.5 text-muted-foreground hover:text-foreground"
                           onClick={() => setAttachments((p) => p.filter((x) => x.path !== a.path))}
-                          title="移除"
+                          title={t("移除")}
                         >
                           <XIcon className="size-3" />
                         </button>
@@ -1964,13 +1966,13 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                       variant="ghost"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={mainBusy || uploading}
-                      title="上传文件"
-                      aria-label="上传文件"
+                      title={t("上传文件")}
+                      aria-label={t("上传文件")}
                     >
                       {uploading ? <Loader2Icon className="animate-spin" /> : <PaperclipIcon />}
                     </InputGroupButton>
                     {mainBusy && isBtwCommand(input) && (
-                      <InputGroupButton size="icon-xs" onClick={send} aria-label="发送旁路问题">
+                      <InputGroupButton size="icon-xs" onClick={send} aria-label={t("发送旁路问题")}>
                         <ArrowUpIcon />
                       </InputGroupButton>
                     )}
@@ -1981,8 +1983,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="destructive"
                         onClick={stop}
                         disabled={stopping}
-                        title="停止当前执行"
-                        aria-label="停止当前执行"
+                        title={t("停止当前执行")}
+                        aria-label={t("停止当前执行")}
                       >
                         {stopping ? <Loader2Icon className="animate-spin" /> : <SquareIcon />}
                       </InputGroupButton>
@@ -1993,8 +1995,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="default"
                         onClick={send}
                         disabled={(!input.trim() && attachments.length === 0) || sending}
-                        title="发送消息"
-                        aria-label="发送消息"
+                        title={t("发送消息")}
+                        aria-label={t("发送消息")}
                       >
                         {sending ? <Loader2Icon className="animate-spin" /> : <ArrowUpIcon />}
                       </InputGroupButton>
@@ -2036,7 +2038,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                       {workerMessageCharCount(workerMessage)}/{MAX_WORKER_MESSAGE_CHARS}
                     </span>
                     {active.status === "running" && isBtwCommand(workerMessage) && (
-                      <InputGroupButton size="icon-xs" onClick={sendWorkerChat} aria-label="发送旁路问题">
+                      <InputGroupButton size="icon-xs" onClick={sendWorkerChat} aria-label={t("发送旁路问题")}>
                         <ArrowUpIcon />
                       </InputGroupButton>
                     )}
@@ -2047,8 +2049,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="destructive"
                         onClick={() => void controlWorker(active, "pause")}
                         disabled={controllingIntent === active.intent_id}
-                        title="暂停当前 Worker"
-                        aria-label="暂停当前 Worker"
+                        title={t("暂停当前 Worker")}
+                        aria-label={t("暂停当前 Worker")}
                       >
                         {controllingIntent === active.intent_id ? (
                           <Loader2Icon className="animate-spin" />
@@ -2082,8 +2084,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                             !workerMessage.trim() ||
                             workerMessageCharCount(workerMessage) > MAX_WORKER_MESSAGE_CHARS
                           }
-                          title="发送消息"
-                          aria-label="发送消息"
+                          title={t("发送消息")}
+                          aria-label={t("发送消息")}
                         >
                           {workerMessageSending ? <Spinner /> : <ArrowUpIcon />}
                         </InputGroupButton>
@@ -2170,7 +2172,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
               </div>
             </div>
             <AlertDialogFooter>
-              <AlertDialogCancel>返回</AlertDialogCancel>
+              <AlertDialogCancel>{"返回"}</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 disabled={!cancelIntent || controllingIntent !== null || !cancelReason.trim()}
@@ -2192,7 +2194,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={creatingMain}>取消</AlertDialogCancel>
+              <AlertDialogCancel disabled={creatingMain}>{"取消"}</AlertDialogCancel>
               <AlertDialogAction disabled={creatingMain} onClick={() => void createMainSession()}>
                 {creatingMain ? "开启中…" : "开启新会话"}
               </AlertDialogAction>

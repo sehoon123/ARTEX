@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -58,7 +59,7 @@ function AgentGridCard({
       toast.success(`已删除 Agent「${agent.name}」`);
       onDeleted();
     } catch (e) {
-      toast.error("删除失败：" + (e as Error).message);
+      toast.error(t("删除失败：") + (e as Error).message);
     }
   }
   return (
@@ -111,8 +112,8 @@ function AgentGridCard({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction onClick={del}>删除</AlertDialogAction>
+              <AlertDialogCancel>{t("取消")}</AlertDialogCancel>
+              <AlertDialogAction onClick={del}>{t("删除")}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -139,7 +140,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
       setDescription("");
       onCreated(a.key);
     } catch (e) {
-      toast.error("创建失败：" + (e as Error).message);
+      toast.error(t("创建失败：") + (e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -177,7 +178,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             )}
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="agent-name">名称</Label>
+            <Label htmlFor="agent-name">{"名称"}</Label>
             <Input
               id="agent-name"
               placeholder="如 研究助手"
@@ -186,7 +187,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="agent-desc">描述</Label>
+            <Label htmlFor="agent-desc">{"描述"}</Label>
             <Textarea
               id="agent-desc"
               placeholder="一句话说明这个 Agent 是干什么的"

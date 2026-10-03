@@ -1,3 +1,6 @@
+"use client";
+import { useT } from "@/lib/i18n";
+
 import { cn } from "@/lib/utils";
 import {
   statusMeta,
@@ -30,7 +33,7 @@ export function StatusBadge({
       {dot && (
         <span className={cn("size-1.5 rounded-full", toneDot[meta.tone])} />
       )}
-      {meta.label}
+      {t(meta.label)}
     </span>
   );
 }

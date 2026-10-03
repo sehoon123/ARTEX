@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -123,7 +124,7 @@ export function TrafficPickerDialog({
               <Input
                 id="evidence-host"
                 value={host}
-                placeholder="域名或 IP"
+                placeholder={"域名或 IP"}
                 onChange={(e) => {
                   setHost(e.target.value);
                   setPage(0);
@@ -131,7 +132,7 @@ export function TrafficPickerDialog({
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="evidence-method">请求方法</FieldLabel>
+              <FieldLabel htmlFor="evidence-method">{"请求方法"}</FieldLabel>
               <Select
                 value={method}
                 onValueChange={(v) => {
@@ -155,7 +156,7 @@ export function TrafficPickerDialog({
               </Select>
             </Field>
             <Field>
-              <FieldLabel htmlFor="evidence-query">关键词</FieldLabel>
+              <FieldLabel htmlFor="evidence-query">{"关键词"}</FieldLabel>
               <Input
                 id="evidence-query"
                 value={query}
@@ -178,7 +179,7 @@ export function TrafficPickerDialog({
                 <TableRow>
                   <TableHead>
                     <Checkbox
-                      aria-label="选择本页未绑定流量"
+                      aria-label={"选择本页未绑定流量"}
                       disabled={loading || busy || selectable.length === 0}
                       checked={selectable.length > 0 && selectable.every((e) => selected.has(e.id))}
                       onCheckedChange={(checked) =>
@@ -196,7 +197,7 @@ export function TrafficPickerDialog({
                   <TableHead>方法 / URL</TableHead>
                   <TableHead>时间</TableHead>
                   <TableHead>状态码</TableHead>
-                  <TableHead>操作</TableHead>
+                  <TableHead>{"操作"}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,7 +215,7 @@ export function TrafficPickerDialog({
                       <span className="font-mono text-xs">
                         {e.method} {e.url}
                       </span>
-                      {alreadyBound.has(e.id) ? <Badge variant="secondary">已绑定</Badge> : null}
+                      {alreadyBound.has(e.id) ? <Badge variant="secondary">{t("已绑定")}</Badge> : null}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-xs">
                       {new Date(e.ts).toLocaleString("zh-CN")}

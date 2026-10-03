@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -112,6 +113,7 @@ const SORT_STORAGE_KEY = "traffic-sort";
 const STATUS_BUCKETS = ["2xx", "3xx", "4xx", "5xx"];
 
 export default function TrafficPage() {
+  const t = useT();
   const [selectedFlows, setSelectedFlows] = React.useState<Set<string>>(() => new Set());
   const [linking, setLinking] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -341,7 +343,7 @@ export default function TrafficPage() {
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">流量</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{"流量"}</h1>
           <p className="text-muted-foreground text-sm">全局录制代理 · 所有 HTTP 往来</p>
         </div>
         <div className="flex items-center gap-4 text-sm">
@@ -490,7 +492,7 @@ export default function TrafficPage() {
         </div>
         <Select value={method} onValueChange={setMethod}>
           <SelectTrigger size="sm" className="w-32">
-            <SelectValue placeholder="方法" />
+            <SelectValue placeholder={"方法"} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部方法</SelectItem>
@@ -575,7 +577,7 @@ export default function TrafficPage() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <span>响应长度</span>
+          <span>{"响应长度"}</span>
           <Input
             type="number"
             min={0}
@@ -622,7 +624,7 @@ export default function TrafficPage() {
                 <TableRow>
                   <TableHead className="w-10">
                     <Checkbox
-                      aria-label="选择本页流量"
+                      aria-label={"选择本页流量"}
                       checked={exchanges.length > 0 && exchanges.every((e) => selectedFlows.has(e.id))}
                       onCheckedChange={(checked) =>
                         setSelectedFlows((previous) => {
@@ -645,7 +647,7 @@ export default function TrafficPage() {
                     className="w-36"
                   />
                   <TableHead className="w-44">host</TableHead>
-                  <TableHead className="w-20">方法</TableHead>
+                  <TableHead className="w-20">{"方法"}</TableHead>
                   <TableHead>URL</TableHead>
                   <SortableHead
                     field="status"
@@ -658,7 +660,7 @@ export default function TrafficPage() {
                   <TableHead className="w-36">content-type</TableHead>
                   <SortableHead
                     field="resp_len"
-                    label="响应长度"
+                    label={"响应长度"}
                     activeField={sort.field}
                     direction={sort.direction}
                     onSort={toggleSort}
@@ -811,7 +813,7 @@ export default function TrafficPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>取消</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{"取消"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();

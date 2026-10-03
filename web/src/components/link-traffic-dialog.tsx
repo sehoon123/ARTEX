@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -84,15 +85,15 @@ export function LinkTrafficDialog({
     >
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>关联到漏洞</DialogTitle>
+          <DialogTitle>{"关联到漏洞"}</DialogTitle>
           <DialogDescription>将所选 {trafficIds.length} 条流量保存为已有漏洞的证据。</DialogDescription>
         </DialogHeader>
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="link-finding-query">查找漏洞</FieldLabel>
+            <FieldLabel htmlFor="link-finding-query">{"查找漏洞"}</FieldLabel>
             <Input
               id="link-finding-query"
-              placeholder="名称 / 摘要 / 漏洞类别"
+              placeholder={"名称 / 摘要 / 漏洞类别"}
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);

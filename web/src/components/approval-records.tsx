@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -130,12 +131,13 @@ function MatchCell({ row, showReason = true }: { row: InterceptApprovalRow; show
 }
 
 function CodeBlock({ label, text, truncated = false }: { label: string; text: string; truncated?: boolean }) {
+  const t = useT();
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("已复制");
+      toast.success(t("已复制"));
     } catch {
-      toast.error("复制失败，请手动选择内容复制");
+      toast.error(t("复制失败，请手动选择内容复制"));
     }
   }
   return (
@@ -175,10 +177,11 @@ const executionLabels: Record<InterceptAudit["execution_status"], string> = {
 };
 
 function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
+  const t = useT();
   return (
-    <section className="flex min-w-0 flex-col gap-4" aria-label="模型审查上下文">
+    <section className="flex min-w-0 flex-col gap-4" aria-label={"模型审查上下文"}>
       <div className="flex flex-col gap-2">
-        <h3 className="font-medium text-sm">模型审查上下文</h3>
+        <h3 className="font-medium text-sm">{"模型审查上下文"}</h3>
         <p className="text-muted-foreground text-xs">
           以下为本次实际发送给审查模型的输入快照。背景仅用于理解当前动作，裁决依据为审查策略。
           {input.version < 4 ? "此记录使用旧版输入，保留当时实际发送的内容。" : null}
@@ -222,7 +225,7 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
           ) : null}
         </>
       )}
-      {input.working_directory ? <CodeBlock label="工作目录" text={input.working_directory} /> : null}
+      {input.working_directory ? <CodeBlock label={"工作目录"} text={input.working_directory} /> : null}
       {input.version >= 3 ? (
         <p className="text-muted-foreground text-xs">本次审查未发送历史调用或执行结果。</p>
       ) : (
@@ -234,8 +237,8 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
                 <p className="break-words font-medium text-xs">
                   {entry.tool} · {entry.status === "succeeded" ? "成功" : "失败（可能有部分副作用）"}
                 </p>
-                <CodeBlock label="历史调用参数" text={entry.arguments_preview} truncated={entry.truncated} />
-                <CodeBlock label="历史执行结果" text={entry.result} truncated={entry.truncated} />
+                <CodeBlock label={t("历史调用参数")} text={entry.arguments_preview} truncated={entry.truncated} />
+                <CodeBlock label={t("历史执行结果")} text={entry.result} truncated={entry.truncated} />
               </div>
             ))
           ) : (
@@ -255,7 +258,7 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-3">
-          <CodeBlock label="模型审查输入" text={JSON.stringify(input, null, 2)} />
+          <CodeBlock label={"模型审查输入"} text={JSON.stringify(input, null, 2)} />
         </CollapsibleContent>
       </Collapsible>
     </section>
@@ -353,7 +356,7 @@ export function ApprovalDetail({
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
-                <CodeBlock label="命令内容" text={command} />
+                <CodeBlock label={t("命令内容")} text={command} />
               </CollapsibleContent>
             </Collapsible>
           ) : null}
@@ -375,7 +378,7 @@ export function ApprovalDetail({
           {audit?.decision_reason ? <p className="text-sm">{audit.decision_reason}</p> : null}
           {audit?.effective_action ? <p className="text-sm">最终动作：{actionLabels[audit.effective_action]}</p> : null}
           <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-xs">
-            <dt className="text-muted-foreground">来源</dt>
+            <dt className="text-muted-foreground">{"来源"}</dt>
             <dd className="break-words">
               <ApprovalOrigin row={current} detail />
             </dd>
@@ -546,6 +549,7 @@ function ApprovalTable({
   revision: number;
   label: string;
 }) {
+  const t = useT();
   const [expanded, setExpanded] = React.useState<Set<number>>(() => new Set());
   const columns = React.useSyncExternalStore(subscribeColumns, visibleColumnCount, serverColumnCount);
   const prefix = React.useId();
@@ -565,8 +569,8 @@ function ApprovalTable({
             <span className="sr-only">展开详情</span>
           </TableHead>
           <TableHead className="hidden w-14 sm:table-cell">#</TableHead>
-          <TableHead className="w-28">工具</TableHead>
-          <TableHead className="hidden md:table-cell">来源</TableHead>
+          <TableHead className="w-28">{"工具"}</TableHead>
+          <TableHead className="hidden md:table-cell">{"来源"}</TableHead>
           <TableHead className="hidden lg:table-cell">匹配规则</TableHead>
           <TableHead className="hidden xl:table-cell">参数</TableHead>
           <TableHead className="w-24">状态</TableHead>
@@ -648,6 +652,7 @@ function ApprovalTable({
 }
 
 export function ApprovalRecords({ taskId }: { taskId?: string }) {
+  const t = useT();
   const [rows, setRows] = React.useState<InterceptApprovalRow[]>([]);
   const [pendingRows, setPendingRows] = React.useState<InterceptPending[]>([]);
   const [page, setPage] = React.useState(1);
@@ -790,7 +795,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
         </Button>
       </div>
       <p className="text-muted-foreground text-sm">展开记录查看工具请求和审批裁决，以及当时的上下文与执行结果。</p>
-      <FieldGroup className="flex-row flex-wrap items-end gap-3" aria-label="审批记录筛选">
+      <FieldGroup className="flex-row flex-wrap items-end gap-3" aria-label={"审批记录筛选"}>
         <Field className="w-full sm:w-40">
           <FieldLabel htmlFor={`${filterID}-status`}>审批状态</FieldLabel>
           <Select
@@ -808,10 +813,10 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="all">全部状态</SelectItem>
-                <SelectItem value="denied">已拒绝</SelectItem>
-                <SelectItem value="pending">待审批</SelectItem>
-                <SelectItem value="allowed">已允许</SelectItem>
-                <SelectItem value="timeout">已超时</SelectItem>
+                <SelectItem value="denied">{"已拒绝"}</SelectItem>
+                <SelectItem value="pending">{"待审批"}</SelectItem>
+                <SelectItem value="allowed">{"已允许"}</SelectItem>
+                <SelectItem value="timeout">{"已超时"}</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -862,7 +867,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
             <ShieldAlertIcon className="size-4" />
             待处理（{pending.length}）<span className="text-muted-foreground text-xs">展开后允许或拒绝</span>
           </div>
-          <ApprovalTable rows={pending} busy={deciding} decide={decide} revision={revision} label="待处理审批" />
+          <ApprovalTable rows={pending} busy={deciding} decide={decide} revision={revision} label={t("待处理审批")} />
         </section>
       ) : null}
       <section className="overflow-hidden rounded-xl border">
@@ -892,7 +897,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
           </Empty>
         ) : null}
         {rows.length ? (
-          <ApprovalTable rows={rows} busy={deciding} decide={decide} revision={revision} label="审批记录列表" />
+          <ApprovalTable rows={rows} busy={deciding} decide={decide} revision={revision} label={t("审批记录列表")} />
         ) : null}
         {!loading && !error ? (
           <TablePagination

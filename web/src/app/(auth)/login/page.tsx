@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -15,6 +16,7 @@ import { api } from "@/lib/api";
 import { auth } from "@/lib/auth";
 
 export default function LoginPage() {
+  const t = useT();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -55,14 +57,14 @@ export default function LoginPage() {
       .then(({ initialized }) => {
         if (!initialized) router.replace("/setup");
       })
-      .catch(() => setError("无法连接到后端服务"))
+      .catch(() => setError(t("无法连接到后端服务")))
       .finally(() => setChecking(false));
   }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!agreed) {
-      setError("请先阅读并同意《使用须知》");
+      setError(t("请先阅读并同意《使用须知》"));
       return;
     }
     setLoading(true);
@@ -72,7 +74,7 @@ export default function LoginPage() {
       auth.setToken(token);
       window.location.replace("/function/tasks");
     } catch {
-      setError("用户名或密码错误");
+      setError(t("用户名或密码错误"));
     } finally {
       setLoading(false);
     }
@@ -103,22 +105,22 @@ export default function LoginPage() {
       <div className="flex w-full items-center justify-center bg-background p-8 lg:w-2/3">
         <div className="w-full max-w-md space-y-10 py-24 lg:py-32">
           <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-medium tracking-tight">登录</h2>
-            <p className="mx-auto max-w-xl text-muted-foreground">欢迎回来，请输入密码以继续使用 ARTEX</p>
+            <h2 className="text-2xl font-medium tracking-tight">{"登录"}</h2>
+            <p className="mx-auto max-w-xl text-muted-foreground">{"欢迎回来，请输入密码以继续使用 ARTEX"}</p>
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="username">用户名</Label>
+              <Label htmlFor="username">{"用户名"}</Label>
               <Input id="username" value="ARTEX" readOnly className="bg-muted text-muted-foreground" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">密码</Label>
+              <Label htmlFor="password">{"密码"}</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="请输入密码"
+                placeholder={"请输入密码"}
                 autoFocus
                 autoComplete="current-password"
               />

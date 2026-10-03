@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -130,6 +131,7 @@ function SectionTitle({
 // ── page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const t = useT();
   // data state
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [findings, setFindings] = React.useState<Finding[]>([]);
@@ -561,7 +563,7 @@ export default function DashboardPage() {
             {settings?.traffic_capture ? (
               <>
                 <LiveDot />
-                <span>录制中</span>
+                <span>{t("录制中")}</span>
               </>
             ) : (
               <span>捕获未开启</span>
@@ -597,8 +599,8 @@ export default function DashboardPage() {
             <div className="ml-1 flex gap-0.5 rounded-md border bg-muted/30 p-0.5">
               {(
                 [
-                  { v: "old", label: "旧版" },
-                  { v: "new", label: "新版" },
+                  { v: "old", label: t("旧版") },
+                  { v: "new", label: t("新版") },
                 ] as const
               ).map(({ v, label }) => (
                 <button
@@ -701,7 +703,7 @@ export default function DashboardPage() {
                     text: "text-blue-400",
                   },
                   {
-                    label: "缓存命中",
+                    label: t("缓存命中"),
                     value: displayedTokens.cacheRead,
                     barColor: dailyTrendConfig.cacheRead.color!,
                     text: "text-emerald-400",
@@ -771,7 +773,7 @@ export default function DashboardPage() {
                     { days: 30, label: "30天" },
                     { days: 90, label: "3月" },
                     { days: 180, label: "6月" },
-                    { days: 365, label: "一年" },
+                    { days: 365, label: t("一年") },
                   ] as const
                 ).map(({ days, label }) => (
                   <button
@@ -1045,7 +1047,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
         {/* 资产分布 */}
         <Card className="p-4">
-          <SectionTitle icon={NetworkIcon} sub="按类型">
+          <SectionTitle icon={NetworkIcon} sub={"按类型"}>
             资产分布
           </SectionTitle>
 

@@ -2,7 +2,9 @@
 
 import * as React from "react";
 
-import { EllipsisVertical, KeyRound, LogOut } from "lucide-react";
+import { EllipsisVertical, Globe, KeyRound, LogOut } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -30,6 +32,10 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const [pwOpen, setPwOpen] = React.useState(false);
+  const { locale, setLocale, t } = useI18n();
+
+  const localeLabels: Record<Locale, string> = { en: "English", ko: "한국어" };
+  const nextLocale: Locale = locale === "en" ? "ko" : "en";
 
   function handleLogout() {
     auth.clearToken();
@@ -79,12 +85,16 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setPwOpen(true)}>
               <KeyRound />
-              修改密码
+              {"修改密码"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLocale(nextLocale)}>
+              <Globe />
+              {localeLabels[nextLocale]}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
               <LogOut />
-              退出登录
+              {"退出登录"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -56,6 +57,7 @@ function SidePanel({
   label: string;
   composerLayout: ComposerLayout;
 }) {
+  const t = useT();
   const inlineComposer = composerLayout === "inline";
   const [confirm, setConfirm] = useState(false);
   const viewport = useRef<HTMLDivElement>(null);
@@ -67,7 +69,7 @@ function SidePanel({
   }, [tail?.answer, tail?.id]);
   const status = { running: "回答中", completed: "已完成", failed: "失败", cancelled: "已停止", interrupted: "已中断" };
   return (
-    <section className="flex h-full min-h-0 flex-col bg-background" aria-label="旁路提问面板">
+    <section className="flex h-full min-h-0 flex-col bg-background" aria-label={"旁路提问面板"}>
       <div className="flex items-center gap-2 border-b p-3">
         <div className="min-w-0 flex-1">
           <p className="font-medium">
@@ -80,11 +82,11 @@ function SidePanel({
           size="icon-sm"
           onClick={() => setConfirm(true)}
           disabled={!side.items.length || side.busy}
-          aria-label="清空旁路历史"
+          aria-label={"清空旁路历史"}
         >
           <Trash2Icon />
         </Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => side.setOpen(false)} aria-label="关闭旁路面板">
+        <Button variant="ghost" size="icon-sm" onClick={() => side.setOpen(false)} aria-label={t("关闭旁路面板")}>
           <XIcon />
         </Button>
       </div>
@@ -163,7 +165,7 @@ function SidePanel({
           <InputGroupTextarea
             rows={1}
             className={cn("overflow-y-auto", inlineComposer ? "max-h-40 min-h-0" : "max-h-36 min-h-9")}
-            aria-label="旁路问题"
+            aria-label={"旁路问题"}
             placeholder="询问当前上下文…"
             value={side.draft}
             maxLength={4000}
@@ -184,7 +186,7 @@ function SidePanel({
                 variant="destructive"
                 size="icon-xs"
                 onClick={() => void side.stop()}
-                aria-label="停止旁路回答"
+                aria-label={t("停止旁路回答")}
               >
                 <SquareIcon />
               </InputGroupButton>
@@ -195,7 +197,7 @@ function SidePanel({
                 size="icon-xs"
                 onClick={() => void side.ask(side.draft)}
                 disabled={side.busy || !side.draft.trim() || !side.snapshot?.available}
-                aria-label="发送旁路问题"
+                aria-label={t("发送旁路问题")}
               >
                 <ArrowUpIcon />
               </InputGroupButton>
@@ -215,7 +217,7 @@ function SidePanel({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogCancel>{"取消"}</AlertDialogCancel>
             <AlertDialogAction onClick={() => void side.clear()}>清空历史</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

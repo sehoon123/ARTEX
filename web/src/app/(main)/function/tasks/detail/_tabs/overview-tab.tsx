@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -104,6 +105,7 @@ function StatCard({
 }
 
 export function OverviewTab({ taskId }: { taskId: string }) {
+  const t = useT();
   const [task, setTask] = React.useState<Task | null>(null);
   const [stats, setStats] = React.useState<Stats | null>(null);
   const [intents, setIntents] = React.useState<TaskNode[]>([]);
@@ -441,11 +443,11 @@ export function OverviewTab({ taskId }: { taskId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <div className="text-xs font-medium text-muted-foreground">描述</div>
+            <div className="text-xs font-medium text-muted-foreground">{"描述"}</div>
             <p className="text-sm whitespace-pre-wrap break-words">{task?.description?.trim() || "—"}</p>
           </div>
           <div className="flex flex-col gap-1.5">
-            <div className="text-xs font-medium text-muted-foreground">目标</div>
+            <div className="text-xs font-medium text-muted-foreground">{"目标"}</div>
             <p className="text-sm whitespace-pre-wrap break-words">{task?.goal?.trim() || "—"}</p>
           </div>
         </CardContent>
@@ -592,8 +594,8 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               value={conKind}
               onChange={(e) => setConKind(e.target.value as TaskConstraint["kind"])}
             >
-              <NativeSelectOption value="deny">禁止</NativeSelectOption>
-              <NativeSelectOption value="allow">允许</NativeSelectOption>
+              <NativeSelectOption value="deny">{"禁止"}</NativeSelectOption>
+              <NativeSelectOption value="allow">{"允许"}</NativeSelectOption>
             </NativeSelect>
             <Input
               className="h-7 min-w-56 flex-1 text-sm"
@@ -626,8 +628,8 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                       value={editConKind}
                       onChange={(e) => setEditConKind(e.target.value as TaskConstraint["kind"])}
                     >
-                      <NativeSelectOption value="deny">禁止</NativeSelectOption>
-                      <NativeSelectOption value="allow">允许</NativeSelectOption>
+                      <NativeSelectOption value="deny">{t("禁止")}</NativeSelectOption>
+                      <NativeSelectOption value="allow">{t("允许")}</NativeSelectOption>
                     </NativeSelect>
                     <Input
                       className="h-7 min-w-56 flex-1 text-sm"
@@ -750,15 +752,15 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               {/* 合计总览 */}
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
                 <span className="tabular-nums">
-                  <span className="text-muted-foreground">输入 </span>
+                  <span className="text-muted-foreground">{t("输入")}</span>
                   <span className="font-semibold">{fmtTokens(tokenTotals.input)}</span>
                 </span>
                 <span className="tabular-nums">
-                  <span className="text-muted-foreground">输出 </span>
+                  <span className="text-muted-foreground">{t("输出")}</span>
                   <span className="font-semibold">{fmtTokens(tokenTotals.output)}</span>
                 </span>
                 <span className="tabular-nums">
-                  <span className="text-muted-foreground">缓存读 </span>
+                  <span className="text-muted-foreground">{t("缓存读")}</span>
                   <span className="font-semibold">{fmtTokens(tokenTotals.cacheRead)}</span>
                 </span>
                 <span className="tabular-nums">
@@ -775,9 +777,9 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                     <tr className="text-muted-foreground border-b text-left text-xs">
                       <th className="py-1.5 pr-3 font-medium">模型</th>
                       <th className="py-1.5 pr-3 text-right font-medium">调用</th>
-                      <th className="py-1.5 pr-3 text-right font-medium">输入</th>
-                      <th className="py-1.5 pr-3 text-right font-medium">输出</th>
-                      <th className="py-1.5 pr-3 text-right font-medium">缓存读</th>
+                      <th className="py-1.5 pr-3 text-right font-medium">{t("输入")}</th>
+                      <th className="py-1.5 pr-3 text-right font-medium">{t("输出")}</th>
+                      <th className="py-1.5 pr-3 text-right font-medium">{t("缓存读")}</th>
                       <th className="py-1.5 text-right font-medium">命中率</th>
                     </tr>
                   </thead>
@@ -823,13 +825,13 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               value={scopeKind}
               onChange={(e) => setScopeKind(e.target.value as TaskScopeRow["kind"])}
             >
-              <NativeSelectOption value="root_domain">根域名</NativeSelectOption>
-              <NativeSelectOption value="subdomain">子域名</NativeSelectOption>
+              <NativeSelectOption value="root_domain">{"根域名"}</NativeSelectOption>
+              <NativeSelectOption value="subdomain">{"子域名"}</NativeSelectOption>
               <NativeSelectOption value="ip">IP</NativeSelectOption>
-              <NativeSelectOption value="cidr">网段</NativeSelectOption>
+              <NativeSelectOption value="cidr">{"网段"}</NativeSelectOption>
               <NativeSelectOption value="icp">ICP</NativeSelectOption>
-              <NativeSelectOption value="keyword">关键词</NativeSelectOption>
-              <NativeSelectOption value="company">公司</NativeSelectOption>
+              <NativeSelectOption value="keyword">{"关键词"}</NativeSelectOption>
+              <NativeSelectOption value="company">{"公司"}</NativeSelectOption>
             </NativeSelect>
             <Input
               className="h-7 w-56 text-sm"
@@ -913,7 +915,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
             <div className="mt-1 text-lg font-semibold tabular-nums">{running.length}</div>
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">最近活动</div>
+            <div className="text-xs text-muted-foreground">{"最近活动"}</div>
             <div className="mt-1 inline-flex items-center gap-1 text-sm">
               <ClockIcon className="size-3.5" />
               {task?.last_activity ? new Date(task.last_activity).toLocaleTimeString("zh-CN") : "—"}
@@ -969,7 +971,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
             </div>
             <div>
               <div className="text-2xl font-semibold tabular-nums text-blue-600">{running.length}</div>
-              <div className="text-xs text-muted-foreground">执行中</div>
+              <div className="text-xs text-muted-foreground">{"执行中"}</div>
             </div>
             <div>
               <div className="text-2xl font-semibold tabular-nums">{open.length}</div>
@@ -1043,8 +1045,8 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <StatCard label="待领意图" value={open.length} icon={ShieldCheckIcon} sub="frontier 开放" />
-        <StatCard label="确认发现" value={taskFindings.length} icon={BugIcon} sub="本任务" />
-        <StatCard label="意图总数" value={intents.length} icon={AlertTriangleIcon} sub="本任务全部意图" />
+        <StatCard label="确认发现" value={taskFindings.length} icon={BugIcon} sub={"本任务"} />
+        <StatCard label={"意图总数"} value={intents.length} icon={AlertTriangleIcon} sub={"本任务全部意图"} />
       </div>
     </div>
   );
@@ -1067,6 +1069,7 @@ const TASK_RULE_KIND_LABEL: Record<AssetInterceptKind, string> = Object.fromEntr
 // TaskInterceptRulesCard 在任务详情总览里管理「任务级资产拦截 / 允许规则」：
 // 列表 + 新增 + 行内编辑 + 删除 + 启用开关。规则仅本任务生效，不进全局表。
 function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
+  const t = useT();
   const [rules, setRules] = React.useState<AssetInterceptRule[]>([]);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState("");
@@ -1178,8 +1181,8 @@ function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
         {/* 新增表单 */}
         <div className="flex flex-wrap items-center gap-2">
           <NativeSelect size="sm" value={newAction} onChange={(e) => setNewAction(e.target.value as "block" | "allow")}>
-            <NativeSelectOption value="block">拦截</NativeSelectOption>
-            <NativeSelectOption value="allow">允许</NativeSelectOption>
+            <NativeSelectOption value="block">{"拦截"}</NativeSelectOption>
+            <NativeSelectOption value="allow">{"允许"}</NativeSelectOption>
           </NativeSelect>
           <NativeSelect size="sm" value={newKind} onChange={(e) => setNewKind(e.target.value as AssetInterceptKind)}>
             {TASK_RULE_KIND_OPTIONS.map((o) => (
@@ -1221,8 +1224,8 @@ function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
                     value={editAction}
                     onChange={(e) => setEditAction(e.target.value as "block" | "allow")}
                   >
-                    <NativeSelectOption value="block">拦截</NativeSelectOption>
-                    <NativeSelectOption value="allow">允许</NativeSelectOption>
+                    <NativeSelectOption value="block">{t("拦截")}</NativeSelectOption>
+                    <NativeSelectOption value="allow">{t("允许")}</NativeSelectOption>
                   </NativeSelect>
                   <NativeSelect
                     size="sm"

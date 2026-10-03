@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -96,7 +97,7 @@ function healthOf(p: LLMProfile, m?: LLMPoolMember): Health {
       hint: m.last_error,
     };
   }
-  return { label: "正常", cls: "border-emerald-500/50 text-emerald-600 dark:text-emerald-400" };
+  return { label: t("正常"), cls: "border-emerald-500/50 text-emerald-600 dark:text-emerald-400" };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -240,7 +241,7 @@ function PoolSheet({
                             激活
                           </Badge>
                         )}
-                        {excluded && <Badge variant="outline">不参与轮询</Badge>}
+                        {excluded && <Badge variant="outline">{t("不参与轮询")}</Badge>}
                         <div className="ml-auto flex items-center gap-2">
                           {m.state === "tripped" && m.cooldown_secs > 0 && (
                             <span className="text-muted-foreground text-xs">冷却 {cooldownText(m.cooldown_secs)}</span>
@@ -253,7 +254,7 @@ function PoolSheet({
                               size="icon"
                               variant="ghost"
                               className="size-7"
-                              aria-label="立即恢复"
+                              aria-label={t("立即恢复")}
                               title="立即恢复：清除熔断，下次调用重试该配置"
                               onClick={() => void recover(m.profile_id)}
                             >
@@ -417,7 +418,7 @@ function ProfileSheet({
 
   async function save() {
     if (!name.trim() || !model.trim()) {
-      toast.error("请填写名称与模型");
+      toast.error(t("请填写名称与模型"));
       return;
     }
     if (saving) return;
@@ -482,7 +483,7 @@ function ProfileSheet({
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="p-name">名称</Label>
+              <Label htmlFor="p-name">{"名称"}</Label>
               <Input
                 id="p-name"
                 placeholder="例如：OpenAI 生产"
@@ -494,7 +495,7 @@ function ProfileSheet({
               <Label>格式</Label>
               <Select value={format} onValueChange={(v) => setFormat(v as "anthropic" | "openai" | "openai-responses")}>
                 <SelectTrigger>
-                  <SelectValue placeholder="选择格式" />
+                  <SelectValue placeholder={"选择格式"} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="anthropic">Anthropic</SelectItem>
@@ -526,7 +527,7 @@ function ProfileSheet({
                     className="shrink-0"
                     disabled={loadingModels}
                     onClick={loadModels}
-                    title="从 API 加载可用模型"
+                    title={"从 API 加载可用模型"}
                   >
                     {loadingModels ? <Loader2Icon className="animate-spin" /> : <RefreshCwIcon />}
                   </Button>
@@ -652,13 +653,13 @@ function ProfileSheet({
             </div>
             <div className="flex items-center justify-between gap-4 border-t pt-3">
               <div className="grid gap-0.5">
-                <Label className="text-sm">不参与轮询</Label>
+                <Label className="text-sm">{"不参与轮询"}</Label>
                 <p className="text-muted-foreground text-xs">
                   开启后不会被当作故障转移目标（仍可被 Agent / 任务显式指定使用）。 适合「只给某个 Agent
                   专用、不希望别人失败时烧掉」的昂贵配置。
                 </p>
               </div>
-              <Switch checked={poolExclude} onCheckedChange={setPoolExclude} aria-label="不参与轮询" />
+              <Switch checked={poolExclude} onCheckedChange={setPoolExclude} aria-label={"不参与轮询"} />
             </div>
             <div className="flex items-center justify-between gap-4 border-t pt-3">
               <div className="grid gap-0.5">
@@ -669,7 +670,7 @@ function ProfileSheet({
                   代价是失去运行中的实时进度。
                 </p>
               </div>
-              <Switch checked={streaming} onCheckedChange={setStreaming} aria-label="流式输出" />
+              <Switch checked={streaming} onCheckedChange={setStreaming} aria-label={"流式输出"} />
             </div>
           </div>
 
@@ -786,6 +787,7 @@ function ProfileSheet({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LLMPage() {
+  const t = useT();
   const [profiles, setProfiles] = React.useState<LLMProfile[]>([]);
   const [pool, setPool] = React.useState<LLMPoolStatus | null>(null);
   const [poolOpen, setPoolOpen] = React.useState(false);
@@ -938,7 +940,7 @@ export default function LLMPage() {
                       {/* 轮询相关的两个字段只在轮询开着时才有意义，关着时不占版面 */}
                       {poolOn &&
                         !p.is_default &&
-                        (p.pool_exclude ? <span>不参与轮询</span> : <span>优先级 {p.priority ?? 0}</span>)}
+                        (p.pool_exclude ? <span>{t("不参与轮询")}</span> : <span>优先级 {p.priority ?? 0}</span>)}
                     </div>
 
                     <div className="mt-1 flex gap-2">
@@ -957,7 +959,7 @@ export default function LLMPage() {
                       <Button
                         size="icon"
                         variant="outline"
-                        aria-label="删除配置"
+                        aria-label={t("删除配置")}
                         onClick={(e) => {
                           e.stopPropagation();
                           void remove(p);

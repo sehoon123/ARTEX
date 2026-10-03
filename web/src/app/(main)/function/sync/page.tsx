@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -34,10 +35,11 @@ const ASSET_TYPES: { key: string; label: string }[] = [
 ];
 
 export default function AssetSyncPage() {
+  const t = useT();
   return (
     <div className="p-4 md:p-6">
       <div className="mb-4">
-        <h1 className="font-semibold text-xl">资产同步</h1>
+        <h1 className="font-semibold text-xl">{"资产同步"}</h1>
         <p className="text-muted-foreground text-sm">从外部数据源同步资产入库</p>
       </div>
       <Tabs defaultValue="scopesentry">
@@ -98,6 +100,7 @@ function DataSourceCard({
   loading: boolean;
   onChanged: () => void;
 }) {
+  const t = useT();
   const [url, setUrl] = React.useState("");
   const [apiKey, setApiKey] = React.useState("");
   const [busy, setBusy] = React.useState(false);
@@ -120,7 +123,7 @@ function DataSourceCard({
   };
 
   const save = async () => {
-    if (!url.trim()) return toast.error("请填写 MCP 地址");
+    if (!url.trim()) return toast.error(t("请填写 MCP 地址"));
     setBusy(true);
     try {
       const r = await api.ssDatasource({ url: url.trim(), api_key: apiKey.trim() });
@@ -196,10 +199,11 @@ function DataSourceCard({
 }
 
 function StatusBadge({ status, loading }: { status: SSStatus | null; loading: boolean }) {
+  const t = useT();
   if (loading || !status) return <Badge variant="secondary">检测中…</Badge>;
   if (!status.exists) return <Badge variant="destructive">未创建</Badge>;
-  if (!status.configured) return <Badge variant="outline">未配置</Badge>;
-  if (!status.enabled) return <Badge variant="outline">未启用</Badge>;
+  if (!status.configured) return <Badge variant="outline">{t("未配置")}</Badge>;
+  if (!status.enabled) return <Badge variant="outline">{t("未启用")}</Badge>;
   if (status.reachable)
     return (
       <Badge className="bg-emerald-600 hover:bg-emerald-600">

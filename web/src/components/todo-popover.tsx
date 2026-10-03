@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 import { ListTodo } from "lucide-react";
@@ -33,7 +34,7 @@ export function TodoPopover({
       const parsed = JSON.parse(start >= 0 ? detail.slice(start) : detail);
       setTodos(Array.isArray(parsed?.todos) ? parsed.todos : []);
     } catch {
-      setErr("解析 Todo 失败");
+      setErr(t("解析 Todo 失败"));
       setTodos(null);
     } finally {
       setLoading(false);

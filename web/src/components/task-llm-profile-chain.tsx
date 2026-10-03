@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -53,6 +54,7 @@ export function TaskLLMProfileChain({
   inputId,
   portalContainer,
 }: TaskLLMProfileChainProps) {
+  const t = useT();
   const profilesByID = React.useMemo(() => new Map(profiles.map((profile) => [profile.id, profile])), [profiles]);
   const itemIDs = React.useMemo(() => profiles.map((profile) => profile.id), [profiles]);
   const profilesUnavailable = profiles.length === 0;
@@ -159,7 +161,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="上移配置"
+                    aria-label={t("上移配置")}
                     onClick={() => move(index, -1)}
                     disabled={disabled ? true : index === 0}
                   >
@@ -169,7 +171,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="下移配置"
+                    aria-label={t("下移配置")}
                     onClick={() => move(index, 1)}
                     disabled={disabled ? true : index === value.length - 1}
                   >
@@ -179,7 +181,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="移除配置"
+                    aria-label={t("移除配置")}
                     onClick={() => remove(id)}
                     disabled={disabled}
                   >

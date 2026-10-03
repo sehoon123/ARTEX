@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 import type { Graph as G6Graph } from "@antv/g6";
@@ -346,7 +347,7 @@ function AssetSheet({
               <div className="flex w-full min-w-0 flex-col gap-4 p-4">
                 <section>
                   <h4 className="text-muted-foreground mb-1 text-xs font-medium">属性</h4>
-                  <DetailRow label="类型">{meta.label}</DetailRow>
+                  <DetailRow label={t("类型")}>{meta.label}</DetailRow>
                   <DetailRow label="测试状态">
                     {node.in_scope ? (
                       node.tested ? (
@@ -358,24 +359,24 @@ function AssetSheet({
                       <span className="text-neutral-400">范围外（连接节点）</span>
                     )}
                   </DetailRow>
-                  <DetailRow label="域名">{node.domain}</DetailRow>
-                  <DetailRow label="根域名">{node.root_domain}</DetailRow>
+                  <DetailRow label={t("域名")}>{node.domain}</DetailRow>
+                  <DetailRow label={t("根域名")}>{node.root_domain}</DetailRow>
                   <DetailRow label="IP">{node.ip}</DetailRow>
-                  <DetailRow label="端口">{node.port ? node.port : undefined}</DetailRow>
+                  <DetailRow label={t("端口")}>{node.port ? node.port : undefined}</DetailRow>
                   <DetailRow label="URL">
                     {node.url ? <span className="font-mono text-xs break-all">{node.url}</span> : undefined}
                   </DetailRow>
                   <DetailRow label="标题">{node.page_title}</DetailRow>
                   <DetailRow label="状态码">{node.status_code ? node.status_code : undefined}</DetailRow>
                   <DetailRow label="App">{node.app_name}</DetailRow>
-                  <DetailRow label="资产ID">
+                  <DetailRow label={t("资产ID")}>
                     {node.asset_id ? <span className="font-mono text-xs">{node.asset_id}</span> : undefined}
                   </DetailRow>
                 </section>
                 {refs && (refs.intents.length > 0 || refs.facts.length > 0 || refs.findings.length > 0) && (
                   <section className="flex flex-col gap-3 border-t pt-3">
                     <RefList title="关联意图" items={refs.intents} />
-                    <RefList title="关联事实" items={refs.facts} />
+                    <RefList title={t("关联事实")} items={refs.facts} />
                     <RefList title="关联发现" items={refs.findings} />
                   </section>
                 )}
@@ -457,6 +458,7 @@ function FoldSheet({
 
 // ---------------------------------------------------------------------------
 function GraphInner({ taskId, coverageEnabled = true }: { taskId: string; coverageEnabled?: boolean }) {
+  const t = useT();
   const [data, setData] = React.useState<{
     nodes: CoverageGraphNode[];
     edges: CoverageGraphEdge[];
@@ -656,7 +658,7 @@ function GraphInner({ taskId, coverageEnabled = true }: { taskId: string; covera
           ) : (
             <span className="text-muted-foreground">{loading ? "加载中…" : "暂无范围内资产（先锚定任务范围）"}</span>
           )}
-          <Button variant="ghost" size="icon" className="size-6" onClick={fetchGraph} title="刷新">
+          <Button variant="ghost" size="icon" className="size-6" onClick={fetchGraph} title={"刷新"}>
             <RefreshCw className={cn("size-3.5", loading && "animate-spin")} />
           </Button>
         </div>

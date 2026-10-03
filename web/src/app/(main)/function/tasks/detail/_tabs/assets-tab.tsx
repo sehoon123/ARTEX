@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -243,7 +244,7 @@ function AssetCard({
                 size="icon-sm"
                 disabled={page <= 0}
                 onClick={() => onPage(Math.max(0, page - 1))}
-                aria-label="上一页"
+                aria-label={t("上一页")}
               >
                 <ChevronLeftIcon />
               </Button>
@@ -255,7 +256,7 @@ function AssetCard({
                 size="icon-sm"
                 disabled={page + 1 >= pageCount}
                 onClick={() => onPage(Math.min(pageCount - 1, page + 1))}
-                aria-label="下一页"
+                aria-label={t("下一页")}
               >
                 <ChevronRightIcon />
               </Button>
@@ -319,7 +320,7 @@ function AddTaskAssetsSheet({
             onValueChange={setScopeText}
             parsed={parsedScope}
             label="测试资产与范围"
-            description="每行一条，自动识别域名、IP、CIDR、ICP 备案和关键词。"
+            description={"每行一条，自动识别域名、IP、CIDR、ICP 备案和关键词。"}
           />
         </div>
         <SheetFooter>
@@ -340,6 +341,7 @@ function AddTaskAssetsSheet({
 }
 
 export function AssetsTab({ taskId }: { taskId: string }) {
+  const t = useT();
   const [rows, setRows] = React.useState<Asset[]>([]);
   const [total, setTotal] = React.useState(0);
   const [counts, setCounts] = React.useState<Record<string, number>>({});
@@ -687,7 +689,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={removing}>取消</AlertDialogCancel>
+            <AlertDialogCancel disabled={removing}>{"取消"}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               disabled={removing}

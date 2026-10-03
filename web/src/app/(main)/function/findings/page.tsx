@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -129,6 +130,7 @@ const EMPTY_STATS: FindingStats = {
 };
 
 export default function FindingsPage() {
+  const t = useT();
   const [view, setView] = React.useState<FindingView>("flat");
   const [severity, setSeverity] = React.useState<"all" | Severity>("all");
   const [status, setStatus] = React.useState<"all" | FindingStatus>("all");
@@ -290,7 +292,7 @@ export default function FindingsPage() {
         ids: [...selectedIds],
       });
       setExportOpen(false);
-      toast.success("已开始下载导出文件");
+      toast.success(t("已开始下载导出文件"));
     } catch (e) {
       toast.error(`导出失败：${(e as Error).message}`);
     } finally {
@@ -678,7 +680,7 @@ export default function FindingsPage() {
               : x,
           ),
         );
-        toast.success("已保存");
+        toast.success(t("已保存"));
         api
           .findingStats()
           .then(setStats)
@@ -711,7 +713,7 @@ export default function FindingsPage() {
         setFlat((cur) => ({ ...cur, total: Math.max(0, cur.total - 1) }));
         const rowKey = findingRowKey(f);
         setExpanded((cur) => (cur === rowKey ? null : cur));
-        toast.success("已删除漏洞");
+        toast.success(t("已删除漏洞"));
         api
           .findingStats()
           .then(setStats)
@@ -818,7 +820,7 @@ export default function FindingsPage() {
     <div className="flex flex-1 flex-col gap-4 md:gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">发现</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{"发现"}</h1>
           <p className="text-muted-foreground text-sm">跨任务漏洞汇总</p>
         </div>
         <Tabs value={view} onValueChange={(v) => setView(v as FindingView)}>
@@ -853,8 +855,8 @@ export default function FindingsPage() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="检索漏洞内容"
-              aria-label="检索漏洞内容"
+              placeholder={"检索漏洞内容"}
+              aria-label={"检索漏洞内容"}
             />
             <InputGroupAddon>
               <SearchIcon aria-hidden="true" />
@@ -900,7 +902,7 @@ export default function FindingsPage() {
 
           <Select value={vulnclass} onValueChange={setVulnclass}>
             <SelectTrigger size="sm" className="w-40">
-              <SelectValue placeholder="漏洞类型" />
+              <SelectValue placeholder={"漏洞类型"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全部类型</SelectItem>
@@ -914,7 +916,7 @@ export default function FindingsPage() {
 
           <Select value={task} onValueChange={setTask}>
             <SelectTrigger size="sm" className="w-48">
-              <SelectValue placeholder="任务" />
+              <SelectValue placeholder={"任务"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全部任务</SelectItem>

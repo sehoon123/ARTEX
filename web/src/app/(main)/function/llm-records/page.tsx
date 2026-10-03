@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import {
@@ -121,7 +121,6 @@ function CopyButton({ text }: { text: string }) {
 const PAGE_SIZES = [25, 50, 100];
 
 export default function LLMRecordsPage() {
-  const t = useT();
   const [page, setPage] = React.useState(0);
   const [size, setSize] = React.useState(50);
   const [session, setSession] = React.useState("");
@@ -272,7 +271,7 @@ export default function LLMRecordsPage() {
         <div className="relative max-w-sm flex-1">
           <SearchIcon className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="搜索 Session ID..."
+            placeholder={tr("搜索 Session ID...")}
             value={session}
             onChange={(e) => setSession(e.target.value)}
             className="h-8 pl-8"
@@ -382,14 +381,14 @@ export default function LLMRecordsPage() {
             <Table>
               <TableHeader className="sticky top-0 z-10 bg-card">
                 <TableRow>
-                  <TableHead className="w-[130px]">时间</TableHead>
+                  <TableHead className="w-[130px]">{tr("时间")}</TableHead>
                   <TableHead className="w-[60px]">{"任务"}</TableHead>
                   <TableHead className="w-[90px]">Worker</TableHead>
                   <TableHead className="w-[100px]">Profile</TableHead>
                   <TableHead className="w-[140px]">Model</TableHead>
                   <TableHead className="w-[70px]">延迟</TableHead>
                   <TableHead className="w-[90px]">Tokens</TableHead>
-                  <TableHead className="w-[60px]">状态</TableHead>
+                  <TableHead className="w-[60px]">{tr("状态")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

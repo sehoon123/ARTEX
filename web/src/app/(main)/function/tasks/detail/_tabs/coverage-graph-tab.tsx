@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import type { Graph as G6Graph } from "@antv/g6";
@@ -347,8 +347,8 @@ function AssetSheet({
               <div className="flex w-full min-w-0 flex-col gap-4 p-4">
                 <section>
                   <h4 className="text-muted-foreground mb-1 text-xs font-medium">属性</h4>
-                  <DetailRow label={t("类型")}>{meta.label}</DetailRow>
-                  <DetailRow label="测试状态">
+                  <DetailRow label={tr("类型")}>{meta.label}</DetailRow>
+                  <DetailRow label={tr("测试状态")}>
                     {node.in_scope ? (
                       node.tested ? (
                         <span className="text-emerald-600 dark:text-emerald-400">已测试</span>
@@ -359,25 +359,25 @@ function AssetSheet({
                       <span className="text-neutral-400">范围外（连接节点）</span>
                     )}
                   </DetailRow>
-                  <DetailRow label={t("域名")}>{node.domain}</DetailRow>
-                  <DetailRow label={t("根域名")}>{node.root_domain}</DetailRow>
+                  <DetailRow label={tr("域名")}>{node.domain}</DetailRow>
+                  <DetailRow label={tr("根域名")}>{node.root_domain}</DetailRow>
                   <DetailRow label="IP">{node.ip}</DetailRow>
-                  <DetailRow label={t("端口")}>{node.port ? node.port : undefined}</DetailRow>
+                  <DetailRow label={tr("端口")}>{node.port ? node.port : undefined}</DetailRow>
                   <DetailRow label="URL">
                     {node.url ? <span className="font-mono text-xs break-all">{node.url}</span> : undefined}
                   </DetailRow>
-                  <DetailRow label="标题">{node.page_title}</DetailRow>
-                  <DetailRow label="状态码">{node.status_code ? node.status_code : undefined}</DetailRow>
+                  <DetailRow label={tr("标题")}>{node.page_title}</DetailRow>
+                  <DetailRow label={tr("状态码")}>{node.status_code ? node.status_code : undefined}</DetailRow>
                   <DetailRow label="App">{node.app_name}</DetailRow>
-                  <DetailRow label={t("资产ID")}>
+                  <DetailRow label={tr("资产ID")}>
                     {node.asset_id ? <span className="font-mono text-xs">{node.asset_id}</span> : undefined}
                   </DetailRow>
                 </section>
                 {refs && (refs.intents.length > 0 || refs.facts.length > 0 || refs.findings.length > 0) && (
                   <section className="flex flex-col gap-3 border-t pt-3">
-                    <RefList title="关联意图" items={refs.intents} />
-                    <RefList title={t("关联事实")} items={refs.facts} />
-                    <RefList title="关联发现" items={refs.findings} />
+                    <RefList title={tr("关联意图")} items={refs.intents} />
+                    <RefList title={tr("关联事实")} items={refs.facts} />
+                    <RefList title={tr("关联发现")} items={refs.findings} />
                   </section>
                 )}
                 <section className="border-t pt-3">
@@ -458,7 +458,6 @@ function FoldSheet({
 
 // ---------------------------------------------------------------------------
 function GraphInner({ taskId, coverageEnabled = true }: { taskId: string; coverageEnabled?: boolean }) {
-  const t = useT();
   const [data, setData] = React.useState<{
     nodes: CoverageGraphNode[];
     edges: CoverageGraphEdge[];

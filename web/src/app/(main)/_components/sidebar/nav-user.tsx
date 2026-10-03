@@ -32,7 +32,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const [pwOpen, setPwOpen] = React.useState(false);
-  const { locale, setLocale, t } = useI18n();
+  const { locale, setLocale, t } = useI18n(); // t from context for reactivity
 
   const localeLabels: Record<Locale, string> = { en: "English", ko: "한국어" };
   const nextLocale: Locale = locale === "en" ? "ko" : "en";

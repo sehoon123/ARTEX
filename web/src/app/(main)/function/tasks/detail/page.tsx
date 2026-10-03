@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -141,7 +142,7 @@ function TaskLLMControl({ task, profiles, onUpdated }: { task: Task; profiles: L
       setOpen(false);
       onUpdated();
     } catch (error) {
-      toast.error("更新失败：" + (error as Error).message);
+      toast.error(tr("更新失败：") + (error as Error).message);
     } finally {
       setSaving(false);
     }
@@ -153,7 +154,7 @@ function TaskLLMControl({ task, profiles, onUpdated }: { task: Task; profiles: L
         <Button
           size="sm"
           variant={exhausted ? "destructive" : "outline"}
-          aria-label="查看或切换任务 LLM 配置"
+          aria-label={tr("查看或切换任务 LLM 配置")}
           title={currentTitle}
         >
           <BrainIcon data-icon="inline-start" />
@@ -283,7 +284,7 @@ function TaskDetailInner() {
       setPaused(next);
       toast.success(next ? "已暂停探索" : "已恢复探索");
     } catch (e) {
-      toast.error("操作失败：" + (e as Error).message);
+      toast.error(tr("操作失败：") + (e as Error).message);
     }
   }
 
@@ -292,7 +293,7 @@ function TaskDetailInner() {
     setArchiving(true);
     try {
       await api.archiveTask(task.id);
-      toast.success("任务已加入归档队列");
+      toast.success(tr("任务已加入归档队列"));
       router.push("/function/tasks");
     } catch (error) {
       toast.error(`归档失败：${(error as Error).message}`);
@@ -379,7 +380,7 @@ function TaskDetailInner() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
                   <AlertDialogAction onClick={() => void archiveTask()}>确认归档</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -90,7 +90,7 @@ export function FindingRetestPanel({
         </div>
         {running?.conversation_id != null ? (
           <Button asChild variant="outline" size="sm">
-            <Link href={`/chat?c=${running.conversation_id}`} title={t("查看正在进行的复测会话")}>
+            <Link href={`/chat?c=${running.conversation_id}`} title={tr("查看正在进行的复测会话")}>
               <Spinner data-icon="inline-start" aria-hidden="true" />
               复测中
             </Link>
@@ -118,7 +118,7 @@ export function FindingRetestPanel({
         {!error && items?.length === 0 ? (
           <Empty>
             <EmptyHeader>
-              <EmptyTitle>{t("暂无复测记录")}</EmptyTitle>
+              <EmptyTitle>{tr("暂无复测记录")}</EmptyTitle>
               <EmptyDescription>修复部署完成后，可发起复测并比较新旧证据。</EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -139,10 +139,10 @@ export function FindingRetestPanel({
                   </span>
                   {item.conversation_id != null ? (
                     <Button asChild variant="ghost" size="sm" className="ml-auto">
-                      <Link href={`/chat?c=${item.conversation_id}`}>{t("查看会话")}</Link>
+                      <Link href={`/chat?c=${item.conversation_id}`}>{tr("查看会话")}</Link>
                     </Button>
                   ) : (
-                    <span className="text-muted-foreground text-xs">{t("会话已删除")}</span>
+                    <span className="text-muted-foreground text-xs">{tr("会话已删除")}</span>
                   )}
                 </div>
                 {item.status === "completed" && item.summary ? (
@@ -158,7 +158,7 @@ export function FindingRetestPanel({
                 ) : null}
                 {item.status === "completed" && item.evidence ? (
                   <details className="min-w-0">
-                    <summary className="cursor-pointer text-sm">{t("复测证据")}</summary>
+                    <summary className="cursor-pointer text-sm">{tr("复测证据")}</summary>
                     <div className="mt-3 overflow-x-auto">
                       <Markdown text={item.evidence} />
                     </div>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -57,7 +57,6 @@ function SidePanel({
   label: string;
   composerLayout: ComposerLayout;
 }) {
-  const t = useT();
   const inlineComposer = composerLayout === "inline";
   const [confirm, setConfirm] = useState(false);
   const viewport = useRef<HTMLDivElement>(null);
@@ -86,7 +85,7 @@ function SidePanel({
         >
           <Trash2Icon />
         </Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => side.setOpen(false)} aria-label={t("关闭旁路面板")}>
+        <Button variant="ghost" size="icon-sm" onClick={() => side.setOpen(false)} aria-label={tr("关闭旁路面板")}>
           <XIcon />
         </Button>
       </div>
@@ -166,7 +165,7 @@ function SidePanel({
             rows={1}
             className={cn("overflow-y-auto", inlineComposer ? "max-h-40 min-h-0" : "max-h-36 min-h-9")}
             aria-label={"旁路问题"}
-            placeholder="询问当前上下文…"
+            placeholder={tr("询问当前上下文…")}
             value={side.draft}
             maxLength={4000}
             disabled={side.busy}
@@ -186,7 +185,7 @@ function SidePanel({
                 variant="destructive"
                 size="icon-xs"
                 onClick={() => void side.stop()}
-                aria-label={t("停止旁路回答")}
+                aria-label={tr("停止旁路回答")}
               >
                 <SquareIcon />
               </InputGroupButton>
@@ -197,7 +196,7 @@ function SidePanel({
                 size="icon-xs"
                 onClick={() => void side.ask(side.draft)}
                 disabled={side.busy || !side.draft.trim() || !side.snapshot?.available}
-                aria-label={t("发送旁路问题")}
+                aria-label={tr("发送旁路问题")}
               >
                 <ArrowUpIcon />
               </InputGroupButton>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import { useEffect, useRef } from "react";
 
@@ -39,7 +39,6 @@ export function TablePagination({
   onPageSizeChange,
   pageSizeOptions = [10, 20, 50],
 }: TablePaginationProps) {
-  const t = useT();
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(Math.max(1, page), totalPages);
   const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
@@ -85,7 +84,7 @@ export function TablePagination({
                 size="icon-sm"
                 disabled={safePage === 1}
                 onClick={() => onPageChange(safePage - 1)}
-                aria-label={t("上一页")}
+                aria-label={tr("上一页")}
               >
                 <ChevronLeftIcon className="size-4" />
               </Button>
@@ -114,7 +113,7 @@ export function TablePagination({
                 size="icon-sm"
                 disabled={safePage === totalPages}
                 onClick={() => onPageChange(safePage + 1)}
-                aria-label={t("下一页")}
+                aria-label={tr("下一页")}
               >
                 <ChevronRightIcon className="size-4" />
               </Button>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -97,7 +97,7 @@ function healthOf(p: LLMProfile, m?: LLMPoolMember): Health {
       hint: m.last_error,
     };
   }
-  return { label: t("正常"), cls: "border-emerald-500/50 text-emerald-600 dark:text-emerald-400" };
+  return { label: tr("正常"), cls: "border-emerald-500/50 text-emerald-600 dark:text-emerald-400" };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,7 +133,7 @@ function PoolSheet({
       if (patch.llm_pool_enabled !== undefined) {
         toast.success(patch.llm_pool_enabled ? "已开启 LLM 轮询" : "已关闭 LLM 轮询");
       } else {
-        toast.success("已更新兜底设置");
+        toast.success(tr("已更新兜底设置"));
       }
     } catch (e) {
       toast.error(`设置失败：${(e as Error).message}`);
@@ -199,7 +199,7 @@ function PoolSheet({
                   checked={pool?.bind_fallback ?? false}
                   disabled={busy}
                   onCheckedChange={(v) => void toggle({ llm_pool_bind_fallback: v })}
-                  aria-label="绑定配置失败兜底开关"
+                  aria-label={tr("绑定配置失败兜底开关")}
                 />
               </div>
 
@@ -241,7 +241,7 @@ function PoolSheet({
                             激活
                           </Badge>
                         )}
-                        {excluded && <Badge variant="outline">{t("不参与轮询")}</Badge>}
+                        {excluded && <Badge variant="outline">{tr("不参与轮询")}</Badge>}
                         <div className="ml-auto flex items-center gap-2">
                           {m.state === "tripped" && m.cooldown_secs > 0 && (
                             <span className="text-muted-foreground text-xs">冷却 {cooldownText(m.cooldown_secs)}</span>
@@ -254,8 +254,8 @@ function PoolSheet({
                               size="icon"
                               variant="ghost"
                               className="size-7"
-                              aria-label={t("立即恢复")}
-                              title="立即恢复：清除熔断，下次调用重试该配置"
+                              aria-label={tr("立即恢复")}
+                              title={tr("立即恢复：清除熔断，下次调用重试该配置")}
                               onClick={() => void recover(m.profile_id)}
                             >
                               <RotateCcwIcon className="size-3.5" />
@@ -418,7 +418,7 @@ function ProfileSheet({
 
   async function save() {
     if (!name.trim() || !model.trim()) {
-      toast.error(t("请填写名称与模型"));
+      toast.error(tr("请填写名称与模型"));
       return;
     }
     if (saving) return;
@@ -486,7 +486,7 @@ function ProfileSheet({
               <Label htmlFor="p-name">{"名称"}</Label>
               <Input
                 id="p-name"
-                placeholder="例如：OpenAI 生产"
+                placeholder={tr("例如：OpenAI 生产")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -584,7 +584,7 @@ function ProfileSheet({
             <Input
               id="p-session-header"
               className="font-mono"
-              placeholder="如 x-session-id（留空=不发送）"
+              placeholder={tr("如 x-session-id（留空=不发送）")}
               value={sessionHeaderKey}
               onChange={(e) => setSessionHeaderKey(e.target.value)}
             />
@@ -787,7 +787,6 @@ function ProfileSheet({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LLMPage() {
-  const t = useT();
   const [profiles, setProfiles] = React.useState<LLMProfile[]>([]);
   const [pool, setPool] = React.useState<LLMPoolStatus | null>(null);
   const [poolOpen, setPoolOpen] = React.useState(false);
@@ -840,7 +839,7 @@ export default function LLMPage() {
 
   async function remove(p: LLMProfile) {
     if (p.is_default) {
-      toast.error("无法删除当前激活的配置");
+      toast.error(tr("无法删除当前激活的配置"));
       return;
     }
     try {
@@ -940,7 +939,7 @@ export default function LLMPage() {
                       {/* 轮询相关的两个字段只在轮询开着时才有意义，关着时不占版面 */}
                       {poolOn &&
                         !p.is_default &&
-                        (p.pool_exclude ? <span>{t("不参与轮询")}</span> : <span>优先级 {p.priority ?? 0}</span>)}
+                        (p.pool_exclude ? <span>{tr("不参与轮询")}</span> : <span>优先级 {p.priority ?? 0}</span>)}
                     </div>
 
                     <div className="mt-1 flex gap-2">
@@ -959,7 +958,7 @@ export default function LLMPage() {
                       <Button
                         size="icon"
                         variant="outline"
-                        aria-label={t("删除配置")}
+                        aria-label={tr("删除配置")}
                         onClick={(e) => {
                           e.stopPropagation();
                           void remove(p);

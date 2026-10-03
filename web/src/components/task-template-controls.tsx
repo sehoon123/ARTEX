@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -85,7 +85,6 @@ function TaskTemplateManager({
   onUpdated,
   onDeleted,
 }: TaskTemplateManagerProps) {
-  const t = useT();
   const [selectedID, setSelectedID] = React.useState<number | null>(null);
   const [draft, setDraft] = React.useState<TemplateDraft>(emptyDraft);
   const [saving, setSaving] = React.useState(false);
@@ -153,7 +152,7 @@ function TaskTemplateManager({
         .filter((r) => r.pattern !== ""),
     };
     if (!input.name || !input.description || !input.goal) {
-      toast.error("请填写模板名称、描述和目标");
+      toast.error(tr("请填写模板名称、描述和目标"));
       return;
     }
     setSaving(true);
@@ -163,12 +162,12 @@ function TaskTemplateManager({
         onCreated(created);
         setSelectedID(created.id);
         setDraft(templateDraft(created));
-        toast.success(t("模板已创建"));
+        toast.success(tr("模板已创建"));
       } else {
         const updated = await api.updateTaskTemplate(selectedID, input);
         onUpdated(updated);
         setDraft(templateDraft(updated));
-        toast.success(t("模板已更新"));
+        toast.success(tr("模板已更新"));
       }
     } catch (error) {
       toast.error(`保存失败：${(error as Error).message}`);
@@ -192,7 +191,7 @@ function TaskTemplateManager({
         startNew();
       }
       setDeleteOpen(false);
-      toast.success(t("模板已删除"));
+      toast.success(tr("模板已删除"));
     } catch (error) {
       toast.error(`删除失败：${(error as Error).message}`);
     } finally {
@@ -247,7 +246,7 @@ function TaskTemplateManager({
                     id="task-template-name"
                     value={draft.name}
                     maxLength={120}
-                    placeholder="例如：外部 Web 渗透"
+                    placeholder={tr("例如：外部 Web 渗透")}
                     onChange={(event) => updateDraft("name", event.target.value)}
                   />
                 </Field>
@@ -257,7 +256,7 @@ function TaskTemplateManager({
                     id="task-template-description"
                     className="min-h-28"
                     value={draft.description}
-                    placeholder="测试对象与背景"
+                    placeholder={tr("测试对象与背景")}
                     onChange={(event) => updateDraft("description", event.target.value)}
                   />
                 </Field>
@@ -267,7 +266,7 @@ function TaskTemplateManager({
                     id="task-template-goal"
                     className="min-h-28"
                     value={draft.goal}
-                    placeholder="任务需要达成的目标"
+                    placeholder={tr("任务需要达成的目标")}
                     onChange={(event) => updateDraft("goal", event.target.value)}
                   />
                 </Field>
@@ -367,7 +366,6 @@ export function TaskTemplateControls({
   onApply,
   portalContainer,
 }: TaskTemplateControlsProps) {
-  const t = useT();
   const [templates, setTemplates] = React.useState<TaskTemplate[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [templateInputValue, setTemplateInputValue] = React.useState("");

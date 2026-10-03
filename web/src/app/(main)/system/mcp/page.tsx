@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -45,7 +45,6 @@ const emptyForm: FormState = {
 };
 
 export default function MCPPage() {
-  const t = useT();
   const [servers, setServers] = React.useState<MCPServer[]>([]);
   const [agents, setAgents] = React.useState<Agent[]>([]);
   const [visibility, setVisibility] = React.useState<Record<number, string[]>>({});
@@ -138,15 +137,15 @@ export default function MCPPage() {
 
   async function saveForm() {
     if (!form.name.trim()) {
-      toast.error(t("请填写名称"));
+      toast.error(tr("请填写名称"));
       return;
     }
     if (form.transport === "stdio" && !form.command.trim()) {
-      toast.error(t("请填写命令"));
+      toast.error(tr("请填写命令"));
       return;
     }
     if (form.transport !== "stdio" && !form.url.trim()) {
-      toast.error(t("请填写远程 URL"));
+      toast.error(tr("请填写远程 URL"));
       return;
     }
     setSaving(true);
@@ -178,7 +177,7 @@ export default function MCPPage() {
       if (!editing) setOpen(false);
       load();
     } catch (e) {
-      toast.error(t("保存失败：") + (e as Error).message);
+      toast.error(tr("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -193,7 +192,7 @@ export default function MCPPage() {
       toast.success(`发现 ${t.length} 个工具`);
       load();
     } catch (e) {
-      toast.error("刷新失败：" + (e as Error).message);
+      toast.error(tr("刷新失败：") + (e as Error).message);
     } finally {
       setRefreshing(false);
     }
@@ -206,7 +205,7 @@ export default function MCPPage() {
       setOpen(false);
       load();
     } catch (e) {
-      toast.error(t("删除失败：") + (e as Error).message);
+      toast.error(tr("删除失败：") + (e as Error).message);
     }
   }
 
@@ -215,7 +214,7 @@ export default function MCPPage() {
       await api.saveMcpServer({ ...s, enabled: !s.enabled });
       load();
     } catch (e) {
-      toast.error(t("操作失败：") + (e as Error).message);
+      toast.error(tr("操作失败：") + (e as Error).message);
     }
   }
 
@@ -226,7 +225,7 @@ export default function MCPPage() {
       toast.success(`${on ? "取消" : "授予"}「${agentName}」可见`);
       load();
     } catch (e) {
-      toast.error(t("操作失败：") + (e as Error).message);
+      toast.error(tr("操作失败：") + (e as Error).message);
     }
   }
 
@@ -260,7 +259,7 @@ export default function MCPPage() {
           </div>
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="m-name">{t("名称")}</Label>
+          <Label htmlFor="m-name">{tr("名称")}</Label>
           <Input
             id="m-name"
             placeholder="filesystem"
@@ -271,7 +270,7 @@ export default function MCPPage() {
         {form.transport === "stdio" ? (
           <>
             <div className="grid gap-2">
-              <Label htmlFor="m-cmd">{t("命令")}</Label>
+              <Label htmlFor="m-cmd">{tr("命令")}</Label>
               <Input
                 id="m-cmd"
                 className="font-mono"
@@ -340,7 +339,7 @@ export default function MCPPage() {
           </Button>
         </div>
         {toolsLoading ? (
-          <p className="text-muted-foreground text-sm">{t("加载中…")}</p>
+          <p className="text-muted-foreground text-sm">{tr("加载中…")}</p>
         ) : tools.length === 0 ? (
           <p className="text-muted-foreground text-sm">尚未发现工具，点击刷新重新获取。</p>
         ) : (
@@ -395,12 +394,12 @@ export default function MCPPage() {
                   <Switch
                     checked={s.enabled}
                     onCheckedChange={() => toggleEnabled(s)}
-                    aria-label={t("启用")}
+                    aria-label={tr("启用")}
                   />
                   <Button
                     size="icon"
                     variant="outline"
-                    aria-label={t("删除")}
+                    aria-label={tr("删除")}
                     onClick={() => removeServer(s)}
                   >
                     <Trash2Icon className="text-destructive" />

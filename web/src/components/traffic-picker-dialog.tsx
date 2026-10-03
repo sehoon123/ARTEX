@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -195,8 +195,8 @@ export function TrafficPickerDialog({
                     />
                   </TableHead>
                   <TableHead>方法 / URL</TableHead>
-                  <TableHead>时间</TableHead>
-                  <TableHead>状态码</TableHead>
+                  <TableHead>{tr("时间")}</TableHead>
+                  <TableHead>{tr("状态码")}</TableHead>
                   <TableHead>{"操作"}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -215,7 +215,7 @@ export function TrafficPickerDialog({
                       <span className="font-mono text-xs">
                         {e.method} {e.url}
                       </span>
-                      {alreadyBound.has(e.id) ? <Badge variant="secondary">{t("已绑定")}</Badge> : null}
+                      {alreadyBound.has(e.id) ? <Badge variant="secondary">{tr("已绑定")}</Badge> : null}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-xs">
                       {new Date(e.ts).toLocaleString("zh-CN")}

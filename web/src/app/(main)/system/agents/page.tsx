@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -59,7 +59,7 @@ function AgentGridCard({
       toast.success(`已删除 Agent「${agent.name}」`);
       onDeleted();
     } catch (e) {
-      toast.error(t("删除失败：") + (e as Error).message);
+      toast.error(tr("删除失败：") + (e as Error).message);
     }
   }
   return (
@@ -112,8 +112,8 @@ function AgentGridCard({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{t("取消")}</AlertDialogCancel>
-              <AlertDialogAction onClick={del}>{t("删除")}</AlertDialogAction>
+              <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
+              <AlertDialogAction onClick={del}>{tr("删除")}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -140,7 +140,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
       setDescription("");
       onCreated(a.key);
     } catch (e) {
-      toast.error(t("创建失败：") + (e as Error).message);
+      toast.error(tr("创建失败：") + (e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -168,7 +168,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             <Label htmlFor="agent-key">Key</Label>
             <Input
               id="agent-key"
-              placeholder="如 research_helper"
+              placeholder={tr("如 research_helper")}
               value={key}
               onChange={(e) => setKey(e.target.value)}
               className="font-mono"
@@ -181,7 +181,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             <Label htmlFor="agent-name">{"名称"}</Label>
             <Input
               id="agent-name"
-              placeholder="如 研究助手"
+              placeholder={tr("如 研究助手")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -190,7 +190,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             <Label htmlFor="agent-desc">{"描述"}</Label>
             <Textarea
               id="agent-desc"
-              placeholder="一句话说明这个 Agent 是干什么的"
+              placeholder={tr("一句话说明这个 Agent 是干什么的")}
               rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -25,7 +25,6 @@ export function ChangePasswordDialog({
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
 }) {
-  const t = useT();
   const [oldPassword, setOldPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -43,18 +42,18 @@ export function ChangePasswordDialog({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!oldPassword || !newPassword) {
-      toast.error(t("请填写当前密码和新密码"));
+      toast.error(tr("请填写当前密码和新密码"));
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error(t("两次输入的新密码不一致"));
+      toast.error(tr("两次输入的新密码不一致"));
       return;
     }
     setSaving(true);
     api
       .changePassword(oldPassword, newPassword)
       .then(() => {
-        toast.success(t("密码已修改"));
+        toast.success(tr("密码已修改"));
         onOpenChange(false);
       })
       .catch((err) => toast.error(`修改失败：${(err as Error).message}`))

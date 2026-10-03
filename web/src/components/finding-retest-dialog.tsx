@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -72,7 +73,7 @@ export function FindingRetestDialog({ findingId, findingName, onClose, onStarted
               rows={4}
               disabled={submitting}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="例如：使用原测试账号验证原接口；修复版本为 v2。"
+              placeholder={tr("例如：使用原测试账号验证原接口；修复版本为 v2。")}
             />
             <FieldDescription>可补充修复版本、测试条件或本次限制。</FieldDescription>
           </Field>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -193,7 +193,6 @@ export function AssetTree({
   findingTotal,
   onRefresh,
 }: AssetTreeProps) {
-  const t = useT();
   const [keyword, setKeyword] = React.useState("");
   const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set());
   // 记住用户手动折叠过的节点,免得「默认展开顶层」在每次刷新后又把它们撑开。
@@ -266,8 +265,8 @@ export function AssetTree({
             type="search"
             value={keyword}
             onChange={(event) => setKeyword(event.target.value)}
-            placeholder="过滤资产"
-            aria-label="过滤资产"
+            placeholder={tr("过滤资产")}
+            aria-label={tr("过滤资产")}
           />
           <InputGroupAddon>
             <SearchIcon aria-hidden="true" />
@@ -280,8 +279,8 @@ export function AssetTree({
             className="size-8 shrink-0 text-muted-foreground"
             onClick={onRefresh}
             disabled={loading}
-            aria-label={t("刷新资产树")}
-            title={t("刷新资产树")}
+            aria-label={tr("刷新资产树")}
+            title={tr("刷新资产树")}
           >
             <RefreshCwIcon className={cn("size-4", loading && "animate-spin")} />
           </Button>

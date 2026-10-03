@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -36,7 +36,7 @@ function ProfileRoleBadge({ index, currentIndex }: { index: number; currentIndex
   if (index === currentIndex) return <Badge variant="default">当前</Badge>;
   if (index < currentIndex) {
     return (
-      <Badge variant="outline" title="当前游标之前的配置不会被自动故障转移选中">
+      <Badge variant="outline" title={tr("当前游标之前的配置不会被自动故障转移选中")}>
         已跳过
       </Badge>
     );
@@ -54,7 +54,6 @@ export function TaskLLMProfileChain({
   inputId,
   portalContainer,
 }: TaskLLMProfileChainProps) {
-  const t = useT();
   const profilesByID = React.useMemo(() => new Map(profiles.map((profile) => [profile.id, profile])), [profiles]);
   const itemIDs = React.useMemo(() => profiles.map((profile) => profile.id), [profiles]);
   const profilesUnavailable = profiles.length === 0;
@@ -161,7 +160,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={t("上移配置")}
+                    aria-label={tr("上移配置")}
                     onClick={() => move(index, -1)}
                     disabled={disabled ? true : index === 0}
                   >
@@ -171,7 +170,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={t("下移配置")}
+                    aria-label={tr("下移配置")}
                     onClick={() => move(index, 1)}
                     disabled={disabled ? true : index === value.length - 1}
                   >
@@ -181,7 +180,7 @@ export function TaskLLMProfileChain({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={t("移除配置")}
+                    aria-label={tr("移除配置")}
                     onClick={() => remove(id)}
                     disabled={disabled}
                   >

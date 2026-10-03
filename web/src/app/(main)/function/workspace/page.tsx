@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import {
@@ -69,7 +69,6 @@ type EditState = {
 };
 
 export default function WorkspacePage() {
-  const t = useT();
   const [path, setPath] = React.useState("");
   const [entries, setEntries] = React.useState<WorkspaceEntry[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -99,7 +98,7 @@ export default function WorkspacePage() {
 
   const crumbs = React.useMemo(() => {
     const parts = path ? path.split("/") : [];
-    const acc: { name: string; path: string }[] = [{ name: t("工作空间"), path: "" }];
+    const acc: { name: string; path: string }[] = [{ name: tr("工作空间"), path: "" }];
     let cur = "";
     for (const part of parts) {
       cur = cur ? `${cur}/${part}` : part;
@@ -121,7 +120,7 @@ export default function WorkspacePage() {
     api
       .workspaceWrite(edit.file.path, edit.content)
       .then(() => {
-        toast.success(t("已保存"));
+        toast.success(tr("已保存"));
         setEdit((cur) => (cur ? { ...cur, dirty: false, saving: false } : cur));
         load(path);
       })
@@ -136,7 +135,7 @@ export default function WorkspacePage() {
     api
       .workspaceDelete(e.path)
       .then(() => {
-        toast.success(t("已删除"));
+        toast.success(tr("已删除"));
         load(path);
       })
       .catch((err) => toast.error(`删除失败：${(err as Error).message}`));
@@ -163,7 +162,7 @@ export default function WorkspacePage() {
     api
       .workspaceMkdir(target)
       .then(() => {
-        toast.success(t("已创建目录"));
+        toast.success(tr("已创建目录"));
         setMkdirOpen(false);
         setMkdirName("");
         load(path);
@@ -200,7 +199,7 @@ export default function WorkspacePage() {
           <Button variant="outline" size="sm" onClick={() => uploadRef.current?.click()}>
             <UploadIcon /> 上传
           </Button>
-          <Button variant="ghost" size="icon" className="size-8" onClick={() => load(path)} title={t("刷新")}>
+          <Button variant="ghost" size="icon" className="size-8" onClick={() => load(path)} title={tr("刷新")}>
             <RefreshCwIcon className={cn("size-4", loading && "animate-spin")} />
           </Button>
           <input
@@ -259,7 +258,7 @@ export default function WorkspacePage() {
                           variant="ghost"
                           size="icon"
                           className="size-7"
-                          title={t("下载")}
+                          title={tr("下载")}
                           onClick={() => api.workspaceDownload(e.path).catch((err) => toast.error(`下载失败：${(err as Error).message}`))}
                         >
                           <DownloadIcon className="size-3.5" />
@@ -269,7 +268,7 @@ export default function WorkspacePage() {
                         variant="ghost"
                         size="icon"
                         className="text-destructive size-7"
-                        title={t("删除")}
+                        title={tr("删除")}
                         onClick={() => del(e)}
                       >
                         <Trash2Icon className="size-3.5" />

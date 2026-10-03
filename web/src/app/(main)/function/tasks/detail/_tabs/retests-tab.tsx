@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -120,7 +121,7 @@ export function RetestsTab({ taskId }: { taskId: string }) {
               <Button
                 variant="outline"
                 size="icon-sm"
-                aria-label="上一页漏洞"
+                aria-label={tr("上一页漏洞")}
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
               >
@@ -132,7 +133,7 @@ export function RetestsTab({ taskId }: { taskId: string }) {
               <Button
                 variant="outline"
                 size="icon-sm"
-                aria-label="下一页漏洞"
+                aria-label={tr("下一页漏洞")}
                 disabled={page * PAGE_SIZE >= data.total}
                 onClick={() => setPage(page + 1)}
               >

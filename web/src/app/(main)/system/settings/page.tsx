@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -19,7 +19,6 @@ import type { Settings } from "@/lib/types";
 import { UpdateCard } from "./_components/update-card";
 
 export default function SystemSettingsPage() {
-  const t = useT();
   const [trafficCapture, setTrafficCapture] = React.useState(false);
   const [agentTrafficBinding, setAgentTrafficBinding] = React.useState(false);
   const [webSearch, setWebSearch] = React.useState(false);
@@ -67,7 +66,7 @@ export default function SystemSettingsPage() {
   const saveWorkers = () => {
     const n = Number(workers);
     if (!Number.isInteger(n) || n <= 0) {
-      toast.error("并发数必须是大于 0 的整数");
+      toast.error(tr("并发数必须是大于 0 的整数"));
       return;
     }
     setSavingWorkers(true);
@@ -75,9 +74,9 @@ export default function SystemSettingsPage() {
       .setSettings({ workers: n })
       .then((s) => {
         apply(s);
-        toast.success("已保存并发工作 agent 数（对之后启动的任务生效）");
+        toast.success(tr("已保存并发工作 agent 数（对之后启动的任务生效）"));
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSavingWorkers(false));
   };
 
@@ -87,9 +86,9 @@ export default function SystemSettingsPage() {
       .setSettings({ python_interpreter: pyInterp.trim() })
       .then((s) => {
         apply(s);
-        toast.success("已保存 Python 解释器配置");
+        toast.success(tr("已保存 Python 解释器配置"));
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSaving(false));
   };
   const detectPython = () => {
@@ -172,10 +171,10 @@ export default function SystemSettingsPage() {
       .setSettings(patch)
       .then((s) => {
         apply(s);
-        toast.success("已保存网络搜索配置");
+        toast.success(tr("已保存网络搜索配置"));
       })
       .catch((e) => {
-        toast.error(t("保存失败：") + (e as Error).message);
+        toast.error(tr("保存失败：") + (e as Error).message);
         api
           .settings()
           .then(apply)
@@ -191,9 +190,9 @@ export default function SystemSettingsPage() {
       .then((s) => {
         apply(s);
         setBraveKeyInput("");
-        toast.success("已保存 Brave API Key");
+        toast.success(tr("已保存 Brave API Key"));
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSavingKey(false));
   };
 
@@ -204,9 +203,9 @@ export default function SystemSettingsPage() {
       .then((s) => {
         apply(s);
         setTavilyKeyInput("");
-        toast.success("已保存 Tavily API Key");
+        toast.success(tr("已保存 Tavily API Key"));
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSavingTavilyKey(false));
   };
 
@@ -218,7 +217,7 @@ export default function SystemSettingsPage() {
         apply(s);
         toast.success(proxyInput.trim() ? "已保存出口代理" : "已清除出口代理（改为直连）");
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSavingProxy(false));
   };
 
@@ -230,7 +229,7 @@ export default function SystemSettingsPage() {
         apply(s);
         toast.success(globalProxyInput.trim() ? "已保存全局代理" : "已清除全局代理（改为直连）");
       })
-      .catch((e) => toast.error(t("保存失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("保存失败：") + (e as Error).message))
       .finally(() => setSavingGlobalProxy(false));
   };
 
@@ -247,9 +246,9 @@ export default function SystemSettingsPage() {
       })
       .then((r) => {
         if (r.ok) toast.success(`搜索测试成功 · ${r.backend} 返回 ${r.count} 条结果`);
-        else toast.error(t("搜索测试失败：") + (r.error || "未知错误"));
+        else toast.error(tr("搜索测试失败：") + (r.error || "未知错误"));
       })
-      .catch((e) => toast.error(t("搜索测试失败：") + (e as Error).message))
+      .catch((e) => toast.error(tr("搜索测试失败：") + (e as Error).message))
       .finally(() => setTesting(false));
   };
 
@@ -478,7 +477,7 @@ export default function SystemSettingsPage() {
                   }}
                 >
                   <SelectTrigger className="w-48 shrink-0">
-                    <SelectValue placeholder={t("选择来源")} />
+                    <SelectValue placeholder={tr("选择来源")} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ddgs">DuckDuckGo（ddgs · 免费无 Key）</SelectItem>
@@ -513,7 +512,7 @@ export default function SystemSettingsPage() {
               <div className="flex flex-col gap-2">
                 <Label htmlFor="brave-key" className="text-sm font-normal text-muted-foreground">
                   Brave Search API Key
-                  {braveKeySet && <span className="ml-2 text-xs text-emerald-500">已配置</span>}
+                  {braveKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input
@@ -548,7 +547,7 @@ export default function SystemSettingsPage() {
               <div className="flex flex-col gap-2">
                 <Label htmlFor="tavily-key" className="text-sm font-normal text-muted-foreground">
                   Tavily Search API Key
-                  {tavilyKeySet && <span className="ml-2 text-xs text-emerald-500">已配置</span>}
+                  {tavilyKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input

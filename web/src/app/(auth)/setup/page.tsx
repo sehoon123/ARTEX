@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import { useEffect, useState } from "react";
 
@@ -12,7 +12,6 @@ import { api } from "@/lib/api";
 import { auth } from "@/lib/auth";
 
 export default function SetupPage() {
-  const t = useT();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -25,18 +24,18 @@ export default function SetupPage() {
       .then(({ initialized }) => {
         if (initialized) router.replace("/login");
       })
-      .catch(() => setError(t("无法连接到后端服务")))
+      .catch(() => setError(tr("无法连接到后端服务")))
       .finally(() => setChecking(false));
   }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      setError(t("两次输入的密码不一致"));
+      setError(tr("两次输入的密码不一致"));
       return;
     }
     if (password.length < 8) {
-      setError(t("密码长度至少 8 位"));
+      setError(tr("密码长度至少 8 位"));
       return;
     }
     setLoading(true);

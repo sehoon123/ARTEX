@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -131,7 +131,6 @@ function SectionTitle({
 // ── page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const t = useT();
   // data state
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [findings, setFindings] = React.useState<Finding[]>([]);
@@ -498,7 +497,7 @@ export default function DashboardPage() {
       {/* ── Header ── */}
       <div>
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">总览</h1>
+          <h1 className="text-lg font-semibold tracking-tight">{tr("总览")}</h1>
           <p className="text-xs text-muted-foreground">系统全局状态 · 实时刷新</p>
         </div>
       </div>
@@ -563,7 +562,7 @@ export default function DashboardPage() {
             {settings?.traffic_capture ? (
               <>
                 <LiveDot />
-                <span>{t("录制中")}</span>
+                <span>{tr("录制中")}</span>
               </>
             ) : (
               <span>捕获未开启</span>
@@ -599,8 +598,8 @@ export default function DashboardPage() {
             <div className="ml-1 flex gap-0.5 rounded-md border bg-muted/30 p-0.5">
               {(
                 [
-                  { v: "old", label: t("旧版") },
-                  { v: "new", label: t("新版") },
+                  { v: "old", label: tr("旧版") },
+                  { v: "new", label: tr("新版") },
                 ] as const
               ).map(({ v, label }) => (
                 <button
@@ -703,7 +702,7 @@ export default function DashboardPage() {
                     text: "text-blue-400",
                   },
                   {
-                    label: t("缓存命中"),
+                    label: tr("缓存命中"),
                     value: displayedTokens.cacheRead,
                     barColor: dailyTrendConfig.cacheRead.color!,
                     text: "text-emerald-400",
@@ -773,7 +772,7 @@ export default function DashboardPage() {
                     { days: 30, label: "30天" },
                     { days: 90, label: "3月" },
                     { days: 180, label: "6月" },
-                    { days: 365, label: t("一年") },
+                    { days: 365, label: tr("一年") },
                   ] as const
                 ).map(({ days, label }) => (
                   <button

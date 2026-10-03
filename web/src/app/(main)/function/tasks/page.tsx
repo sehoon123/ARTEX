@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -304,7 +304,6 @@ function compareTasks(left: Task, right: Task, field: TaskSortField, direction: 
 }
 
 export default function TasksPage() {
-  const t = useT();
   const [activeTab, setActiveTab] = React.useState("current");
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [categories, setCategories] = React.useState<TaskCategory[]>([]);
@@ -538,7 +537,7 @@ export default function TasksPage() {
         }
         load();
       } catch (e) {
-        toast.error(t("删除失败：") + (e as Error).message);
+        toast.error(tr("删除失败：") + (e as Error).message);
         throw e;
       }
     },
@@ -710,7 +709,7 @@ export default function TasksPage() {
     async (action: "pause" | "resume", ids: string[]) => {
       if (ids.length === 0 || batchControlling) return;
       if (ids.length > 100) {
-        toast.error("一次最多控制 100 个任务");
+        toast.error(tr("一次最多控制 100 个任务"));
         return;
       }
       setBatchControlling(action);
@@ -749,7 +748,7 @@ export default function TasksPage() {
       const ids = [...selectedIds];
       if (ids.length === 0 || movingCategory) return;
       if (ids.length > 100) {
-        toast.error("一次最多修改 100 个任务的分类");
+        toast.error(tr("一次最多修改 100 个任务的分类"));
         return;
       }
       setMovingCategory(true);
@@ -801,7 +800,7 @@ export default function TasksPage() {
                   <button
                     type="button"
                     onClick={() => setQuery("")}
-                    aria-label={t("清除搜索")}
+                    aria-label={tr("清除搜索")}
                     className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2"
                   >
                     <XIcon className="size-4" />
@@ -810,11 +809,11 @@ export default function TasksPage() {
               </div>
               <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as TaskStatus | "all")}>
                 <SelectTrigger className="w-36">
-                  <SelectValue placeholder="状态" />
+                  <SelectValue placeholder={tr("状态")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="all">全部状态</SelectItem>
+                    <SelectItem value="all">{tr("全部状态")}</SelectItem>
                     {STATUS_OPTIONS.map((s) => (
                       <SelectItem key={s.value} value={s.value}>
                         {s.label}
@@ -930,7 +929,7 @@ export default function TasksPage() {
                       <Checkbox
                         checked={headerChecked}
                         onCheckedChange={(checked) => toggleSelectedPage(checked === true)}
-                        aria-label="选择本页全部任务"
+                        aria-label={tr("选择本页全部任务")}
                       />
                     </TableHead>
                     <SortableTaskHead
@@ -941,24 +940,24 @@ export default function TasksPage() {
                       className="font-mono"
                       onSort={sortTasksBy}
                     />
-                    <TableHead>{t("名称")}</TableHead>
-                    <TableHead>{t("描述")}</TableHead>
-                    <TableHead>{t("目标")}</TableHead>
+                    <TableHead>{tr("名称")}</TableHead>
+                    <TableHead>{tr("描述")}</TableHead>
+                    <TableHead>{tr("目标")}</TableHead>
                     <SortableTaskHead
                       field="status"
-                      label="状态"
+                      label={tr("状态")}
                       activeField={sortField}
                       direction={sortDirection}
                       onSort={sortTasksBy}
                     />
-                    <TableHead className="text-center">{t("目标进度")}</TableHead>
+                    <TableHead className="text-center">{tr("目标进度")}</TableHead>
                     <TableHead className="text-center" title="严重 / 高 / 中 / 低">
                       漏洞 <span className="text-muted-foreground font-normal">严/高/中/低</span>
                     </TableHead>
                     <TableHead className="text-center">运行中 Worker</TableHead>
                     <SortableTaskHead
                       field="created"
-                      label={t("创建时间")}
+                      label={tr("创建时间")}
                       activeField={sortField}
                       direction={sortDirection}
                       align="right"
@@ -966,7 +965,7 @@ export default function TasksPage() {
                     />
                     <SortableTaskHead
                       field="duration"
-                      label={t("运行时长")}
+                      label={tr("运行时长")}
                       activeField={sortField}
                       direction={sortDirection}
                       align="right"
@@ -1069,7 +1068,6 @@ function SortableTaskHead({
 }
 
 function ConcurrencySettingsDialog() {
-  const t = useT();
   const [open, setOpen] = React.useState(false);
   const [enabled, setEnabled] = React.useState(false);
   const [limit, setLimit] = React.useState("5");
@@ -1180,7 +1178,6 @@ const TaskRow = React.memo(function TaskRow({
   selected: boolean;
   onSelectedChange: (id: string, checked: boolean) => void;
 }) {
-  const t = useT();
   return (
     <TableRow className="group border-border/60" data-state={selected ? "selected" : undefined}>
       <TableCell>
@@ -1286,7 +1283,7 @@ const TaskRow = React.memo(function TaskRow({
       </TableCell>
       <TableCell className="sticky right-0 z-10 bg-card text-right shadow-[-1px_0_0_0_hsl(var(--border))] group-hover:bg-muted/50">
         <div className="flex items-center justify-end gap-0.5">
-          <Button size="icon" variant="ghost" asChild aria-label="查看任务详情" title="查看任务详情">
+          <Button size="icon" variant="ghost" asChild aria-label={tr("查看任务详情")} title={tr("查看任务详情")}>
             <Link href={`/function/tasks/detail?id=${encodeURIComponent(task.id)}`}>
               <EyeIcon />
             </Link>
@@ -1783,7 +1780,7 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
       if (archive.state === "archive_failed") await api.archiveTask(String(archive.task_id));
       if (archive.state === "restore_failed") await api.restoreTaskArchive(archive.id);
       if (archive.state === "delete_failed") await api.deleteTaskArchive(archive.id);
-      toast.success("已重新加入处理队列");
+      toast.success(tr("已重新加入处理队列"));
       afterAction();
     } catch (error) {
       toast.error(`重试失败：${(error as Error).message}`);
@@ -1818,15 +1815,15 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="all">全部状态</SelectItem>
-                <SelectItem value="archive_queued">等待归档</SelectItem>
-                <SelectItem value="archiving">归档中</SelectItem>
-                <SelectItem value="ready">可还原</SelectItem>
-                <SelectItem value="restore_queued">等待还原</SelectItem>
+                <SelectItem value="all">{tr("全部状态")}</SelectItem>
+                <SelectItem value="archive_queued">{tr("等待归档")}</SelectItem>
+                <SelectItem value="archiving">{tr("归档中")}</SelectItem>
+                <SelectItem value="ready">{tr("可还原")}</SelectItem>
+                <SelectItem value="restore_queued">{tr("等待还原")}</SelectItem>
                 <SelectItem value="restoring">{"还原中"}</SelectItem>
-                <SelectItem value="delete_queued">等待删除</SelectItem>
+                <SelectItem value="delete_queued">{tr("等待删除")}</SelectItem>
                 <SelectItem value="deleting">{"删除中"}</SelectItem>
-                <SelectItem value="archive_failed">归档失败</SelectItem>
+                <SelectItem value="archive_failed">{tr("归档失败")}</SelectItem>
                 <SelectItem value="restore_failed">{"还原失败"}</SelectItem>
                 <SelectItem value="delete_failed">{"删除失败"}</SelectItem>
               </SelectGroup>
@@ -1878,17 +1875,17 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                     onCheckedChange={(checked) =>
                       setSelected(checked === true ? new Set(selectable.map((archive) => archive.id)) : new Set())
                     }
-                    aria-label="选择当前页归档"
+                    aria-label={tr("选择当前页归档")}
                   />
                 </TableHead>
-                <TableHead>{t("任务")}</TableHead>
+                <TableHead>{tr("任务")}</TableHead>
                 <TableHead>原状态</TableHead>
-                <TableHead>{t("分类")}</TableHead>
+                <TableHead>{tr("分类")}</TableHead>
                 <TableHead>归档时间</TableHead>
                 <TableHead>压缩大小</TableHead>
                 <TableHead>数据量</TableHead>
-                <TableHead className="min-w-44">{t("处理状态")}</TableHead>
-                <TableHead className="text-right">{t("操作")}</TableHead>
+                <TableHead className="min-w-44">{tr("处理状态")}</TableHead>
+                <TableHead className="text-right">{tr("操作")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -1964,8 +1961,8 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                             size="icon"
                             variant="ghost"
                             onClick={() => void retry(archive)}
-                            aria-label={t("重试归档操作")}
-                            title={t("重试")}
+                            aria-label={tr("重试归档操作")}
+                            title={tr("重试")}
                           >
                             <Undo2Icon />
                           </Button>
@@ -1975,8 +1972,8 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                             size="icon"
                             variant="ghost"
                             onClick={() => void restoreMany([archive])}
-                            aria-label={t("还原任务")}
-                            title={t("还原任务")}
+                            aria-label={tr("还原任务")}
+                            title={tr("还原任务")}
                           >
                             <Undo2Icon />
                           </Button>
@@ -1986,7 +1983,7 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                             archives={[archive]}
                             onConfirm={() => deleteMany([archive])}
                             trigger={
-                              <Button size="icon" variant="ghost" aria-label="永久删除归档" title="永久删除">
+                              <Button size="icon" variant="ghost" aria-label={tr("永久删除归档")} title={tr("永久删除")}>
                                 <Trash2Icon />
                               </Button>
                             }
@@ -2682,7 +2679,6 @@ function CategoryDropTarget({
 }
 
 function DraggableCategoryTask({ task, disabled, moving }: { task: Task; disabled: boolean; moving: boolean }) {
-  const t = useT();
   const { attributes, isDragging, listeners, setNodeRef } = useDraggable({
     id: `task:${task.id}`,
     disabled,
@@ -2703,7 +2699,7 @@ function DraggableCategoryTask({ task, disabled, moving }: { task: Task; disable
             {...listeners}
             {...attributes}
             aria-label={`拖动任务 #${task.id}`}
-            title={t("拖动任务")}
+            title={tr("拖动任务")}
           >
             <GripVerticalIcon />
           </Button>
@@ -2824,11 +2820,11 @@ function CategoryManagementSheet({
         const created = await api.createTaskCategory(name);
         setSelectedView(created.id);
         setDraftName(created.name);
-        toast.success(t("分类已创建"));
+        toast.success(tr("分类已创建"));
       } else {
         const updated = await api.renameTaskCategory(selectedView, name);
         setDraftName(updated.name);
-        toast.success(t("分类已更新"));
+        toast.success(tr("分类已更新"));
       }
       onChanged();
     } catch (error) {
@@ -2847,7 +2843,7 @@ function CategoryManagementSheet({
       const next = categories.find((category) => category.id !== deletedID);
       if (next) selectCategory(next);
       else selectUncategorized();
-      toast.success("分类已删除，关联任务已移入未分类");
+      toast.success(tr("分类已删除，关联任务已移入未分类"));
       setDeleteOpen(false);
       onChanged();
     } catch (error) {
@@ -2862,7 +2858,7 @@ function CategoryManagementSheet({
     const category =
       destination === "uncategorized" ? null : (categories.find((item) => item.id === Number(destination)) ?? null);
     if (destination !== "uncategorized" && !category) {
-      toast.error("目标分类不存在，请刷新后重试");
+      toast.error(tr("目标分类不存在，请刷新后重试"));
       return;
     }
     if (task.category_id === category?.id || (task.category_id == null && category == null)) return;
@@ -2957,7 +2953,7 @@ function CategoryManagementSheet({
                         id="task-category-name"
                         value={draftName}
                         onChange={(event) => setDraftName(event.target.value)}
-                        placeholder="例如：外网评估"
+                        placeholder={tr("例如：外网评估")}
                         maxLength={80}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") void saveCategory();
@@ -3127,7 +3123,7 @@ function CreateTaskSheet({
       setDescription((prev) => appendUploads(prev, r.attachments));
       setUploadCount((n) => n + r.attachments.length);
     } catch (e) {
-      toast.error(t("上传失败：") + (e as Error).message);
+      toast.error(tr("上传失败：") + (e as Error).message);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-picking the same file
@@ -3136,7 +3132,7 @@ function CreateTaskSheet({
 
   async function createTask() {
     if (!description.trim() || !goal.trim()) {
-      toast.error(t("请填写描述与目标"));
+      toast.error(tr("请填写描述与目标"));
       return;
     }
     if (sourceTaskIDs.length > MAX_SOURCE_TASKS) {
@@ -3163,7 +3159,7 @@ function CreateTaskSheet({
           .map((r) => ({ ...r, pattern: r.pattern.trim() }))
           .filter((r) => r.pattern !== ""),
       });
-      toast.success(t("任务已创建"));
+      toast.success(tr("任务已创建"));
       setName("");
       setCategoryID(undefined);
       setDescription("");
@@ -3182,7 +3178,7 @@ function CreateTaskSheet({
       setOpen(false);
       onCreated();
     } catch (e) {
-      toast.error(t("创建失败：") + (e as Error).message);
+      toast.error(tr("创建失败：") + (e as Error).message);
     } finally {
       setCreating(false);
     }
@@ -3229,7 +3225,7 @@ function CreateTaskSheet({
               <Label htmlFor="name">名称（可选）</Label>
               <Input
                 id="name"
-                placeholder="给任务起个便于识别的名字，例如：Acme 官网渗透"
+                placeholder={tr("给任务起个便于识别的名字，例如：Acme 官网渗透")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -3250,7 +3246,7 @@ function CreateTaskSheet({
               <Textarea
                 id="description"
                 className="min-h-32"
-                placeholder="测试对象与背景，例如：测试 example.com 这个站点"
+                placeholder={tr("测试对象与背景，例如：测试 example.com 这个站点")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -3285,7 +3281,7 @@ function CreateTaskSheet({
               <Textarea
                 id="goal"
                 className="min-h-32"
-                placeholder="要达成什么，例如：拿下后台管理权限、获取服务器权限"
+                placeholder={tr("要达成什么，例如：拿下后台管理权限、获取服务器权限")}
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
               />
@@ -3350,7 +3346,7 @@ function CreateTaskSheet({
                     type="number"
                     min={0}
                     className="w-40"
-                    placeholder="留空 = 不限时"
+                    placeholder={tr("留空 = 不限时")}
                     value={timeoutMin}
                     onChange={(e) => setTimeoutMin(e.target.value)}
                   />
@@ -3365,7 +3361,7 @@ function CreateTaskSheet({
                     type="number"
                     min={10}
                     className="w-40"
-                    placeholder="默认 10"
+                    placeholder={tr("默认 10")}
                     value={heartbeatMin}
                     onChange={(e) => setHeartbeatMin(e.target.value)}
                   />

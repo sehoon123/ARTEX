@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import {
@@ -392,8 +392,8 @@ function ToolBlock({
     if (!open || loadedKey.current === detailKey) return;
     let live = true;
     const segs: { label: string; seq: number }[] = [];
-    if (use) segs.push({ label: t("命令"), seq: use.seq });
-    if (result) segs.push({ label: t("输出") + (result.is_error ? " ✕" : " ✓"), seq: result.seq });
+    if (use) segs.push({ label: tr("命令"), seq: use.seq });
+    if (result) segs.push({ label: tr("输出") + (result.is_error ? " ✕" : " ✓"), seq: result.seq });
     void Promise.all(
       segs.map((x) =>
         getDetail(x.seq)

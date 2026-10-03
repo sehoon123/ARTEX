@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -132,7 +132,6 @@ export function FindingsTable({
   onDelete,
   selectAllLabel = "选择当前页全部",
 }: FindingsTableProps) {
-  const t = useT();
   const selectableIds = items.map((finding) => finding.finding_id).filter((id): id is string => Boolean(id));
   const selectedCount = selectableIds.filter((id) => selectedIds.has(id)).length;
   let headerChecked: boolean | "indeterminate" = false;
@@ -158,9 +157,9 @@ export function FindingsTable({
           <TableHead className="w-20">严重度</TableHead>
           <TableHead>漏洞名称</TableHead>
           <TableHead className="w-44">{"资产"}</TableHead>
-          <TableHead className="w-28">状态</TableHead>
-          <TableHead className="w-32">所属任务</TableHead>
-          <TableHead className="w-24">时间</TableHead>
+          <TableHead className="w-28">{tr("状态")}</TableHead>
+          <TableHead className="w-32">{tr("所属任务")}</TableHead>
+          <TableHead className="w-24">{tr("时间")}</TableHead>
           <TableHead className="w-48">{"操作"}</TableHead>
         </TableRow>
       </TableHeader>
@@ -188,7 +187,7 @@ export function FindingsTable({
                     <Checkbox
                       checked={selectedIds.has(f.finding_id)}
                       onCheckedChange={(c) => onToggleSelected(f.finding_id as string, c === true)}
-                      aria-label={t("选择该漏洞")}
+                      aria-label={tr("选择该漏洞")}
                     />
                   )}
                 </TableCell>
@@ -207,7 +206,7 @@ export function FindingsTable({
                         href={`/function/findings/detail?id=${f.finding_id}`}
                         onClick={(e) => e.stopPropagation()}
                         className="truncate font-medium hover:text-primary hover:underline"
-                        title={t("查看发现详情")}
+                        title={tr("查看发现详情")}
                       >
                         {f.name || f.vulnclass || "未分类"}
                       </Link>
@@ -276,14 +275,14 @@ export function FindingsTable({
                   <div className="flex items-center gap-1">
                     {retest ? (
                       <Button asChild size="sm" variant="ghost">
-                        <Link href={`/chat?c=${retest.conversation_id}`} title={t("查看正在进行的复测会话")}>
+                        <Link href={`/chat?c=${retest.conversation_id}`} title={tr("查看正在进行的复测会话")}>
                           <Spinner data-icon="inline-start" />
                           复测中
                         </Link>
                       </Button>
                     ) : null}
                     {!retest && f.finding_id && !f.inherited ? (
-                      <Button size="sm" variant="ghost" onClick={() => onRetest(f)} title="在独立会话中复测该漏洞">
+                      <Button size="sm" variant="ghost" onClick={() => onRetest(f)} title={tr("在独立会话中复测该漏洞")}>
                         <RotateCcwIcon data-icon="inline-start" />
                         复测
                       </Button>
@@ -301,7 +300,7 @@ export function FindingsTable({
                             size="icon"
                             variant="ghost"
                             className="size-7 text-muted-foreground hover:text-destructive"
-                            aria-label={t("删除漏洞")}
+                            aria-label={tr("删除漏洞")}
                           >
                             <Trash2Icon className="size-4" />
                           </Button>
@@ -318,8 +317,8 @@ export function FindingsTable({
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>{t("取消")}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => onDelete(f)}>{t("删除")}</AlertDialogAction>
+                            <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => onDelete(f)}>{tr("删除")}</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -341,7 +340,7 @@ export function FindingsTable({
                             <Input
                               value={edit.name}
                               onChange={(e) => onEditChange((s) => (s ? { ...s, name: e.target.value } : s))}
-                              placeholder="可读标题，留空回退类别"
+                              placeholder={tr("可读标题，留空回退类别")}
                             />
                           </div>
                           <div className="flex min-w-[10rem] flex-col gap-1">
@@ -349,11 +348,11 @@ export function FindingsTable({
                             <Input
                               value={edit.vulnclass}
                               onChange={(e) => onEditChange((s) => (s ? { ...s, vulnclass: e.target.value } : s))}
-                              placeholder="如 SQL Injection"
+                              placeholder={tr("如 SQL Injection")}
                             />
                           </div>
                           <div className="flex flex-col gap-1">
-                            <Label className="text-xs text-muted-foreground">{t("严重等级")}</Label>
+                            <Label className="text-xs text-muted-foreground">{tr("严重等级")}</Label>
                             <Select
                               value={edit.severity}
                               onValueChange={(v) => onEditChange((s) => (s ? { ...s, severity: v as Severity } : s))}
@@ -411,7 +410,7 @@ export function FindingsTable({
                             {reports[rowKey]?.status === "done" && reports[rowKey]?.text.trim() && (
                               <CopyButton
                                 text={reports[rowKey]?.text}
-                                successMessage={t("已复制详细报告")}
+                                successMessage={tr("已复制详细报告")}
                                 variant="ghost"
                                 className="h-6 px-2 text-xs"
                               />
@@ -420,7 +419,7 @@ export function FindingsTable({
                           {(() => {
                             const rep = reports[rowKey];
                             if (!rep || rep.status === "loading")
-                              return <p className="text-xs text-muted-foreground">{t("加载中…")}</p>;
+                              return <p className="text-xs text-muted-foreground">{tr("加载中…")}</p>;
                             if (rep.status === "error")
                               return <p className="text-xs text-muted-foreground">报告加载失败。</p>;
                             if (!rep.text.trim())

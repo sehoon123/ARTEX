@@ -40,7 +40,7 @@ export const CHANNEL_FIELDS: Record<string, FieldDef[]> = {
     },
     {
       key: "secret",
-      label: t("加签密钥"),
+      label: "加签密钥",
       kind: "password",
       help: "机器人安全设置选「加签」时填写；选「自定义关键词」或未开启安全设置则留空",
     },
@@ -66,7 +66,7 @@ export const CHANNEL_FIELDS: Record<string, FieldDef[]> = {
     { key: "url", label: "目标 URL", kind: "text", placeholder: "https://your-endpoint.example.com/hook" },
     {
       key: "method",
-      label: t("请求方法"),
+      label: "请求方法",
       kind: "select",
       options: [
         { value: "POST", label: "POST（带请求体）" },
@@ -78,7 +78,7 @@ export const CHANNEL_FIELDS: Record<string, FieldDef[]> = {
     { key: "headers", label: "自定义请求头", kind: "kv", help: "每行 KEY=VALUE，例如 Authorization=Bearer xxx" },
     {
       key: "body_template",
-      label: t("请求体模板"),
+      label: "请求体模板",
       kind: "textarea",
       help:
         "留空用内置默认模板。变量：{{.Title}} {{.Batch}} {{.Count}} {{.HomeURL}} {{.SentAt}}，" +
@@ -101,7 +101,7 @@ export const CHANNEL_FIELDS: Record<string, FieldDef[]> = {
     { key: "host", label: "SMTP 服务器", kind: "text", placeholder: "smtp.example.com" },
     {
       key: "port",
-      label: t("端口"),
+      label: "端口",
       kind: "number",
       placeholder: "587",
       help: "587 走 STARTTLS；465 请把「隐式 TLS」打开",

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -119,7 +119,7 @@ function Row({
                 : `/function/findings/detail?id=${f.finding_id}`
             }
             className="text-muted-foreground hover:text-primary inline-flex shrink-0 items-center gap-0.5 text-xs"
-            title={t("查看漏洞详情")}
+            title={tr("查看漏洞详情")}
           >
             详情
             <ArrowUpRightIcon className="size-3" />
@@ -139,7 +139,6 @@ function Row({
 }
 
 export function FindingsTab({ taskId }: { taskId: string }) {
-  const t = useT();
   const [findings, setFindings] = React.useState<Finding[]>([]);
   const [sortPreference, setSortPreference] = useStoredSortPreference(
     FINDING_SORT_PREFERENCE_KEY,
@@ -177,7 +176,7 @@ export function FindingsTab({ taskId }: { taskId: string }) {
       toast.success(`已标记为「${statusMeta("finding", next).label}」`);
     } catch (e) {
       setFindings((cur) => cur.map((x) => (x.id === f.id ? { ...x, status: prev } : x)));
-      toast.error(t("更新失败：") + (e as Error).message);
+      toast.error(tr("更新失败：") + (e as Error).message);
     }
   }, []);
 
@@ -205,7 +204,7 @@ export function FindingsTab({ taskId }: { taskId: string }) {
               }))
             }
           >
-            <span>发现时间</span>
+            <span>{tr("发现时间")}</span>
             {sortPreference.direction === "asc" ? (
               <ArrowUpIcon className="size-3.5" />
             ) : (

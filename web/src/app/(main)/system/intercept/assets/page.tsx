@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -91,7 +91,6 @@ function frontValidate(form: RuleForm): string | null {
 // ---- page ----
 
 export default function AssetInterceptPage() {
-  const t = useT();
   const [rules, setRules] = React.useState<AssetInterceptRule[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
@@ -103,7 +102,7 @@ export default function AssetInterceptPage() {
     try {
       setRules(await api.assetInterceptRules());
     } catch {
-      toast.error("加载资产拦截规则失败");
+      toast.error(tr("加载资产拦截规则失败"));
     } finally {
       setLoading(false);
     }
@@ -140,10 +139,10 @@ export default function AssetInterceptPage() {
     try {
       if (editing) {
         await api.updateAssetInterceptRule(editing.id, payload);
-        toast.success(t("规则已更新"));
+        toast.success(tr("规则已更新"));
       } else {
         await api.createAssetInterceptRule(payload);
-        toast.success(t("规则已创建"));
+        toast.success(tr("规则已创建"));
       }
       setOpen(false);
       load();
@@ -158,7 +157,7 @@ export default function AssetInterceptPage() {
     if (!window.confirm(`确定删除资产拦截规则「${rule.pattern}」？`)) return;
     try {
       await api.deleteAssetInterceptRule(rule.id);
-      toast.success(t("规则已删除"));
+      toast.success(tr("规则已删除"));
       load();
     } catch (e) {
       toast.error((e as Error).message);
@@ -203,7 +202,7 @@ export default function AssetInterceptPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <p className="p-6 text-sm text-muted-foreground">{t("加载中…")}</p>
+            <p className="p-6 text-sm text-muted-foreground">{tr("加载中…")}</p>
           ) : rules.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
               <BanIcon className="h-8 w-8 text-muted-foreground/40" />
@@ -217,10 +216,10 @@ export default function AssetInterceptPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[130px]">{t("类型")}</TableHead>
-                  <TableHead>{t("匹配内容")}</TableHead>
+                  <TableHead className="w-[130px]">{tr("类型")}</TableHead>
+                  <TableHead>{tr("匹配内容")}</TableHead>
                   <TableHead>备注</TableHead>
-                  <TableHead className="w-[64px] text-center">{t("启用")}</TableHead>
+                  <TableHead className="w-[64px] text-center">{tr("启用")}</TableHead>
                   <TableHead className="w-[80px]" />
                 </TableRow>
               </TableHeader>
@@ -321,7 +320,7 @@ export default function AssetInterceptPage() {
 
             <Field label={"备注（可选）"}>
               <Textarea
-                placeholder="说明这条规则的用途"
+                placeholder={tr("说明这条规则的用途")}
                 value={form.note}
                 onChange={(e) => set({ note: e.target.value })}
                 rows={2}

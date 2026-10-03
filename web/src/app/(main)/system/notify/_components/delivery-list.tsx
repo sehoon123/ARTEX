@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -17,7 +17,6 @@ import type { NotificationChannel, NotificationDelivery } from "@/lib/types";
 
 // DeliveryList 是投递记录表：可按渠道与状态筛选，失败项可手动重发。
 export function DeliveryList({ channels }: { channels: NotificationChannel[] }) {
-  const t = useT();
   const [rows, setRows] = React.useState<NotificationDelivery[]>([]);
   const [total, setTotal] = React.useState(0);
   const [page, setPage] = React.useState(1);
@@ -34,7 +33,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
         setRows(r.deliveries);
         setTotal(r.total);
       })
-      .catch((e) => toast.error("读取投递记录失败：" + (e as Error).message))
+      .catch((e) => toast.error(tr("读取投递记录失败：") + (e as Error).message))
       .finally(() => setLoading(false));
   }, [channelID, state, page]);
   React.useEffect(() => {
@@ -44,10 +43,10 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
   async function retry(id: number) {
     try {
       await api.notifyRetryDelivery(id);
-      toast.success("已重新入队");
+      toast.success(tr("已重新入队"));
       load();
     } catch (e) {
-      toast.error(t("重发失败：") + (e as Error).message);
+      toast.error(tr("重发失败：") + (e as Error).message);
     }
   }
 
@@ -83,10 +82,10 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
           }}
         >
           <SelectTrigger size="sm" className="w-32">
-            <SelectValue placeholder="全部状态" />
+            <SelectValue placeholder={tr("全部状态")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">全部状态</SelectItem>
+            <SelectItem value="all">{tr("全部状态")}</SelectItem>
             {["pending", "sending", "sent", "failed", "skipped"].map((s) => (
               <SelectItem key={s} value={s}>
                 {statusMeta("delivery", s).label}
@@ -104,10 +103,10 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-40">时间</TableHead>
+              <TableHead className="w-40">{tr("时间")}</TableHead>
               <TableHead>{"漏洞"}</TableHead>
               <TableHead className="w-40">{"渠道"}</TableHead>
-              <TableHead className="w-24">状态</TableHead>
+              <TableHead className="w-24">{tr("状态")}</TableHead>
               <TableHead className="w-16">尝试</TableHead>
               <TableHead>错误</TableHead>
               <TableHead className="w-20" />

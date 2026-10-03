@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -244,7 +244,7 @@ function AssetCard({
                 size="icon-sm"
                 disabled={page <= 0}
                 onClick={() => onPage(Math.max(0, page - 1))}
-                aria-label={t("上一页")}
+                aria-label={tr("上一页")}
               >
                 <ChevronLeftIcon />
               </Button>
@@ -256,7 +256,7 @@ function AssetCard({
                 size="icon-sm"
                 disabled={page + 1 >= pageCount}
                 onClick={() => onPage(Math.min(pageCount - 1, page + 1))}
-                aria-label={t("下一页")}
+                aria-label={tr("下一页")}
               >
                 <ChevronRightIcon />
               </Button>
@@ -319,7 +319,7 @@ function AddTaskAssetsSheet({
             value={scopeText}
             onValueChange={setScopeText}
             parsed={parsedScope}
-            label="测试资产与范围"
+            label={tr("测试资产与范围")}
             description={"每行一条，自动识别域名、IP、CIDR、ICP 备案和关键词。"}
           />
         </div>
@@ -341,7 +341,6 @@ function AddTaskAssetsSheet({
 }
 
 export function AssetsTab({ taskId }: { taskId: string }) {
-  const t = useT();
   const [rows, setRows] = React.useState<Asset[]>([]);
   const [total, setTotal] = React.useState(0);
   const [counts, setCounts] = React.useState<Record<string, number>>({});
@@ -456,7 +455,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
       size="icon-sm"
       onClick={() => setRemoveTarget(asset)}
       aria-label={`将资产 ${assetLabel(asset)} 移出任务`}
-      title="移出任务"
+      title={tr("移出任务")}
     >
       <Trash2Icon />
     </Button>
@@ -479,7 +478,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="font-medium text-sm">测试资产</h2>
+          <h2 className="font-medium text-sm">{tr("测试资产")}</h2>
           <p className="text-muted-foreground text-xs">当前任务共关联 {totalAll} 项资产</p>
         </div>
         <Button size="sm" onClick={() => setAddOpen(true)}>

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -181,7 +181,7 @@ function ToolEditor({
       onSaved();
       onClose();
     } catch (e) {
-      toast.error(t("保存失败：") + (e as Error).message);
+      toast.error(tr("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -193,7 +193,7 @@ function ToolEditor({
       onSaved();
       onClose();
     } catch (e) {
-      toast.error(t("恢复失败：") + (e as Error).message);
+      toast.error(tr("恢复失败：") + (e as Error).message);
     }
   }
 
@@ -274,7 +274,7 @@ function ToolEditor({
               </div>
               <div className="grid gap-2">
                 <div className="grid gap-1">
-                  <Label className="text-muted-foreground text-[11px]">{t("描述")}</Label>
+                  <Label className="text-muted-foreground text-[11px]">{tr("描述")}</Label>
                   <Input
                     className="text-xs"
                     value={r.description}
@@ -365,7 +365,6 @@ function ToolGridCard({ tool, onClick }: { tool: Tool; onClick: () => void }) {
 }
 
 export default function ToolsPage() {
-  const t = useT();
   const [tools, setTools] = React.useState<Tool[]>([]);
   const [agents, setAgents] = React.useState<Agent[]>([]);
   const [captureOn, setCaptureOn] = React.useState(false);
@@ -616,7 +615,7 @@ function CustomToolDialog({
     }
     let schema: Record<string, unknown> = {};
     if (schemaText.trim()) {
-      try { schema = JSON.parse(schemaText); } catch { toast.error("参数 JSON Schema 格式错误"); return; }
+      try { schema = JSON.parse(schemaText); } catch { toast.error(tr("参数 JSON Schema 格式错误")); return; }
     }
     if (kind === "http" && ex.headers.trim()) {
       try { JSON.parse(ex.headers); } catch { toast.error("headers JSON 格式错误"); return; }
@@ -636,7 +635,7 @@ function CustomToolDialog({
       toast.success(isNew ? "已创建自定义工具" : "已保存");
       onSaved();
     } catch (e) {
-      toast.error(t("保存失败：") + (e as Error).message);
+      toast.error(tr("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -645,10 +644,10 @@ function CustomToolDialog({
     if (!tool) return;
     try {
       await api.deleteCustomTool(tool.key);
-      toast.success(t("已删除"));
+      toast.success(tr("已删除"));
       onSaved();
     } catch (e) {
-      toast.error(t("删除失败：") + (e as Error).message);
+      toast.error(tr("删除失败：") + (e as Error).message);
     }
   }
   // runTest dry-runs the CURRENT form (unsaved) with the sample params, so a
@@ -656,7 +655,7 @@ function CustomToolDialog({
   async function runTest() {
     let params: Record<string, unknown> = {};
     if (paramsText.trim()) {
-      try { params = JSON.parse(paramsText); } catch { toast.error("测试参数 JSON 格式错误"); return; }
+      try { params = JSON.parse(paramsText); } catch { toast.error(tr("测试参数 JSON 格式错误")); return; }
     }
     if (kind === "http" && ex.headers.trim()) {
       try { JSON.parse(ex.headers); } catch { toast.error("headers JSON 格式错误"); return; }
@@ -687,7 +686,7 @@ function CustomToolDialog({
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-4">
           <div className="grid gap-1.5">
             <Label className="text-xs">Key</Label>
-            <Input className="font-mono" placeholder="如 nmap_scan" value={key} disabled={!isNew}
+            <Input className="font-mono" placeholder={tr("如 nmap_scan")} value={key} disabled={!isNew}
               onChange={(e) => setKey(e.target.value)} />
           </div>
           <div className="grid gap-1.5">

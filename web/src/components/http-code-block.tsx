@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 import * as React from "react";
 
 import { CheckIcon, CopyIcon, WrapTextIcon } from "lucide-react";
@@ -132,7 +133,7 @@ export function HttpCodeBlock({ raw }: { raw: string }) {
       setCopied(true);
       return;
     }
-    toast.error("复制失败，请使用 Ctrl/Cmd+A 后复制");
+    toast.error(tr("复制失败，请使用 Ctrl/Cmd+A 后复制"));
   };
 
   const renderLine = (line: string, index: number) => {

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -38,7 +38,6 @@ import { formatBacklog, StatTile } from "./_components/stat-tile";
 // _components/channel-form.tsx，投递记录在 _components/delivery-list.tsx——
 // 拆开是因为它们各自能被单独读懂，而挤在一个文件里时这个页面接近 1100 行。
 export default function NotifyPage() {
-  const t = useT();
   const [meta, setMeta] = React.useState<NotificationMeta | null>(null);
   const [channels, setChannels] = React.useState<NotificationChannel[]>([]);
   const [tab, setTab] = React.useState<"channels" | "deliveries">("channels");
@@ -61,13 +60,13 @@ export default function NotifyPage() {
         setBaseURL(m.public_base_url);
         setDigestMin(m.digest_interval_min);
       })
-      .catch((e) => toast.error("读取推送配置失败：" + (e as Error).message));
+      .catch((e) => toast.error(tr("读取推送配置失败：") + (e as Error).message));
     // 渠道列表加载失败要报出来：静默失败会显示成「一个渠道都没有」，
     // 用户会以为配置丢了，比直接报错更让人慌。
     api
       .notifyChannels()
       .then(setChannels)
-      .catch((e) => toast.error("读取渠道列表失败：" + (e as Error).message));
+      .catch((e) => toast.error(tr("读取渠道列表失败：") + (e as Error).message));
   }, []);
   React.useEffect(() => {
     load();
@@ -167,7 +166,7 @@ export default function NotifyPage() {
 
   async function saveForm() {
     if (!form.name.trim()) {
-      toast.error(t("请填写渠道名称"));
+      toast.error(tr("请填写渠道名称"));
       return;
     }
     setSaving(true);
@@ -183,16 +182,16 @@ export default function NotifyPage() {
       };
       if (editing) {
         await api.notifyUpdateChannel(editing.id, payload);
-        toast.success(t("已保存"));
+        toast.success(tr("已保存"));
         setOpen(false);
       } else {
         await api.notifyCreateChannel(payload);
-        toast.success(t("已添加渠道"));
+        toast.success(tr("已添加渠道"));
         setOpen(false);
       }
       load();
     } catch (e) {
-      toast.error(t("保存失败：") + (e as Error).message);
+      toast.error(tr("保存失败：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -206,7 +205,7 @@ export default function NotifyPage() {
       toast.success(`已发出测试消息（${r.latency_ms} ms），请到群里确认`);
     } catch (e) {
       // 后端把渠道返回的原始错误如实回传，这是排查配置的唯一线索，原样展示。
-      toast.error("测试失败：" + (e as Error).message, { duration: 12000 });
+      toast.error(tr("测试失败：") + (e as Error).message, { duration: 12000 });
     } finally {
       setTesting(false);
     }
@@ -219,7 +218,7 @@ export default function NotifyPage() {
       setOpen(false);
       load();
     } catch (e) {
-      toast.error(t("删除失败：") + (e as Error).message);
+      toast.error(tr("删除失败：") + (e as Error).message);
     }
   }
 
@@ -228,7 +227,7 @@ export default function NotifyPage() {
       await api.notifyUpdateChannel(ch.id, { enabled: !ch.enabled });
       load();
     } catch (e) {
-      toast.error(t("操作失败：") + (e as Error).message);
+      toast.error(tr("操作失败：") + (e as Error).message);
     }
   }
 
@@ -239,7 +238,7 @@ export default function NotifyPage() {
       setMeta((m) => (m ? { ...m, enabled: on } : m));
       toast.success(on ? "推送已开启" : "推送已暂停");
     } catch (e) {
-      toast.error(t("操作失败：") + (e as Error).message);
+      toast.error(tr("操作失败：") + (e as Error).message);
     } finally {
       setGlobalSaving(false);
     }
@@ -252,10 +251,10 @@ export default function NotifyPage() {
       const n = Number(digestMin);
       if (Number.isFinite(n) && n > 0) patch.notify_digest_interval_min = n;
       await api.setSettings(patch);
-      toast.success(t("已保存"));
+      toast.success(tr("已保存"));
       load();
     } catch (e) {
-      toast.error(t("保存失败：") + (e as Error).message);
+      toast.error(tr("保存失败：") + (e as Error).message);
     } finally {
       setGlobalSaving(false);
     }
@@ -283,7 +282,7 @@ export default function NotifyPage() {
               checked={meta.enabled}
               disabled={globalSaving}
               onCheckedChange={toggleGlobal}
-              aria-label={t("推送总开关")}
+              aria-label={tr("推送总开关")}
             />
           </div>
         )}
@@ -291,12 +290,12 @@ export default function NotifyPage() {
 
       {meta && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <StatTile label={t("渠道")} value={`${meta.stats.channels_on} / ${meta.stats.channels}`} hint="启用 / 总数" />
-          <StatTile label={t("今日送达")} value={String(meta.stats.sent_today)} />
-          <StatTile label={t("待发送")} value={String(meta.stats.pending)} />
-          <StatTile label={t("失败")} value={String(meta.stats.failed)} tone={meta.stats.failed > 0 ? "red" : undefined} />
+          <StatTile label={tr("渠道")} value={`${meta.stats.channels_on} / ${meta.stats.channels}`} hint={tr("启用 / 总数")} />
+          <StatTile label={tr("今日送达")} value={String(meta.stats.sent_today)} />
+          <StatTile label={tr("待发送")} value={String(meta.stats.pending)} />
+          <StatTile label={tr("失败")} value={String(meta.stats.failed)} tone={meta.stats.failed > 0 ? "red" : undefined} />
           <StatTile
-            label={t("最久积压")}
+            label={tr("最久积压")}
             value={formatBacklog(meta.stats.backlog_age_ms)}
             // 积压年龄比积压条数有用得多：积压 3 条可以是从 3 秒到 3 小时。
             hint={meta.stats.backlog_age_ms > 5 * 60_000 ? "推送可能卡住了" : undefined}
@@ -377,12 +376,12 @@ export default function NotifyPage() {
                         checked={ch.enabled}
                         onCheckedChange={() => toggleEnabled(ch)}
                         onClick={(e) => e.stopPropagation()}
-                        aria-label={t("启用")}
+                        aria-label={tr("启用")}
                       />
                       <Button
                         size="icon"
                         variant="outline"
-                        aria-label={t("删除")}
+                        aria-label={tr("删除")}
                         onClick={(e) => {
                           e.stopPropagation();
                           // void 显式丢弃 Promise：removeChannel 自己 catch 并 toast，
@@ -399,7 +398,7 @@ export default function NotifyPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline">{KIND_LABEL[ch.kind] ?? ch.kind}</Badge>
                     <Badge variant="outline">{ch.mode === "digest" ? "汇总" : "实时"}</Badge>
-                    {!ch.enabled && <Badge variant="outline">{t("已停用")}</Badge>}
+                    {!ch.enabled && <Badge variant="outline">{tr("已停用")}</Badge>}
                   </div>
                   <FilterSummary filter={ch.filter} />
                 </CardContent>
@@ -457,7 +456,7 @@ export default function NotifyPage() {
                 <Label htmlFor="n-name">渠道名称</Label>
                 <Input
                   id="n-name"
-                  placeholder="应急响应群 / 日常播报群"
+                  placeholder={tr("应急响应群 / 日常播报群")}
                   value={form.name}
                   onChange={(e) => setF({ name: e.target.value })}
                 />
@@ -584,7 +583,7 @@ export default function NotifyPage() {
               </div>
 
               <div className="flex items-center gap-2 text-sm">
-                <Switch checked={form.enabled} onCheckedChange={(v) => setF({ enabled: v })} aria-label={t("启用")} />
+                <Switch checked={form.enabled} onCheckedChange={(v) => setF({ enabled: v })} aria-label={tr("启用")} />
                 启用该渠道
               </div>
             </div>

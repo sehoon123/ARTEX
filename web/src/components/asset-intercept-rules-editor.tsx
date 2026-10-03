@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -57,8 +57,8 @@ export function AssetInterceptRulesEditor({
               value={r.action}
               onChange={(e) => update(i, { action: e.target.value as "block" | "allow" })}
             >
-              <NativeSelectOption value="block">{t("拦截")}</NativeSelectOption>
-              <NativeSelectOption value="allow">{t("允许")}</NativeSelectOption>
+              <NativeSelectOption value="block">{tr("拦截")}</NativeSelectOption>
+              <NativeSelectOption value="allow">{tr("允许")}</NativeSelectOption>
             </NativeSelect>
             <NativeSelect
               size="sm"
@@ -80,7 +80,7 @@ export function AssetInterceptRulesEditor({
             />
             <Input
               className="w-[120px] shrink-0"
-              placeholder="备注(可选)"
+              placeholder={tr("备注(可选)")}
               value={r.note}
               onChange={(e) => update(i, { note: e.target.value })}
             />

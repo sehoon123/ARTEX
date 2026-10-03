@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -39,7 +39,6 @@ function humanSize(n?: number): string {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function UpdateCard() {
-  const t = useT();
   const [info, setInfo] = React.useState<UpdateCheck | null>(null);
   const [checking, setChecking] = React.useState(true);
   const [progress, setProgress] = React.useState<UpdateProgress | null>(null);
@@ -56,13 +55,13 @@ export function UpdateCard() {
       .then((r) => {
         setInfo(r);
         if (!quiet) {
-          if (r.error) toast.error(t("检查更新失败：") + r.error);
+          if (r.error) toast.error(tr("检查更新失败：") + r.error);
           else if (r.has_update) toast.success(`发现新版本 ${r.latest}`);
-          else if (r.comparable) toast.success(t("当前已是最新版本"));
+          else if (r.comparable) toast.success(tr("当前已是最新版本"));
         }
       })
       .catch((e) => {
-        if (!quiet) toast.error(t("检查更新失败：") + (e as Error).message);
+        if (!quiet) toast.error(tr("检查更新失败：") + (e as Error).message);
       })
       .finally(() => setChecking(false));
   }, []);
@@ -114,7 +113,7 @@ export function UpdateCard() {
         if (p.phase === "failed") {
           es.close();
           setBusy(false);
-          toast.error(t("更新失败：") + (p.error || p.message));
+          toast.error(tr("更新失败：") + (p.error || p.message));
           return;
         }
         if (p.phase === "staged") {
@@ -146,13 +145,13 @@ export function UpdateCard() {
     if (!ok) return;
 
     setBusy(true);
-    setProgress({ phase: "downloading", percent: 0, message: t("准备中…") });
+    setProgress({ phase: "downloading", percent: 0, message: tr("准备中…") });
     const es = openStream(from);
     api.applyUpdate().catch((e) => {
       es.close();
       setBusy(false);
       setProgress(null);
-      toast.error("启动更新失败：" + (e as Error).message);
+      toast.error(tr("启动更新失败：") + (e as Error).message);
     });
   };
 
@@ -169,12 +168,12 @@ export function UpdateCard() {
     api
       .rollbackUpdate()
       .then(() => {
-        toast.success("已切换到上一版本，正在重启…");
+        toast.success(tr("已切换到上一版本，正在重启…"));
         void waitForNewVersion(from);
       })
       .catch((e) => {
         setBusy(false);
-        toast.error(t("回滚失败：") + (e as Error).message);
+        toast.error(tr("回滚失败：") + (e as Error).message);
       });
   };
 

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -113,7 +113,6 @@ const SORT_STORAGE_KEY = "traffic-sort";
 const STATUS_BUCKETS = ["2xx", "3xx", "4xx", "5xx"];
 
 export default function TrafficPage() {
-  const t = useT();
   const [selectedFlows, setSelectedFlows] = React.useState<Set<string>>(() => new Set());
   const [linking, setLinking] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -484,7 +483,7 @@ export default function TrafficPage() {
         <div className="relative max-w-sm flex-1">
           <SearchIcon className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="搜索全部（URL / 方法 / 类型 / 状态码…）"
+            placeholder={tr("搜索全部（URL / 方法 / 类型 / 状态码…）")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-8 pl-8"
@@ -549,7 +548,7 @@ export default function TrafficPage() {
         <span className="pl-1 text-xs font-medium text-muted-foreground">高级筛选</span>
         <div className="relative w-56">
           <Input
-            placeholder="响应内容（正文关键词，≥3字）"
+            placeholder={tr("响应内容（正文关键词，≥3字）")}
             value={body}
             onChange={(e) => setBody(e.target.value)}
             className="h-8"
@@ -557,7 +556,7 @@ export default function TrafficPage() {
         </div>
         <div className="relative w-52">
           <Input
-            placeholder="路径（如 /api/user/…）"
+            placeholder={tr("路径（如 /api/user/…）")}
             value={path}
             onChange={(e) => setPath(e.target.value)}
             className="h-8"
@@ -565,7 +564,7 @@ export default function TrafficPage() {
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger size="sm" className="w-28">
-            <SelectValue placeholder="状态码" />
+            <SelectValue placeholder={tr("状态码")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部状态码</SelectItem>
@@ -581,7 +580,7 @@ export default function TrafficPage() {
           <Input
             type="number"
             min={0}
-            placeholder="最小(B)"
+            placeholder={tr("最小(B)")}
             value={respMin}
             onChange={(e) => setRespMin(e.target.value)}
             className="h-8 w-24"
@@ -590,7 +589,7 @@ export default function TrafficPage() {
           <Input
             type="number"
             min={0}
-            placeholder="最大(B)"
+            placeholder={tr("最大(B)")}
             value={respMax}
             onChange={(e) => setRespMax(e.target.value)}
             className="h-8 w-24"
@@ -640,7 +639,7 @@ export default function TrafficPage() {
                   </TableHead>
                   <SortableHead
                     field="ts"
-                    label="时间"
+                    label={tr("时间")}
                     activeField={sort.field}
                     direction={sort.direction}
                     onSort={toggleSort}
@@ -651,7 +650,7 @@ export default function TrafficPage() {
                   <TableHead>URL</TableHead>
                   <SortableHead
                     field="status"
-                    label="状态码"
+                    label={tr("状态码")}
                     activeField={sort.field}
                     direction={sort.direction}
                     onSort={toggleSort}

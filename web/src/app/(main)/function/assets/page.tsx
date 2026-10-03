@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -109,7 +109,6 @@ const TABS: { key: string; label: string; icon: LucideIcon }[] = [
 ];
 
 export default function AssetsPage() {
-  const t = useT();
   const [rows, setRows] = React.useState<Asset[]>([]);
   const [total, setTotal] = React.useState(0);
   const [companies, setCompanies] = React.useState<Company[]>([]);
@@ -198,7 +197,7 @@ export default function AssetsPage() {
       setSelected(new Set());
       refresh();
     } catch (e) {
-      toast.error(t("删除失败：") + String((e as Error)?.message ?? e));
+      toast.error(tr("删除失败：") + String((e as Error)?.message ?? e));
     } finally {
       setDeleting(false);
       setDeleteOpen(false);
@@ -217,7 +216,7 @@ export default function AssetsPage() {
       toast.success(msg);
       refresh();
     } catch (e) {
-      toast.error(t("删除失败：") + String((e as Error)?.message ?? e));
+      toast.error(tr("删除失败：") + String((e as Error)?.message ?? e));
     } finally {
       setCompanyDeleting(false);
       setCompanyDeleteTarget(null);
@@ -975,7 +974,6 @@ function savedScopeText(company: Company): string {
 
 // 新增企业使用与任务、LLM 编辑一致的右侧抽屉。
 function CompanyDialog({ onSaved }: { onSaved: () => void }) {
-  const t = useT();
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [scopeText, setScopeText] = React.useState("");
@@ -990,11 +988,11 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
 
   const submit = async () => {
     if (!name.trim()) {
-      toast.error(t("请填写企业名称"));
+      toast.error(tr("请填写企业名称"));
       return;
     }
     if (parsedScope.errors.length > 0) {
-      toast.error("请修正无效的资产范围");
+      toast.error(tr("请修正无效的资产范围"));
       return;
     }
     setBusy(true);
@@ -1008,7 +1006,7 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
       onSaved();
     } catch (e) {
       const msg = String((e as Error)?.message ?? e);
-      if (/:\s*409$/.test(msg)) toast.error("企业已存在，请换个名称");
+      if (/:\s*409$/.test(msg)) toast.error(tr("企业已存在，请换个名称"));
       else toast.error(`保存失败：${msg}`);
     } finally {
       setBusy(false);
@@ -1033,7 +1031,7 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
               <FieldLabel htmlFor="cn-name">企业名称</FieldLabel>
               <Input
                 id="cn-name"
-                placeholder="如 Acme Corp（名称唯一）"
+                placeholder={tr("如 Acme Corp（名称唯一）")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -1074,7 +1072,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
 
   const submit = async () => {
     if (parsedScope.errors.length > 0) {
-      toast.error("请修正无效的资产范围");
+      toast.error(tr("请修正无效的资产范围"));
       return;
     }
     setBusy(true);
@@ -1118,7 +1116,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
             <FieldLabel htmlFor="es-reason">归属依据（可选）</FieldLabel>
             <Input
               id="es-reason"
-              placeholder="如 证书 / whois / ASN 佐证"
+              placeholder={tr("如 证书 / whois / ASN 佐证")}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
@@ -1153,11 +1151,11 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
 
   const submit = async () => {
     if (parsedScope.rules.length === 0) {
-      toast.error("请填写要追加的范围");
+      toast.error(tr("请填写要追加的范围"));
       return;
     }
     if (parsedScope.errors.length > 0) {
-      toast.error("请修正无效的资产范围");
+      toast.error(tr("请修正无效的资产范围"));
       return;
     }
     setBusy(true);
@@ -1199,7 +1197,7 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
             <FieldLabel htmlFor="as-reason">归属依据（可选）</FieldLabel>
             <Input
               id="as-reason"
-              placeholder="如 证书 / whois / ASN 佐证"
+              placeholder={tr("如 证书 / whois / ASN 佐证")}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />

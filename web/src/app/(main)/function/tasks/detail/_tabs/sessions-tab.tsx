@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -426,8 +426,8 @@ function SessionItem({
             size="icon-xs"
             onClick={onCancel}
             disabled={controlling}
-            title="删除该意图（需填写原因，可选假删除/真删除）"
-            aria-label="删除该意图（需填写原因，可选假删除/真删除）"
+            title={tr("删除该意图（需填写原因，可选假删除/真删除）")}
+            aria-label={tr("删除该意图（需填写原因，可选假删除/真删除）")}
             className="text-destructive hover:text-destructive"
           >
             <Trash2Icon />
@@ -480,7 +480,6 @@ function WorkerAssetBadge({ assets }: { assets: IntentAsset[] }) {
 }
 
 export function SessionsTab({ taskId }: { taskId: string }) {
-  const t = useT();
   const approvalFocus = useApprovalFocus({ taskId });
   const [selectedSessionId, setActiveId] = React.useState(MAIN_ID);
   const focusSession = React.useMemo<Session | undefined>(() => {
@@ -598,7 +597,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
     async (session: Session, action: "pause" | "resume" | "cancel", reason?: string, mode?: "soft" | "hard") => {
       if (!session.intent_id || session.inherited || controllingIntent) return;
       if (action === "cancel" && !reason?.trim()) {
-        toast.error(t("请填写删除原因"));
+        toast.error(tr("请填写删除原因"));
         return;
       }
       setControllingIntent(session.intent_id);
@@ -1669,8 +1668,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                           type="button"
                           onClick={() => setConfirmNewMain(true)}
                           disabled={creatingMain}
-                          title="新建主 Agent 会话（清空上下文，任务状态保留）"
-                          aria-label="新建主 Agent 会话"
+                          title={tr("新建主 Agent 会话（清空上下文，任务状态保留）")}
+                          aria-label={tr("新建主 Agent 会话")}
                           className="ml-auto flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-accent/60 hover:text-foreground disabled:opacity-50"
                         >
                           {creatingMain ? (
@@ -1791,7 +1790,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                 </span>
               )}
               {activeState?.hasMore && (
-                <span className="text-[10px] text-muted-foreground" title={t("向上滚动加载更早历史")}>
+                <span className="text-[10px] text-muted-foreground" title={tr("向上滚动加载更早历史")}>
                   ↑ 更早历史
                 </span>
               )}
@@ -1826,7 +1825,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   </Tooltip>
                 )}
                 {runDuration != null && (
-                  <span className="inline-flex items-center gap-1" title="运行时长（首步 → 末步）">
+                  <span className="inline-flex items-center gap-1" title={tr("运行时长（首步 → 末步）")}>
                     <ClockIcon className="size-3" />
                     {fmtDuration(runDuration)}
                   </span>
@@ -1927,7 +1926,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                           type="button"
                           className="ml-0.5 text-muted-foreground hover:text-foreground"
                           onClick={() => setAttachments((p) => p.filter((x) => x.path !== a.path))}
-                          title={t("移除")}
+                          title={tr("移除")}
                         >
                           <XIcon className="size-3" />
                         </button>
@@ -1946,7 +1945,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   <MentionTextarea
                     inputGroup
                     rows={1}
-                    aria-label="给主 Agent 发消息"
+                    aria-label={tr("给主 Agent 发消息")}
                     placeholder={
                       mainBusy ? "主 Agent 正在运行，可输入 /btw 提问…" : "给主 Agent 发消息，@ 引用漏洞、资产等…"
                     }
@@ -1966,13 +1965,13 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                       variant="ghost"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={mainBusy || uploading}
-                      title={t("上传文件")}
-                      aria-label={t("上传文件")}
+                      title={tr("上传文件")}
+                      aria-label={tr("上传文件")}
                     >
                       {uploading ? <Loader2Icon className="animate-spin" /> : <PaperclipIcon />}
                     </InputGroupButton>
                     {mainBusy && isBtwCommand(input) && (
-                      <InputGroupButton size="icon-xs" onClick={send} aria-label={t("发送旁路问题")}>
+                      <InputGroupButton size="icon-xs" onClick={send} aria-label={tr("发送旁路问题")}>
                         <ArrowUpIcon />
                       </InputGroupButton>
                     )}
@@ -1983,8 +1982,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="destructive"
                         onClick={stop}
                         disabled={stopping}
-                        title={t("停止当前执行")}
-                        aria-label={t("停止当前执行")}
+                        title={tr("停止当前执行")}
+                        aria-label={tr("停止当前执行")}
                       >
                         {stopping ? <Loader2Icon className="animate-spin" /> : <SquareIcon />}
                       </InputGroupButton>
@@ -1995,8 +1994,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="default"
                         onClick={send}
                         disabled={(!input.trim() && attachments.length === 0) || sending}
-                        title={t("发送消息")}
-                        aria-label={t("发送消息")}
+                        title={tr("发送消息")}
+                        aria-label={tr("发送消息")}
                       >
                         {sending ? <Loader2Icon className="animate-spin" /> : <ArrowUpIcon />}
                       </InputGroupButton>
@@ -2038,7 +2037,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                       {workerMessageCharCount(workerMessage)}/{MAX_WORKER_MESSAGE_CHARS}
                     </span>
                     {active.status === "running" && isBtwCommand(workerMessage) && (
-                      <InputGroupButton size="icon-xs" onClick={sendWorkerChat} aria-label={t("发送旁路问题")}>
+                      <InputGroupButton size="icon-xs" onClick={sendWorkerChat} aria-label={tr("发送旁路问题")}>
                         <ArrowUpIcon />
                       </InputGroupButton>
                     )}
@@ -2049,8 +2048,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                         variant="destructive"
                         onClick={() => void controlWorker(active, "pause")}
                         disabled={controllingIntent === active.intent_id}
-                        title={t("暂停当前 Worker")}
-                        aria-label={t("暂停当前 Worker")}
+                        title={tr("暂停当前 Worker")}
+                        aria-label={tr("暂停当前 Worker")}
                       >
                         {controllingIntent === active.intent_id ? (
                           <Loader2Icon className="animate-spin" />
@@ -2066,8 +2065,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                           variant="ghost"
                           onClick={() => void controlWorker(active, "resume")}
                           disabled={controllingIntent === active.intent_id || workerMessageSending}
-                          title="不发消息，直接继续执行"
-                          aria-label="直接继续执行"
+                          title={tr("不发消息，直接继续执行")}
+                          aria-label={tr("直接继续执行")}
                         >
                           {controllingIntent === active.intent_id ? (
                             <Loader2Icon className="animate-spin" />
@@ -2084,8 +2083,8 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                             !workerMessage.trim() ||
                             workerMessageCharCount(workerMessage) > MAX_WORKER_MESSAGE_CHARS
                           }
-                          title={t("发送消息")}
-                          aria-label={t("发送消息")}
+                          title={tr("发送消息")}
+                          aria-label={tr("发送消息")}
                         >
                           {workerMessageSending ? <Spinner /> : <ArrowUpIcon />}
                         </InputGroupButton>

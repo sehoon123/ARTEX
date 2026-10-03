@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -16,7 +16,6 @@ import { api } from "@/lib/api";
 import { auth } from "@/lib/auth";
 
 export default function LoginPage() {
-  const t = useT();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -57,14 +56,14 @@ export default function LoginPage() {
       .then(({ initialized }) => {
         if (!initialized) router.replace("/setup");
       })
-      .catch(() => setError(t("无法连接到后端服务")))
+      .catch(() => setError(tr("无法连接到后端服务")))
       .finally(() => setChecking(false));
   }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!agreed) {
-      setError(t("请先阅读并同意《使用须知》"));
+      setError(tr("请先阅读并同意《使用须知》"));
       return;
     }
     setLoading(true);
@@ -74,7 +73,7 @@ export default function LoginPage() {
       auth.setToken(token);
       window.location.replace("/function/tasks");
     } catch {
-      setError(t("用户名或密码错误"));
+      setError(tr("用户名或密码错误"));
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 // LLM 重试配置的共用件：五层重试各自的「次数 + 间隔」。
 //
@@ -53,7 +53,7 @@ type LayerMeta = {
 
 export const RETRY_LAYERS = {
   connect: {
-    title: t("建连重试"),
+    title: "建连重试",
     where: "SDK · 拿到 200 之前",
     trigger:
       "连不上或还没拿到 200：连接重置 / 读写超时 / DNS 失败等网络层错误，以及 HTTP 408、429、500、502、503、504。",
@@ -65,7 +65,7 @@ export const RETRY_LAYERS = {
     offHint: "-1 = 一次都不重试，失败立刻上抛",
   },
   empty: {
-    title: t("空响应重试"),
+    title: "空响应重试",
     where: "SDK · 仅 openai 格式",
     trigger:
       "HTTP 200、finish_reason 是正常 stop，但整条响应一个内容块都没有——网关空帧、思考字段丢帧、采样打嗝都会长这样。",
@@ -90,7 +90,7 @@ export const RETRY_LAYERS = {
     offHint: "-1 = 断流直接交给外层的意图重跑",
   },
   breaker: {
-    title: t("轮询熔断"),
+    title: "轮询熔断",
     where: "本项目 · 进程级，全局一份",
     trigger:
       "瞬时失败（429、5xx、网络错误）连续累计到阈值时熔断；余额不足（402）、密钥失效（401 / 403）、模型不存在（404）这类确定性失败不看阈值，第一次就熔断。",
@@ -102,7 +102,7 @@ export const RETRY_LAYERS = {
     offHint: "-1 = 瞬时失败永不熔断（确定性失败仍然熔断）",
   },
   intent: {
-    title: t("意图重跑"),
+    title: "意图重跑",
     where: "本项目 · 进程级，全局一份",
     trigger:
       "前面几层都没兜住：worker 以 model_error 收场——内层重试全部用尽，或者流已经开始交付输出后才断掉（那时重放不安全，只能整条重来）。",
@@ -219,7 +219,7 @@ export function RetryRuleFields({
             id={`${idPrefix}-${layer}-ms`}
             min={0}
             value={value.interval_ms}
-            placeholder="默认退避"
+            placeholder={tr("默认退避")}
             onChange={(n) => onChange({ ...value, interval_ms: n })}
           />
           <span className="text-muted-foreground text-xs">{human ? `固定 ${human}` : meta.defInterval}</span>
@@ -291,7 +291,7 @@ export function RetryPolicyPanel() {
       // 后端会把越界值夹回区间并回传，直接用回传值刷新，所见即所存。
       const saved = await api.saveLLMRetryPolicy(policy);
       setPolicy({ ...ZERO_POLICY, ...saved });
-      toast.success("已保存，即时生效（正在跑的这一轮调用仍用旧参数）");
+      toast.success(tr("已保存，即时生效（正在跑的这一轮调用仍用旧参数）"));
     } catch (e) {
       toast.error(`保存失败：${(e as Error).message}`);
     } finally {

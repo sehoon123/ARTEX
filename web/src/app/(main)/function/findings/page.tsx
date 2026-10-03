@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -130,7 +130,6 @@ const EMPTY_STATS: FindingStats = {
 };
 
 export default function FindingsPage() {
-  const t = useT();
   const [view, setView] = React.useState<FindingView>("flat");
   const [severity, setSeverity] = React.useState<"all" | Severity>("all");
   const [status, setStatus] = React.useState<"all" | FindingStatus>("all");
@@ -292,7 +291,7 @@ export default function FindingsPage() {
         ids: [...selectedIds],
       });
       setExportOpen(false);
-      toast.success(t("已开始下载导出文件"));
+      toast.success(tr("已开始下载导出文件"));
     } catch (e) {
       toast.error(`导出失败：${(e as Error).message}`);
     } finally {
@@ -680,7 +679,7 @@ export default function FindingsPage() {
               : x,
           ),
         );
-        toast.success(t("已保存"));
+        toast.success(tr("已保存"));
         api
           .findingStats()
           .then(setStats)
@@ -713,7 +712,7 @@ export default function FindingsPage() {
         setFlat((cur) => ({ ...cur, total: Math.max(0, cur.total - 1) }));
         const rowKey = findingRowKey(f);
         setExpanded((cur) => (cur === rowKey ? null : cur));
-        toast.success(t("已删除漏洞"));
+        toast.success(tr("已删除漏洞"));
         api
           .findingStats()
           .then(setStats)
@@ -798,7 +797,7 @@ export default function FindingsPage() {
           </div>
         ) : (
           <>
-            <FindingsTable items={flat.items} selectAllLabel="选择当前页全部" {...rowProps} />
+            <FindingsTable items={flat.items} selectAllLabel={tr("选择当前页全部")} {...rowProps} />
             <TablePagination
               page={flatPage}
               pageSize={flatPageSize}
@@ -888,10 +887,10 @@ export default function FindingsPage() {
 
           <Select value={status} onValueChange={(v) => setStatus(v as "all" | FindingStatus)}>
             <SelectTrigger size="sm" className="w-32">
-              <SelectValue placeholder="状态" />
+              <SelectValue placeholder={tr("状态")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全部状态</SelectItem>
+              <SelectItem value="all">{tr("全部状态")}</SelectItem>
               {FINDING_STATUSES.map((st) => (
                 <SelectItem key={st} value={st}>
                   {statusMeta("finding", st).label}
@@ -920,7 +919,7 @@ export default function FindingsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全部任务</SelectItem>
-              <SelectItem value={UNASSIGNED_TASK}>未关联 / 任务已删除</SelectItem>
+              <SelectItem value={UNASSIGNED_TASK}>{tr("未关联 / 任务已删除")}</SelectItem>
               {(stats.tasks ?? []).map((t) => {
                 const id = String(t.id);
                 const label = t.name || t.description || `任务 #${id}（已删除）`;
@@ -1095,7 +1094,7 @@ export default function FindingsPage() {
                         </div>
                       ) : (
                         <>
-                          <FindingsTable items={state.items} selectAllLabel="选择本组当前页全部" {...rowProps} />
+                          <FindingsTable items={state.items} selectAllLabel={tr("选择本组当前页全部")} {...rowProps} />
                           <TablePagination
                             page={state.page}
                             pageSize={state.pageSize}
@@ -1175,7 +1174,7 @@ export default function FindingsPage() {
                 value={deepenDescription}
                 onChange={(event) => setDeepenDescription(event.target.value)}
                 maxLength={4000}
-                placeholder="描述需要验证的利用路径、边界条件、目标或期望证据"
+                placeholder={tr("描述需要验证的利用路径、边界条件、目标或期望证据")}
                 disabled={deepening}
               />
               <FieldDescription className="flex justify-between gap-3">

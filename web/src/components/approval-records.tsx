@@ -1,5 +1,5 @@
 "use client";
-import { useT } from "@/lib/i18n";
+import { tr } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -131,13 +131,12 @@ function MatchCell({ row, showReason = true }: { row: InterceptApprovalRow; show
 }
 
 function CodeBlock({ label, text, truncated = false }: { label: string; text: string; truncated?: boolean }) {
-  const t = useT();
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(t("已复制"));
+      toast.success(tr("已复制"));
     } catch {
-      toast.error(t("复制失败，请手动选择内容复制"));
+      toast.error(tr("复制失败，请手动选择内容复制"));
     }
   }
   return (
@@ -177,7 +176,6 @@ const executionLabels: Record<InterceptAudit["execution_status"], string> = {
 };
 
 function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
-  const t = useT();
   return (
     <section className="flex min-w-0 flex-col gap-4" aria-label={"模型审查上下文"}>
       <div className="flex flex-col gap-2">
@@ -188,7 +186,7 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
         </p>
       </div>
       <CodeBlock
-        label="当前待审查调用"
+        label={tr("当前待审查调用")}
         text={JSON.stringify({ tool_name: input.tool_name, arguments: input.arguments }, null, 2)}
       />
       {input.version >= 2 ? (
@@ -211,13 +209,13 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
       ) : (
         <>
           {input.turn_input ? (
-            <CodeBlock label="当前轮输入（旧版）" text={input.turn_input} truncated={input.background_truncated} />
+            <CodeBlock label={tr("当前轮输入（旧版）")} text={input.turn_input} truncated={input.background_truncated} />
           ) : null}
           {input.task ? (
             <>
-              <CodeBlock label="任务描述（旧版）" text={input.task.description} truncated={input.task.truncated} />
-              <CodeBlock label="任务目标（旧版）" text={input.task.goal} truncated={input.task.truncated} />
-              <CodeBlock label="任务操作约束（旧版）" text={JSON.stringify(input.task.constraints, null, 2)} />
+              <CodeBlock label={tr("任务描述（旧版）")} text={input.task.description} truncated={input.task.truncated} />
+              <CodeBlock label={tr("任务目标（旧版）")} text={input.task.goal} truncated={input.task.truncated} />
+              <CodeBlock label={tr("任务操作约束（旧版）")} text={JSON.stringify(input.task.constraints, null, 2)} />
             </>
           ) : null}
           {input.worker_intent ? (
@@ -237,8 +235,8 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
                 <p className="break-words font-medium text-xs">
                   {entry.tool} · {entry.status === "succeeded" ? "成功" : "失败（可能有部分副作用）"}
                 </p>
-                <CodeBlock label={t("历史调用参数")} text={entry.arguments_preview} truncated={entry.truncated} />
-                <CodeBlock label={t("历史执行结果")} text={entry.result} truncated={entry.truncated} />
+                <CodeBlock label={tr("历史调用参数")} text={entry.arguments_preview} truncated={entry.truncated} />
+                <CodeBlock label={tr("历史执行结果")} text={entry.result} truncated={entry.truncated} />
               </div>
             ))
           ) : (
@@ -356,7 +354,7 @@ export function ApprovalDetail({
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
-                <CodeBlock label={t("命令内容")} text={command} />
+                <CodeBlock label={tr("命令内容")} text={command} />
               </CollapsibleContent>
             </Collapsible>
           ) : null}
@@ -455,7 +453,7 @@ export function ApprovalDetail({
                     <div className="flex min-w-0 flex-col gap-3">
                       {audit.user_message ? (
                         <CodeBlock
-                          label="会话当前轮输入（审计片段）"
+                          label={tr("会话当前轮输入（审计片段）")}
                           text={audit.user_message}
                           truncated={audit.user_truncated}
                         />
@@ -490,7 +488,7 @@ export function ApprovalDetail({
                 text={audit.initial_reason.replace(/^\[模型\]\s*/, "")}
               />
               <CodeBlock
-                label="执行输出"
+                label={tr("执行输出")}
                 text={audit.output ?? (audit.execution_status === "not_executed" ? "工具未执行。" : "尚无执行输出")}
                 truncated={audit.output_truncated}
               />
@@ -549,7 +547,6 @@ function ApprovalTable({
   revision: number;
   label: string;
 }) {
-  const t = useT();
   const [expanded, setExpanded] = React.useState<Set<number>>(() => new Set());
   const columns = React.useSyncExternalStore(subscribeColumns, visibleColumnCount, serverColumnCount);
   const prefix = React.useId();
@@ -572,8 +569,8 @@ function ApprovalTable({
           <TableHead className="w-28">{"工具"}</TableHead>
           <TableHead className="hidden md:table-cell">{"来源"}</TableHead>
           <TableHead className="hidden lg:table-cell">匹配规则</TableHead>
-          <TableHead className="hidden xl:table-cell">参数</TableHead>
-          <TableHead className="w-24">状态</TableHead>
+          <TableHead className="hidden xl:table-cell">{tr("参数")}</TableHead>
+          <TableHead className="w-24">{tr("状态")}</TableHead>
           <TableHead className="hidden w-36 lg:table-cell">申请时间</TableHead>
           <TableHead className="hidden w-36 xl:table-cell">决定时间</TableHead>
         </TableRow>
@@ -652,7 +649,6 @@ function ApprovalTable({
 }
 
 export function ApprovalRecords({ taskId }: { taskId?: string }) {
-  const t = useT();
   const [rows, setRows] = React.useState<InterceptApprovalRow[]>([]);
   const [pendingRows, setPendingRows] = React.useState<InterceptPending[]>([]);
   const [page, setPage] = React.useState(1);
@@ -812,7 +808,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="all">全部状态</SelectItem>
+                <SelectItem value="all">{tr("全部状态")}</SelectItem>
                 <SelectItem value="denied">{"已拒绝"}</SelectItem>
                 <SelectItem value="pending">{"待审批"}</SelectItem>
                 <SelectItem value="allowed">{"已允许"}</SelectItem>
@@ -867,7 +863,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
             <ShieldAlertIcon className="size-4" />
             待处理（{pending.length}）<span className="text-muted-foreground text-xs">展开后允许或拒绝</span>
           </div>
-          <ApprovalTable rows={pending} busy={deciding} decide={decide} revision={revision} label={t("待处理审批")} />
+          <ApprovalTable rows={pending} busy={deciding} decide={decide} revision={revision} label={tr("待处理审批")} />
         </section>
       ) : null}
       <section className="overflow-hidden rounded-xl border">
@@ -897,7 +893,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
           </Empty>
         ) : null}
         {rows.length ? (
-          <ApprovalTable rows={rows} busy={deciding} decide={decide} revision={revision} label={t("审批记录列表")} />
+          <ApprovalTable rows={rows} busy={deciding} decide={decide} revision={revision} label={tr("审批记录列表")} />
         ) : null}
         {!loading && !error ? (
           <TablePagination

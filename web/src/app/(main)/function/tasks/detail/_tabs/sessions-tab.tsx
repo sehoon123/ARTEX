@@ -75,7 +75,7 @@ import { cn } from "@/lib/utils";
 // keeps the model id in its tooltip. Env-backed configs can arrive without a name,
 // so fall back to the model id rather than rendering an empty badge.
 function resolutionLabel(r: TaskLLMResolution): string {
-  return r.name || r.model || "未命名配置";
+  return r.name || r.model || tr("未命名配置");
 }
 
 // fmtBytes renders a human file size for attachment chips (mirrors transcript.tsx).
@@ -711,7 +711,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
             patchStore(key, (s) => ({
               ...s,
               loading: false,
-              error: (error as Error).message || "加载失败",
+              error: (error as Error).message || tr("加载失败"),
             }));
           })
           .finally(() => loadingKeysRef.current.delete(key));
@@ -739,7 +739,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
         })
         .catch((e) => {
           if (reqTokenRef.current[key] !== token) return;
-          patchStore(key, (s) => ({ ...s, loading: false, error: (e as Error).message || "加载失败" }));
+          patchStore(key, (s) => ({ ...s, loading: false, error: (e as Error).message || tr("加载失败") }));
         })
         .finally(() => loadingKeysRef.current.delete(key));
     },
@@ -1037,7 +1037,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
       .catch((err) => {
         if (!alive || reqTokenRef.current.mainboot !== token) return;
         if ((err as Error).message === "superseded") return;
-        patchStore(bootKey, (s) => ({ ...s, loading: false, error: (err as Error).message || "加载失败" }));
+        patchStore(bootKey, (s) => ({ ...s, loading: false, error: (err as Error).message || tr("加载失败") }));
       })
       .finally(() => loadingKeysRef.current.delete(bootKey));
 
@@ -1514,7 +1514,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
       .catch((e) => {
         setInput(text); // restore so the user doesn't lose their text / attachments
         setAttachments(atts);
-        toast.error(tr("发送失败：{n0}", { n0: (e as Error).message || "请稍后重试" }));
+        toast.error(tr("发送失败：{n0}", { n0: (e as Error).message || tr("请稍后重试") }));
       })
       .finally(() => setSending(false));
   }
@@ -1542,7 +1542,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
         toast.success(tr("消息已发送给 Worker #{n0}，已立即继续执行", { n0: intentId }));
       })
       .catch((error) => {
-        toast.error(tr("发送失败：{n0}", { n0: (error as Error).message || "请稍后重试" }));
+        toast.error(tr("发送失败：{n0}", { n0: (error as Error).message || tr("请稍后重试") }));
       })
       .finally(() => setWorkerMessageSending(false));
   }
@@ -1775,7 +1775,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   <TooltipContent side="bottom" className="max-w-xs [overflow-wrap:anywhere]">
                     {activeResolution.available
                       ? [resolutionLabel(activeResolution), activeResolution.model].filter(Boolean).join(" / ")
-                      : activeResolution.reason || "没有可用的 LLM 配置"}
+                      : activeResolution.reason || tr("没有可用的 LLM 配置")}
                   </TooltipContent>
                 </Tooltip>
               )}

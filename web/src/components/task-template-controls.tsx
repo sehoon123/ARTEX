@@ -322,7 +322,7 @@ function TaskTemplateManager({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除模板「{draft.name || "未命名模板"}」？</AlertDialogTitle>
+            <AlertDialogTitle>删除模板「{draft.name || tr("未命名模板")}」？</AlertDialogTitle>
             <AlertDialogDescription>{tr("已由该模板创建的任务不会受到影响。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

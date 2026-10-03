@@ -730,7 +730,7 @@ export default function TasksPage() {
         if (failed.length > 0) {
           const details = failed
             .slice(0, 3)
-            .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || "状态已变化" }))
+            .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || tr("状态已变化") }))
             .join("；");
           toast.error(tr("{n0} 个任务操作失败：{n1}{n2}", { n0: failed.length, n1: details, n2: failed.length > 3 ? tr(" 等") : "" }));
         }

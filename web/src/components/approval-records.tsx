@@ -88,7 +88,7 @@ function ApprovalOrigin({ row, detail = false }: { row: InterceptApprovalRow; de
           await api.interceptExecution(row.id, row.conversation_id ?? undefined);
           window.location.assign(href);
         } catch (error) {
-          toast.error((error as Error).message || "无法定位对应执行");
+          toast.error((error as Error).message || tr("无法定位对应执行"));
           setLocating(false);
         }
       }}
@@ -119,11 +119,11 @@ function MatchCell({ row, showReason = true }: { row: InterceptApprovalRow; show
           {tr("模型判定")}
         </Badge>
       ) : (
-        <span className="truncate">{row.rule_name || "规则未记录或已删除"}</span>
+        <span className="truncate">{row.rule_name || tr("规则未记录或已删除")}</span>
       )}
       {showReason ? (
         <p className="truncate text-muted-foreground text-xs" title={reason}>
-          {reason || "未记录理由"}
+          {reason || tr("未记录理由")}
         </p>
       ) : null}
     </div>
@@ -150,7 +150,7 @@ function CodeBlock({ label, text, truncated = false }: { label: string; text: st
         ) : null}
       </div>
       <pre className="max-h-80 min-w-0 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-muted/60 p-3 font-mono text-xs leading-6 [overflow-wrap:anywhere]">
-        {text || "未记录"}
+        {text || tr("未记录")}
       </pre>
       {truncated ? <p className="text-muted-foreground text-xs">{tr("内容已截断，以上为保存的片段。")}</p> : null}
     </section>
@@ -317,7 +317,7 @@ export function ApprovalDetail({
         if (next.status === "pending" || next.audit?.execution_status === "awaiting_result")
           timer = setTimeout(() => void load(), 5000);
       } catch (e) {
-        if (!cancelled) setError((e as Error).message || "详情加载失败");
+        if (!cancelled) setError((e as Error).message || tr("详情加载失败"));
       }
     }
     void load();
@@ -371,7 +371,7 @@ export function ApprovalDetail({
             <MatchCell row={current} showReason={false} />
           </div>
           <p className="whitespace-pre-wrap break-words text-sm leading-7 [overflow-wrap:anywhere]">
-            {current.reason?.replace(/^\[模型\]\s*/, "") || "未记录审批理由"}
+            {current.reason?.replace(/^\[模型\]\s*/, "") || tr("未记录审批理由")}
           </p>
           {audit?.decision_reason ? <p className="text-sm">{audit.decision_reason}</p> : null}
           {audit?.effective_action ? <p className="text-sm">最终动作：{actionLabels[audit.effective_action]}</p> : null}
@@ -502,9 +502,9 @@ export function ApprovalDetail({
                 </Alert>
               ) : null}
               <dl className="grid gap-2 text-muted-foreground text-xs [overflow-wrap:anywhere]">
-                <div>工具调用 ID：{audit.tool_use_id || "未记录"}</div>
+                <div>工具调用 ID：{audit.tool_use_id || tr("未记录")}</div>
                 <div>参数摘要 SHA-256：{audit.input_digest}</div>
-                <div>审查配置指纹 SHA-256：{audit.config_digest || "未记录"}</div>
+                <div>审查配置指纹 SHA-256：{audit.config_digest || tr("未记录")}</div>
                 {audit.model_input_digest ? <div>模型审查输入 SHA-256：{audit.model_input_digest}</div> : null}
                 {audit.execution_ended_at ? <div>结果记录时间：{fmtTime(audit.execution_ended_at)}</div> : null}
               </dl>
@@ -691,17 +691,17 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
           setTotal(history.value.total);
           setError("");
         } else {
-          setError((history.reason as Error).message || "加载失败");
+          setError((history.reason as Error).message || tr("加载失败"));
         }
         if (pending.status === "fulfilled") {
           setPendingRows(pending.value);
           setPendingError("");
         } else {
-          setPendingError((pending.reason as Error).message || "加载失败");
+          setPendingError((pending.reason as Error).message || tr("加载失败"));
         }
         if (manual) setRevision((v) => v + 1);
       } catch (e) {
-        if (id === request.current) setError((e as Error).message || "加载失败");
+        if (id === request.current) setError((e as Error).message || tr("加载失败"));
       } finally {
         if (id === request.current) {
           setLoading(false);

@@ -379,7 +379,7 @@ export default function CommandsPage() {
                         selected.is_error && "text-red-600 dark:text-red-400",
                       )}
                     >
-                      {selected.output || "（空）"}
+                      {selected.output || tr("（空）")}
                     </pre>
                   </div>
                 </div>

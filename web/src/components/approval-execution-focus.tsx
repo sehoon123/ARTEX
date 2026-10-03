@@ -40,7 +40,7 @@ export function useApprovalFocus({ taskId, conversationId }: { taskId?: string; 
         setState({ id, source, loading: false });
       })
       .catch((e) => {
-        if (!cancelled) setState({ id, error: (e as Error).message || "无法定位原始执行", loading: false });
+        if (!cancelled) setState({ id, error: (e as Error).message || tr("无法定位原始执行"), loading: false });
       });
     return () => {
       cancelled = true;

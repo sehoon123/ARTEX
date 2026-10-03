@@ -1054,7 +1054,7 @@ export default function FindingsPage() {
                                 : tr("任务 #{n0}", { n0: group.task_id })}
                           </CardTitle>
                           <CardDescription className="truncate" title={group.task_description}>
-                            {group.task_description || "来源任务不可用"}
+                            {group.task_description || tr("来源任务不可用")}
                           </CardDescription>
                         </div>
                       </button>

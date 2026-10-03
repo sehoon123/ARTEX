@@ -898,7 +898,7 @@ const ConversationItem = React.memo(function ConversationItem({
         <Checkbox
           checked={selectedForDelete}
           onCheckedChange={(checked) => onSelectedForDeleteChange(conv.id, checked === true)}
-          aria-label={tr("选择对话「{n0}」", { n0: conv.title || "新对话" })}
+          aria-label={tr("选择对话「{n0}」", { n0: conv.title || tr("新对话") })}
           className="ml-1 shrink-0"
         />
       )}
@@ -930,7 +930,7 @@ const ConversationItem = React.memo(function ConversationItem({
         >
           <div className="flex min-w-0 items-center gap-1.5">
             {pinned && <PinIcon className="text-primary size-3 shrink-0" aria-label={tr("已置顶")} />}
-            <div className="truncate text-sm">{conv.title || "新对话"}</div>
+            <div className="truncate text-sm">{conv.title || tr("新对话")}</div>
             {conv.running ? (
               <Badge variant="secondary" className="shrink-0 gap-1" title={tr("Agent 正在运行")}>
                 <Spinner className="size-3" aria-hidden="true" />
@@ -964,7 +964,7 @@ const ConversationItem = React.memo(function ConversationItem({
             variant="ghost"
             size="icon-sm"
             className="text-muted-foreground shrink-0"
-            aria-label={tr("管理对话「{n0}」", { n0: conv.title || "新对话" })}
+            aria-label={tr("管理对话「{n0}」", { n0: conv.title || tr("新对话") })}
           >
             <MoreHorizontalIcon />
           </Button>
@@ -992,7 +992,7 @@ const ConversationItem = React.memo(function ConversationItem({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除对话「{conv.title || "新对话"}」？</AlertDialogTitle>
+            <AlertDialogTitle>删除对话「{conv.title || tr("新对话")}」？</AlertDialogTitle>
             <AlertDialogDescription>{tr("此操作不可撤销。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

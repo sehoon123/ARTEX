@@ -21,7 +21,7 @@ import type { Finding, FindingsPage } from "@/lib/types";
 const PAGE_SIZE = 20;
 
 function findingLabel(finding: Finding) {
-  return finding.name?.trim() || finding.vulnclass.trim() || "未分类";
+  return finding.name?.trim() || finding.vulnclass.trim() || tr("未分类");
 }
 
 export function RetestsTab({ taskId }: { taskId: string }) {

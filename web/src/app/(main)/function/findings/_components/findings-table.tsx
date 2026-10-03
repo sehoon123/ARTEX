@@ -208,10 +208,10 @@ export function FindingsTable({
                         className="truncate font-medium hover:text-primary hover:underline"
                         title={tr("查看发现详情")}
                       >
-                        {f.name || f.vulnclass || "未分类"}
+                        {f.name || f.vulnclass || tr("未分类")}
                       </Link>
                     ) : (
-                      <span className="truncate font-medium">{f.name || f.vulnclass || "未分类"}</span>
+                      <span className="truncate font-medium">{f.name || f.vulnclass || tr("未分类")}</span>
                     )}
                     <span className="truncate text-xs text-muted-foreground">{f.summary}</span>
                     <Badge variant="outline">流量证据 {f.traffic_count ?? 0} 条</Badge>

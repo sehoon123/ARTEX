@@ -146,7 +146,7 @@ function fmtBytes(n: number): string {
 
 // UPLOAD_MARKER labels the auto-appended block of uploaded-file paths inside the task
 // description, so re-uploads append under the same block instead of adding a new header.
-const UPLOAD_MARKER = "【上传文件（绝对路径）】";
+const UPLOAD_MARKER = tr("【上传文件（绝对路径）】");
 
 // appendUploads folds newly-uploaded files' ABSOLUTE paths into the description as a
 // Read/Bash-friendly manifest — the worker opens them by path. Keeps one marked block:
@@ -693,10 +693,13 @@ export default function TasksPage() {
     if (succeeded.length > 0) toast.success(tr("已将 {n0} 个任务加入归档队列", { n0: succeeded.length }));
     if (failed.length > 0) {
       toast.error(
-        `${failed.length} 个任务无法归档：${failed
-          .slice(0, 3)
-          .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || "状态已变化" }))
-          .join("；")}`,
+        tr("{n0} 个任务无法归档：{n1}", {
+          n0: failed.length,
+          n1: failed
+            .slice(0, 3)
+            .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || tr("状态已变化") }))
+            .join("；"),
+        }),
       );
     }
     setSelectedIds(new Set());
@@ -764,7 +767,7 @@ export default function TasksPage() {
         if (failed.length > 0) {
           const details = failed
             .slice(0, 3)
-            .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || "任务已不存在" }))
+            .map((item) => tr("#{n0}（{n1}）", { n0: item.id, n1: item.error || tr("任务已不存在") }))
             .join("；");
           toast.error(tr("{n0} 个任务未能移动：{n1}{n2}", { n0: failed.length, n1: details, n2: failed.length > 3 ? tr(" 等") : "" }));
         }
@@ -839,11 +842,11 @@ export default function TasksPage() {
                 </SelectContent>
               </Select>
               <span className="text-muted-foreground text-xs tabular-nums">
-                {filtered.length}/{tasks.length} 条
+                {tr("{n0}/{n1} 条", { n0: filtered.length, n1: tasks.length })}
               </span>
               {selectedIds.size > 0 && (
                 <>
-                  <span className="text-xs tabular-nums">已选 {selectedIds.size} 个</span>
+                  <span className="text-xs tabular-nums">{tr("已选 {n0} 个", { n0: selectedIds.size })}</span>
                   <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
                     {tr("取消选择")}
                   </Button>
@@ -859,7 +862,7 @@ export default function TasksPage() {
                       ) : (
                         <PauseIcon data-icon="inline-start" />
                       )}
-                      暂停 {pausableTaskIDs.length}
+                      {tr("暂停 {n0}", { n0: pausableTaskIDs.length })}
                     </Button>
                   )}
                   {resumableTaskIDs.length > 0 && (
@@ -874,7 +877,7 @@ export default function TasksPage() {
                       ) : (
                         <PlayIcon data-icon="inline-start" />
                       )}
-                      继续 {resumableTaskIDs.length}
+                      {tr("继续 {n0}", { n0: resumableTaskIDs.length })}
                     </Button>
                   )}
                   {archivableTaskIDs.length > 0 && (
@@ -884,7 +887,7 @@ export default function TasksPage() {
                       trigger={
                         <Button size="sm" variant="outline">
                           <ArchiveIcon data-icon="inline-start" />
-                          归档 {archivableTaskIDs.length}
+                          {tr("归档 {n0}", { n0: archivableTaskIDs.length })}
                         </Button>
                       }
                     />
@@ -952,7 +955,7 @@ export default function TasksPage() {
                     />
                     <TableHead className="text-center">{tr("目标进度")}</TableHead>
                     <TableHead className="text-center" title={tr("严重 / 高 / 中 / 低")}>
-                      漏洞 <span className="text-muted-foreground font-normal">{tr("严/高/中/低")}</span>
+                      {tr("漏洞")} <span className="text-muted-foreground font-normal">{tr("严/高/中/低")}</span>
                     </TableHead>
                     <TableHead className="text-center">{tr("运行中 Worker")}</TableHead>
                     <SortableTaskHead
@@ -1107,7 +1110,7 @@ function ConcurrencySettingsDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="ml-auto" aria-label={tr("任务并发设置")}>
-          <SlidersHorizontalIcon /> 并发设置
+          <SlidersHorizontalIcon /> {tr("并发设置")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -1271,7 +1274,7 @@ const TaskRow = React.memo(function TaskRow({
       >
         {task.tokens ? (
           <span className="text-muted-foreground">
-            入 <span className="text-foreground">{fmtTokens(task.tokens.input_tokens)}</span>
+            {tr("入")} <span className="text-foreground">{fmtTokens(task.tokens.input_tokens)}</span>
             {tr(" · 缓 ")}
             <span className="text-foreground">{fmtTokens(task.tokens.cache_read_tokens)}</span>
             {tr(" · 出 ")}
@@ -1492,7 +1495,7 @@ function ArchiveConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>{count === 1 ? tr("归档任务") : tr("归档 {n0} 个任务", { n0: count })}</AlertDialogTitle>
           <AlertDialogDescription className="[overflow-wrap:anywhere]">
-            归档会停止任务调度，将图谱、LLM 历史、文件以及独占资产和流量压缩到本地冷存储。归档完成后可从“已归档”中还原。
+            {tr("归档会停止任务调度，将图谱、LLM 历史、文件以及独占资产和流量压缩到本地冷存储。归档完成后可从“已归档”中还原。")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -1617,9 +1620,9 @@ function ArchiveDeleteDialog({
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{tr("永久删除")}{archives.length} 个任务归档？</AlertDialogTitle>
+          <AlertDialogTitle>{tr("永久删除{n0} 个任务归档？", { n0: archives.length })}</AlertDialogTitle>
           <AlertDialogDescription className="[overflow-wrap:anywhere]">
-            将永久删除约 {formatArchiveBytes(bytes)} 的归档包及 {rows.toLocaleString()} 条关联数据快照。此操作不可恢复。
+            {tr("将永久删除约 {n0} 的归档包及 {n1} 条关联数据快照。此操作不可恢复。", { n0: formatArchiveBytes(bytes), n1: rows.toLocaleString() })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -1829,14 +1832,14 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <span className="text-muted-foreground text-xs tabular-nums">{total} 个归档</span>
+          <span className="text-muted-foreground text-xs tabular-nums">{tr("{n0} 个归档", { n0: total })}</span>
           {selectedArchives.length > 0 && (
             <>
-              <span className="text-xs tabular-nums">已选 {selectedArchives.length} 个</span>
+              <span className="text-xs tabular-nums">{tr("已选 {n0} 个", { n0: selectedArchives.length })}</span>
               {restorable.length > 0 && (
                 <Button size="sm" variant="outline" onClick={() => void restoreMany(restorable)}>
                   <Undo2Icon data-icon="inline-start" />
-                  还原 {restorable.length}
+                  {tr("还原 {n0}", { n0: restorable.length })}
                 </Button>
               )}
               {deletable.length > 0 && (
@@ -1846,7 +1849,7 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                   trigger={
                     <Button size="sm" variant="destructive">
                       <Trash2Icon data-icon="inline-start" />
-                      永久删除 {deletable.length}
+                      {tr("永久删除 {n0}", { n0: deletable.length })}
                     </Button>
                   }
                 />
@@ -1923,7 +1926,7 @@ function TaskArchivesPanel({ onChanged }: { onChanged: () => void }) {
                     <TableCell>
                       <StatusBadge domain="task" value={archive.original_status} dot />
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{archive.category_name || "未分类"}</TableCell>
+                    <TableCell className="text-muted-foreground">{archive.category_name || tr("未分类")}</TableCell>
                     <TableCell className="text-muted-foreground whitespace-nowrap text-xs">
                       {archiveDate(archive.archived_at || archive.requested_at)}
                     </TableCell>
@@ -2175,7 +2178,7 @@ function DeleteTaskDialog({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>确认删除任务 #{task.id}？</AlertDialogTitle>
+          <AlertDialogTitle>{tr("确认删除任务 #{n0}？", { n0: task.id })}</AlertDialogTitle>
           <AlertDialogDescription className="break-words">
             {task.description ? (
               <>
@@ -2186,9 +2189,9 @@ function DeleteTaskDialog({
                 」
               </>
             ) : (
-              "该任务"
+              tr("该任务")
             )}
-            的执行记录与探索链路将被永久删除。
+            {tr("的执行记录与探索链路将被永久删除。")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <DeleteOptionFields idPrefix={task.id} options={options} onOptionsChange={setOptions} disabled={deleting} />
@@ -2241,12 +2244,12 @@ function MoveTasksCategoryDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">
-          <FolderInputIcon data-icon="inline-start" /> 修改分类
+          <FolderInputIcon data-icon="inline-start" /> {tr("修改分类")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>修改所选 {count} 个任务的分类</DialogTitle>
+          <DialogTitle>{tr("修改所选 {n0} 个任务的分类", { n0: count })}</DialogTitle>
           <DialogDescription>{tr("目标分类对所选任务统一生效；选「未分类」会把它们移出当前分类。")}</DialogDescription>
         </DialogHeader>
         <Field>
@@ -2325,12 +2328,12 @@ function BulkDeleteTasksDialog({
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
         <Button size="sm" variant="outline">
-          <Trash2Icon className="text-destructive" /> 删除所选 {ids.length}
+          <Trash2Icon className="text-destructive" /> {tr("删除所选 {n0}", { n0: ids.length })}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-h-[85vh] overflow-y-auto">
         <AlertDialogHeader>
-          <AlertDialogTitle>确认删除所选 {ids.length} 个任务？</AlertDialogTitle>
+          <AlertDialogTitle>{tr("确认删除所选 {n0} 个任务？", { n0: ids.length })}</AlertDialogTitle>
           <AlertDialogDescription>
             {tr("这些任务的执行记录与探索链路将被永久删除，下方清理选项对所选任务统一生效。")}
           </AlertDialogDescription>
@@ -2341,7 +2344,7 @@ function BulkDeleteTasksDialog({
               #{id}
             </code>
           ))}
-          {ids.length > 30 && <span className="self-center">…等 {ids.length} 个</span>}
+          {ids.length > 30 && <span className="self-center">{tr("…等 {n0} 个", { n0: ids.length })}</span>}
         </div>
         <DeleteOptionFields idPrefix="bulk" options={options} onOptionsChange={setOptions} disabled={deleting} />
         <AlertDialogFooter>
@@ -2548,7 +2551,7 @@ function CategoryPicker({
               className="flex w-full items-center gap-2 px-2 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
             >
               {creating ? <Spinner className="size-4" /> : <PlusIcon className="size-4" />}
-              创建分类「{trimmed}」
+              {tr("创建分类「{n0}」", { n0: trimmed })}
             </button>
           ) : (
             <div className="px-2 py-2 text-sm text-muted-foreground">{tr("输入名称以搜索或创建分类")}</div>
@@ -2624,7 +2627,7 @@ function CompanyPicker({
                   <div className="flex min-w-0 items-center gap-2">
                     <span className="min-w-0 flex-1 truncate font-medium">{company?.name ?? tr("企业 #{n0}", { n0: companyID })}</span>
                     <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
-                      {company?.asset_count ?? 0} 个资产
+                      {tr("{n0} 个资产", { n0: company?.asset_count ?? 0 })}
                     </span>
                   </div>
                   {company && (
@@ -3036,9 +3039,9 @@ function CategoryManagementSheet({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除分类「{selectedCategory?.name || "未命名分类"}」？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除分类「{n0}」？", { n0: selectedCategory?.name || tr("未命名分类") })}</AlertDialogTitle>
             <AlertDialogDescription>
-              分类删除后，其中 {selectedCategory?.task_count ?? 0} 个任务会自动移入“未分类”，任务数据不会被删除。
+              {tr("分类删除后，其中 {n0} 个任务会自动移入“未分类”，任务数据不会被删除。", { n0: selectedCategory?.task_count ?? 0 })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -3295,7 +3298,7 @@ function CreateTaskSheet({
                 portalContainer={sheetContentRef}
               />
               <FieldDescription>
-                最多关联 {MAX_SOURCE_TASKS}{" "}
+                {tr("最多关联 {n0}", { n0: MAX_SOURCE_TASKS })}{" "}
                 {tr("个任务。实时只读继承所选任务的持久化黑板、资产范围及相关流量；新任务写入独立黑板。")}
               </FieldDescription>
             </Field>
@@ -3308,7 +3311,7 @@ function CreateTaskSheet({
                 portalContainer={sheetContentRef}
               />
               <FieldDescription>
-                创建任务时会将所选企业当前已有资产加入“测试资产”，并将域名、IP、CIDR、ICP 和企业关键词提供给 Agent
+                {tr("创建任务时会将所选企业当前已有资产加入“测试资产”，并将域名、IP、CIDR、ICP 和企业关键词提供给 Agent")}
                 {tr("作为范围上下文；不会自动生成意图或强制改变执行目标。")}
               </FieldDescription>
             </Field>
@@ -3351,7 +3354,7 @@ function CreateTaskSheet({
                     onChange={(e) => setTimeoutMin(e.target.value)}
                   />
                   <p className="text-muted-foreground text-xs">
-                    到点后触发优雅收尾（各 agent 写回 + planner 终局判定），任务进入 timeout 终态。
+                    {tr("到点后触发优雅收尾（各 agent 写回 + planner 终局判定），任务进入 timeout 终态。")}
                   </p>
                 </div>
                 <div className="grid gap-2">
@@ -3366,8 +3369,7 @@ function CreateTaskSheet({
                     onChange={(e) => setHeartbeatMin(e.target.value)}
                   />
                   <p className="text-muted-foreground text-xs">
-                    距上轮规划结束/任务开始满该时长且期间无触发，自动触发一轮规划（兜底卡死 + 唤醒去监督在跑的
-                    worker）。下限 10 分钟。
+                    {tr("距上轮规划结束/任务开始满该时长且期间无触发，自动触发一轮规划（兜底卡死 + 唤醒去监督在跑的 worker）。下限 10 分钟。")}
                   </p>
                 </div>
                 <div className="grid gap-2">
@@ -3380,7 +3382,7 @@ function CreateTaskSheet({
                     直接下发首个意图（描述+目标）
                   </label>
                   <p className="text-muted-foreground text-xs">
-                    开启后创建即把「描述+目标」作为一条意图下发，worker 免等首轮规划直接开跑，跑完再由 planner
+                    {tr("开启后创建即把「描述+目标」作为一条意图下发，worker 免等首轮规划直接开跑，跑完再由 planner")}
                     {tr("接手判定/补充。CTF 等常一个 work 直接解决的场景推荐开启；关闭则走标准的先规划再执行。")}
                   </p>
                 </div>

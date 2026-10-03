@@ -64,20 +64,20 @@ function sdkTool(key: string, description: string): Tool {
 }
 
 const SDK_EXEC: Tool[] = [
-  sdkTool("Bash",        "在 shell 中执行命令"),
-  sdkTool("WebFetch",    "发起 HTTP/HTTPS 请求（含代理支持）"),
-  sdkTool("web_search",  "网络搜索"),
-  sdkTool("shell_open",  "开启持久 PTY 交互会话"),
-  sdkTool("shell_send",  "向交互会话发送输入"),
-  sdkTool("shell_read",  "读取交互会话输出"),
-  sdkTool("shell_close", "关闭交互会话"),
-  sdkTool("shell_list",  "列出所有交互会话"),
+  sdkTool("Bash",        tr("在 shell 中执行命令")),
+  sdkTool("WebFetch",    tr("发起 HTTP/HTTPS 请求（含代理支持）")),
+  sdkTool("web_search",  tr("网络搜索")),
+  sdkTool("shell_open",  tr("开启持久 PTY 交互会话")),
+  sdkTool("shell_send",  tr("向交互会话发送输入")),
+  sdkTool("shell_read",  tr("读取交互会话输出")),
+  sdkTool("shell_close", tr("关闭交互会话")),
+  sdkTool("shell_list",  tr("列出所有交互会话")),
 ];
 
 const SDK_WRITE: Tool[] = [
-  sdkTool("Write",     "写入文件"),
-  sdkTool("Edit",      "编辑文件（精确替换）"),
-  sdkTool("MultiEdit", "批量编辑文件"),
+  sdkTool("Write",     tr("写入文件")),
+  sdkTool("Edit",      tr("编辑文件（精确替换）")),
+  sdkTool("MultiEdit", tr("批量编辑文件")),
 ];
 
 const SDK_KEYS = new Set([...SDK_EXEC, ...SDK_WRITE].map((t) => t.key));
@@ -227,9 +227,7 @@ function JudgeCard() {
           <BotIcon className={`h-5 w-5 shrink-0 ${cfg.enabled ? "text-violet-600" : "text-muted-foreground"}`} />
           <div>
             <p className="text-sm font-semibold leading-tight">{tr("模型兜底审批")}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              在<span className="font-medium text-foreground">{tr("拦截范围")}</span>内、且<span className="font-medium text-foreground">{tr("没有任何拦截规则命中")}</span>的命令，才由模型做语义判断（放行 / 转人工 / 拦截）
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{tr("在拦截范围内、且没有任何拦截规则命中的命令，才由模型做语义判断（放行 / 转人工 / 拦截）")}</p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -249,7 +247,7 @@ function JudgeCard() {
                   <p className="text-xs text-muted-foreground">{tr("模型据此判定 ALLOW / ASK / DENY，可直接编辑")}</p>
                 </div>
                 <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={restorePrompt} disabled={saving}>
-                  恢复默认模板
+                  {tr("恢复默认模板")}
                 </Button>
               </div>
               <Textarea
@@ -259,7 +257,7 @@ function JudgeCard() {
                 placeholder={tr("留空使用内置模板")}
                 spellCheck={false}
               />
-              <p className="text-right text-[11px] text-muted-foreground">{cfg.prompt.length} 字</p>
+              <p className="text-right text-[11px] text-muted-foreground">{tr("{n0} 字", { n0: cfg.prompt.length })}</p>
             </CardContent>
           </Card>
 
@@ -516,9 +514,7 @@ export default function InterceptPage() {
         <ShieldAlertIcon className="h-5 w-5 shrink-0" />
         <div>
           <h1 className="text-lg font-semibold leading-tight">{tr("命令拦截")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            工具执行前先按拦截规则匹配；未命中的命令可交由模型兜底判定
-          </p>
+          <p className="text-sm text-muted-foreground mt-0.5">{tr("工具执行前先按拦截规则匹配；未命中的命令可交由模型兜底判定")}</p>
         </div>
       </div>
 
@@ -534,12 +530,10 @@ export default function InterceptPage() {
           <ListFilterIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
           <span className="shrink-0 font-medium">{tr("拦截范围")}</span>
           {scopeTools.length === 0 ? (
-            <span className="text-amber-700 dark:text-amber-500">
-              未启用任何工具 — 拦截规则与模型兜底均不会生效
-            </span>
+            <span className="text-amber-700 dark:text-amber-500">{tr("未启用任何工具 — 拦截规则与模型兜底均不会生效")}</span>
           ) : (
             <>
-              <Badge variant="secondary" className="shrink-0">{scopeTools.length} 个工具</Badge>
+              <Badge variant="secondary" className="shrink-0">{tr("{n0} 个工具", { n0: scopeTools.length })}</Badge>
               <span className="truncate text-muted-foreground" title={scopeTools.join("、")}>
                 {scopeTools.join("、")}
               </span>
@@ -553,7 +547,7 @@ export default function InterceptPage() {
           onClick={openScope}
         >
           <ListFilterIcon className="h-4 w-4" />
-          调整范围
+          {tr("调整范围")}
         </Button>
       </div>
 
@@ -566,9 +560,7 @@ export default function InterceptPage() {
         {/* ---- tab: 拦截规则 ---- */}
         <TabsContent value="rules" className="mt-4 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">
-              按优先级（数字越大越先）逐条匹配，首条命中的规则生效
-            </p>
+            <p className="text-xs text-muted-foreground">{tr("按优先级（数字越大越先）逐条匹配，首条命中的规则生效")}</p>
             <Button onClick={openNew} size="sm" className="shrink-0">
               <PlusIcon className="h-4 w-4" />
               {tr("新建规则")}
@@ -585,7 +577,7 @@ export default function InterceptPage() {
               <p className="text-sm text-muted-foreground">{tr("暂无规则")}</p>
               <Button size="sm" variant="outline" onClick={openNew}>
                 <PlusIcon className="h-4 w-4" />
-                新建第一条规则
+                {tr("新建第一条规则")}
               </Button>
             </div>
           ) : (
@@ -670,9 +662,7 @@ export default function InterceptPage() {
         <SheetContent side="right" className="flex flex-col gap-0 p-0 sm:max-w-md">
           <SheetHeader className="border-b px-6 py-4">
             <SheetTitle>{editing ? tr("编辑规则") : tr("新建规则")}</SheetTitle>
-            <SheetDescription className="text-xs">
-              优先级越大越先匹配；首条命中规则生效，后续跳过
-            </SheetDescription>
+            <SheetDescription className="text-xs">{tr("优先级越大越先匹配；首条命中规则生效，后续跳过")}</SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-5">
@@ -731,7 +721,7 @@ export default function InterceptPage() {
                 <p className="text-xs text-destructive mt-1">{regexErr}</p>
               )}
               {regexWarn && (
-                <p className="text-xs text-amber-600 mt-1">{tr("包含 Go RE2 扩展语法（如")} <code className="font-mono">(?i)</code>），浏览器无法预览，提交后由服务端验证</p>
+                <p className="text-xs text-amber-600 mt-1">{tr("包含 Go RE2 扩展语法（如 {n0}），浏览器无法预览，提交后由服务端验证", { n0: "(?i)" })}</p>
               )}
             </Field>
 
@@ -836,9 +826,7 @@ export default function InterceptPage() {
               <ListFilterIcon className="h-4 w-4" />
               {tr("拦截范围")}
             </DialogTitle>
-            <DialogDescription className="text-xs">
-              只有启用拦截的工具才会进入规则匹配；其余工具直接放行
-            </DialogDescription>
+            <DialogDescription className="text-xs">{tr("只有启用拦截的工具才会进入规则匹配；其余工具直接放行")}</DialogDescription>
           </DialogHeader>
 
           <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-5">

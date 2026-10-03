@@ -1,0 +1,86 @@
+# Fork-only: compile a single, self-contained ARTEX binary (frontend — incl. the
+# Korean/English translations — embedded) WITHOUT Docker. No Docker Hub secrets.
+#
+# Use: GitHub → Actions → "build-binary" → Run workflow (pick targets; optional tag
+# to also publish a Release). Download the zip for your OS from the run's Artifacts
+# (or the Release), unzip, and run `./artex` — only PostgreSQL is required at runtime.
+name: build-binary
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: "Comma-separated GOOS/GOARCH targets to build"
+        default: "darwin/arm64,darwin/amd64,linux/amd64,linux/arm64,windows/amd64"
+        type: string
+      tag:
+        description: "Optional: tag name to publish a GitHub Release (leave blank to only upload artifacts)"
+        default: ""
+        type: string
+
+permissions:
+  contents: write # needed only when publishing a Release
+
+jobs:
+  # Build the static frontend once (bundles tr() + en.json/ko.json → Korean baked in).
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: npm run build:static
+        working-directory: web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: web/out
+
+  # Cross-compile + package each requested target, reusing the embedded frontend.
+  binaries:
+    needs: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+          cache: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: server/webui/dist
+      - name: Build all requested targets
+        env:
+          ARTEX_TARGETS: ${{ inputs.targets }}
+          ARTEX_BUILD_VERSION: ${{ inputs.tag != '' && inputs.tag || github.sha }}
+          ARTEX_SKIP_FRONTEND: "1"
+          ARTEX_SKIP_NPM_CI: "1"
+          ARTEX_COMPRESS: "0"
+          ARTEX_PACKAGE: "1"
+          ARTEX_PACKAGE_DIR: dist
+        run: ./build.sh --release
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum *.zip > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artex-binaries
+          path: |
+            dist/*.zip
+            dist/SHA256SUMS
+      - name: Publish Release (only if a tag was provided)
+        if: ${{ inputs.tag != '' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          files: |
+            dist/*.zip
+            dist/SHA256SUMS
+          generate_release_notes: true

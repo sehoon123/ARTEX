@@ -223,7 +223,7 @@ export function UpdateCard() {
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
-              更新日志 <ExternalLinkIcon className="size-3" />
+              {tr("更新日志")} <ExternalLinkIcon className="size-3" />
             </a>
           )}
         </div>
@@ -238,7 +238,7 @@ export function UpdateCard() {
         {info?.error && (
           <p className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
             <TriangleAlertIcon className="mt-0.5 size-3.5 shrink-0" />
-            无法连接 GitHub：{info.error}
+            {tr("无法连接 GitHub：{n0}", { n0: info.error })}
             {"　"}可在上方配置全局代理后重试。
           </p>
         )}

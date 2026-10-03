@@ -202,7 +202,7 @@ function ToolEditor({
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4">
         {trafficGated && (
           <div className="border-amber-500/40 bg-amber-500/10 text-muted-foreground rounded-md border px-3 py-2 text-xs">
-            该工具依赖<b>{tr("流量捕获")}</b>。请先在「系统配置」开启流量捕获，才能绑定给 Agent 并启用。
+            {tr("该工具依赖流量捕获。请先在「系统配置」开启流量捕获，才能绑定给 Agent 并启用。")}
           </div>
         )}
         {/* binding + switch */}
@@ -326,7 +326,7 @@ function ToolGridCard({ tool, onClick }: { tool: Tool; onClick: () => void }) {
           </Badge>
         ) : (
           <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-            自定义·{tool.kind}
+            {tr("自定义·{n0}", { n0: tool.kind })}
           </Badge>
         )}
         {tool.deferred && (
@@ -344,7 +344,7 @@ function ToolGridCard({ tool, onClick }: { tool: Tool; onClick: () => void }) {
           className="ml-auto px-1.5 py-0 text-[10px] tabular-nums"
           title={tr("累计调用 {n0} 次", { n0: tool.calls ?? 0 })}
         >
-          调用 {tool.calls ?? 0}
+          {tr("调用 {n0}", { n0: tool.calls ?? 0 })}
         </Badge>
       </div>
       <p className="text-muted-foreground line-clamp-1 h-4 text-xs">

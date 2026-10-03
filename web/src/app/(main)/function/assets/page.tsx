@@ -321,11 +321,11 @@ export default function AssetsPage() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">
-            共 <span className="tabular-nums">{totalAssets}</span> 项资产
+            {tr("共 {n0} 项资产", { n0: totalAssets })}
           </span>
           {selected.size > 0 && (
             <Button variant="destructive" size="sm" onClick={() => openDelete(Array.from(selected) as number[])}>
-              <Trash2Icon className="size-3.5" /> 删除已选 ({selected.size})
+              <Trash2Icon className="size-3.5" /> {tr("删除已选 ({n0})", { n0: selected.size })}
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={refresh} disabled={loading}>
@@ -421,7 +421,7 @@ export default function AssetsPage() {
         <TabsContent value="root_domain" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "域名", "ICP 备案", "归属企业", ""]}
+            cols={["", tr("域名"), tr("ICP 备案"), tr("归属企业"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -462,7 +462,7 @@ export default function AssetsPage() {
         <TabsContent value="ip" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "IP", "C段", "绑定域名", "开放端口", ""]}
+            cols={["", "IP", tr("C段"), tr("绑定域名"), tr("开放端口"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -509,7 +509,7 @@ export default function AssetsPage() {
         <TabsContent value="subdomain" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "域名", "根域名", "解析类型", "解析值", ""]}
+            cols={["", tr("域名"), tr("根域名"), tr("解析类型"), tr("解析值"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -551,7 +551,7 @@ export default function AssetsPage() {
         <TabsContent value="app" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "应用名", "Bundle ID", "分类", "ICP 备案", ""]}
+            cols={["", tr("应用名"), "Bundle ID", tr("分类"), tr("ICP 备案"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -591,7 +591,7 @@ export default function AssetsPage() {
         <TabsContent value="service" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "服务", "域名", "IP", "端口", "状态码", "标题", "指纹", "认证", ""]}
+            cols={["", tr("服务"), tr("域名"), "IP", tr("端口"), tr("状态码"), tr("标题"), tr("指纹"), tr("认证"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -687,7 +687,7 @@ export default function AssetsPage() {
         <TabsContent value="endpoint" className="mt-0 flex min-h-0 flex-1 flex-col gap-2">
           {searchBox}
           <AssetCard
-            cols={["", "方法", "完整地址", "参数", ""]}
+            cols={["", tr("方法"), tr("完整地址"), tr("参数"), ""]}
             loaded={loaded}
             total={total}
             page={page}
@@ -770,7 +770,7 @@ export default function AssetsPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除企业 · {companyDeleteTarget?.name}</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除企业 · {n0}", { n0: companyDeleteTarget?.name })}</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-3">
                 <p>{tr("此操作将永久删除该企业及其资产范围配置，不可撤销。")}</p>
@@ -1099,7 +1099,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>编辑资产范围 · {company.name}</DialogTitle>
+          <DialogTitle>{tr("编辑资产范围 · {n0}", { n0: company.name })}</DialogTitle>
           <DialogDescription>
             {tr("编辑后将替换全部现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。")}
           </DialogDescription>
@@ -1182,7 +1182,7 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>追加资产范围 · {company.name}</DialogTitle>
+          <DialogTitle>{tr("追加资产范围 · {n0}", { n0: company.name })}</DialogTitle>
           <DialogDescription>{tr("新范围会追加到现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。")}</DialogDescription>
         </DialogHeader>
         <FieldGroup className="py-2">

@@ -139,7 +139,7 @@ function DataSourceCard({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-base">
-          <PlugZapIcon className="size-4" /> 数据源状态
+          <PlugZapIcon className="size-4" /> {tr("数据源状态")}
           <StatusBadge status={status} loading={loading} />
         </CardTitle>
         <Button variant="ghost" size="sm" onClick={onChanged} disabled={loading}>
@@ -186,7 +186,7 @@ function DataSourceCard({
                 {tr("保存并启用")}
               </Button>
               {status.enabled && status.tools.length > 0 && (
-                <span className="text-muted-foreground text-xs">已发现 {status.tools.length} 个工具</span>
+                <span className="text-muted-foreground text-xs">{tr("已发现 {n0} 个工具", { n0: status.tools.length })}</span>
               )}
             </div>
           </>
@@ -204,12 +204,12 @@ function StatusBadge({ status, loading }: { status: SSStatus | null; loading: bo
   if (status.reachable)
     return (
       <Badge className="bg-emerald-600 hover:bg-emerald-600">
-        <CheckCircle2Icon className="mr-1 size-3" /> 已连接
+        <CheckCircle2Icon className="mr-1 size-3" /> {tr("已连接")}
       </Badge>
     );
   return (
     <Badge variant="destructive">
-      <AlertCircleIcon className="mr-1 size-3" /> 不可达
+      <AlertCircleIcon className="mr-1 size-3" /> {tr("不可达")}
     </Badge>
   );
 }
@@ -397,9 +397,9 @@ function SyncWorkbench() {
             <RefreshCwIcon className={loading ? "size-4 animate-spin" : "size-4"} />
           </Button>
           <div className="flex-1" />
-          <span className="text-muted-foreground text-xs">已选 {selected.size}</span>
+          <span className="text-muted-foreground text-xs">{tr("已选 {n0}", { n0: selected.size })}</span>
           <Button onClick={runSync} disabled={syncing || selected.size === 0}>
-            <DownloadIcon className={syncing ? "size-4 animate-pulse" : "size-4"} /> 同步选中
+            <DownloadIcon className={syncing ? "size-4 animate-pulse" : "size-4"} /> {tr("同步选中")}
           </Button>
         </div>
 
@@ -465,7 +465,7 @@ function SyncResult({ result }: { result: Awaited<ReturnType<typeof api.ssSync>>
         ))}
       </div>
       {result.companies && result.companies.length > 0 && (
-        <p className="text-muted-foreground">新建/更新企业：{result.companies.join("、")}</p>
+        <p className="text-muted-foreground">{tr("新建/更新企业：{n0}", { n0: result.companies.join("、") })}</p>
       )}
       {result.warnings && result.warnings.length > 0 && (
         <ul className="list-inside list-disc text-amber-600 dark:text-amber-500">
@@ -479,7 +479,7 @@ function SyncResult({ result }: { result: Awaited<ReturnType<typeof api.ssSync>>
           {result.errors.slice(0, 20).map((em) => (
             <li key={em}>{em}</li>
           ))}
-          {result.errors.length > 20 && <li>…共 {result.errors.length} 条错误</li>}
+          {result.errors.length > 20 && <li>{tr("…共 {n0} 条错误", { n0: result.errors.length })}</li>}
         </ul>
       )}
     </div>

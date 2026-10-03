@@ -872,11 +872,11 @@ export default function FindingsPage() {
           >
             {(
               [
-                ["all", "全部"],
-                ["critical", "严重"],
-                ["high", "高危"],
-                ["medium", "中危"],
-                ["low", "低危"],
+                ["all", tr("全部")],
+                ["critical", tr("严重")],
+                ["high", tr("高危")],
+                ["medium", tr("中危")],
+                ["low", tr("低危")],
               ] as const
             ).map(([val, label]) => (
               <ToggleGroupItem key={val} value={val} aria-label={tr("按{n0}等级筛选", { n0: label })}>
@@ -952,7 +952,7 @@ export default function FindingsPage() {
 
           <div className="ml-auto flex items-center gap-3">
             {selectedIds.size > 0 && (
-              <span className="text-xs text-muted-foreground tabular-nums">已选 {selectedIds.size} 条</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{tr("已选 {n0} 条", { n0: selectedIds.size })}</span>
             )}
             <Button size="sm" variant="outline" onClick={openExport}>
               <DownloadIcon /> {tr("导出")}
@@ -1162,7 +1162,7 @@ export default function FindingsPage() {
           <DialogHeader>
             <DialogTitle>{tr("深入利用漏洞")}</DialogTitle>
             <DialogDescription className="break-words">
-              将在原任务 #{deepenFinding?.task_id} 中创建优先级 10 的 Worker 意图，基于当前漏洞开展二次验证：
+              {tr("将在原任务 #{n0} 中创建优先级 10 的 Worker 意图，基于当前漏洞开展二次验证：", { n0: deepenFinding?.task_id })}
               {deepenFinding?.name || deepenFinding?.vulnclass || deepenFinding?.summary}
             </DialogDescription>
           </DialogHeader>
@@ -1225,7 +1225,7 @@ export default function FindingsPage() {
                   className={cn("flex items-center gap-2 text-sm", selectedIds.size === 0 && "text-muted-foreground")}
                 >
                   <RadioGroupItem id="export-scope-selected" value="selected" disabled={selectedIds.size === 0} />
-                  导出勾选的 {selectedIds.size} 条
+                  {tr("导出勾选的 {n0} 条", { n0: selectedIds.size })}
                 </label>
               </RadioGroup>
             </div>

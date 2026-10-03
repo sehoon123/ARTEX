@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -138,7 +139,7 @@ export function useSideQuestions(parent: string | null) {
         restoreFailedDraft([item]);
         if (item.status !== "running") stream.close();
       } catch {
-        setError("旁路数据解析失败，请重新打开面板");
+        setError(tr("旁路数据解析失败，请重新打开面板"));
       }
     });
     stream.addEventListener("cleared", () => {

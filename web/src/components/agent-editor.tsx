@@ -253,7 +253,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
   }
 
   if (loaded && !detail) {
-    return <div className="text-muted-foreground p-6 text-center text-sm">未找到 Agent：{agentKey}</div>;
+    return <div className="text-muted-foreground p-6 text-center text-sm">{tr("未找到 Agent：{n0}", { n0: agentKey })}</div>;
   }
   // config is meaningless for the conversational main agent and the fixed-budget
   // goals decomposer; every other agent (workers, custom assistants) honors it.
@@ -302,7 +302,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                       </SelectContent>
                     </Select>
                     <span className="text-muted-foreground max-w-md text-xs">
-                      为该 Agent 绑定固定 LLM 配置（点「保存配置」生效）。优先级：Agent 绑定 &gt; 任务/会话指定 &gt; 全局激活。
+                      {tr("为该 Agent 绑定固定 LLM 配置（点「保存配置」生效）。优先级：Agent 绑定 > 任务/会话指定 > 全局激活。")}
                     </span>
                   </div>
                 </div>
@@ -354,7 +354,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   <div className="grid gap-0.5">
                     <Label htmlFor="interactive-shell" className="text-sm">{tr("交互式 Shell")}</Label>
                     <span className="text-muted-foreground text-xs">
-                      为该 Agent 开启后（点上方保存生效），可用持久 PTY 会话工具（shell_open/send/read/close/list）驱动 msfconsole/ssh/REPL 等交互程序
+                      {tr("为该 Agent 开启后（点上方保存生效），可用持久 PTY 会话工具（shell_open/send/read/close/list）驱动 msfconsole/ssh/REPL 等交互程序")}
                     </span>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p className="font-medium">{v.description}</p>
-                    <p className="text-muted-foreground mt-1">示例：{v.example}</p>
+                    <p className="text-muted-foreground mt-1">{tr("示例：{n0}", { n0: v.example })}</p>
                   </TooltipContent>
                 </Tooltip>
               ))}
@@ -391,13 +391,13 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" onClick={doPreview}>
-                  <EyeIcon /> 预览渲染
+                  <EyeIcon /> {tr("预览渲染")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>{tr("渲染预览")}</DialogTitle>
-                  <DialogDescription>所有 {`{{.Var}}`} 已由后端用示例值替换。</DialogDescription>
+                  <DialogDescription>{tr("所有 {n0} 已由后端用示例值替换。", { n0: "{{.Var}}" })}</DialogDescription>
                 </DialogHeader>
                 <div className="max-h-[60vh] overflow-auto rounded-md border bg-muted/30 p-3">
                   <Markdown text={preview} />
@@ -405,7 +405,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
               </DialogContent>
             </Dialog>
             <Button size="sm" onClick={savePrompt}>
-              <SaveIcon /> 保存为新版本
+              <SaveIcon /> {tr("保存为新版本")}
             </Button>
             <Button variant="outline" size="sm" onClick={resetPrompt}>
               <RotateCcwIcon /> {tr("恢复默认")}
@@ -454,7 +454,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   )}
                 </DialogTitle>
                 <DialogDescription>
-                  {viewVer?.note || "（无备注）"}
+                  {viewVer?.note || tr("（无备注）")}
                   {viewVer?.ts && (
                     <span className="ml-2 text-muted-foreground/60">
                       {new Date(viewVer.ts).toLocaleString("zh-CN")}
@@ -463,20 +463,20 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 </DialogDescription>
               </DialogHeader>
               <pre className="bg-muted max-h-[55vh] overflow-auto whitespace-pre-wrap rounded-md p-3 font-mono text-xs">
-                {viewVer?.template_text || "（空）"}
+                {viewVer?.template_text || tr("（空）")}
               </pre>
               <div className="flex gap-2 justify-end">
                 {viewVer && viewVer.version !== versions[0]?.version && (
                   <Button variant="outline" size="sm" onClick={() => {
                     if (viewVer) { setDiffVer(viewVer); setViewVer(null); }
                   }}>
-                    <GitCompareIcon className="mr-1 size-3.5" /> 与当前版本对比
+                    <GitCompareIcon className="mr-1 size-3.5" /> {tr("与当前版本对比")}
                   </Button>
                 )}
                 <Button size="sm" onClick={() => {
                   if (viewVer) { setPrompt(viewVer.template_text); setViewVer(null); toast.success(tr("已加载 v{n0} 到编辑器，确认后点「保存为新版本」", { n0: viewVer.version })); }
                 }}>
-                  加载到编辑器
+                  {tr("加载到编辑器")}
                 </Button>
               </div>
             </DialogContent>
@@ -486,7 +486,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
           <Dialog open={!!diffVer} onOpenChange={(o) => { if (!o) setDiffVer(null); }}>
             <DialogContent className="sm:max-w-3xl">
               <DialogHeader>
-                <DialogTitle>版本对比：v{diffVer?.version} → v{versions[0]?.version}（当前）</DialogTitle>
+                <DialogTitle>{tr("版本对比：v{n0} → v{n1}（当前）", { n0: diffVer?.version, n1: versions[0]?.version })}</DialogTitle>
                 <DialogDescription>
                   <span className="inline-flex items-center gap-3 text-xs">
                     <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-red-600 dark:text-red-400">{tr("- 删除")}</span>
@@ -504,8 +504,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
       <TabsContent value="wrapup" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
         <div className="grid gap-3">
           <p className="text-muted-foreground text-xs leading-relaxed">
-            当此 Agent 因<b>{tr("超时")}</b>{tr("或")}<b>{tr("步数耗尽")}</b>被终止时，系统会注入这段「收尾提示词」跑一轮收尾：
-            先把已识别但未落库的内容写回，再输出一句总结（避免烂尾）。留空则使用内置默认。
+            {tr("当此 Agent 因超时或步数耗尽被终止时，系统会注入这段「收尾提示词」跑一轮收尾：先把已识别但未落库的内容写回，再输出一句总结（避免烂尾）。留空则使用内置默认。")}
           </p>
           <div className="flex items-center gap-2">
             <Label className="text-xs">{tr("收尾提示词正文")}</Label>
@@ -519,12 +518,12 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
             className="font-mono text-xs"
             rows={10}
             value={wrapup}
-            placeholder={wrapupDefault || "留空则使用内置默认收尾提示词"}
+            placeholder={wrapupDefault || tr("留空则使用内置默认收尾提示词")}
             onChange={(e) => setWrapup(e.target.value)}
           />
           <div className="grid gap-1.5">
             <Label htmlFor="wrapup-turns" className="text-xs">
-              收尾轮数（收尾阶段自身最多跑几轮；0=用内置默认 {wrapupTurnsDefault} 轮）
+              {tr("收尾轮数（收尾阶段自身最多跑几轮；0=用内置默认 {n0} 轮）", { n0: wrapupTurnsDefault })}
             </Label>
             <Input id="wrapup-turns" type="number" min={0} className="h-8 w-32"
               value={wrapupTurns} onChange={(e) => setWrapupTurns(e.target.value)} />
@@ -549,8 +548,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
             <>
               <Separator className="my-2" />
               <p className="text-muted-foreground text-xs leading-relaxed">
-                <b>{tr("任务超时收尾")}</b>{tr("（与上面的 per-run 收尾是")}<b>{tr("两套")}</b>）：当<b>{tr("整个任务")}</b>到达超时上限、即将结束时注入。
-                与 per-run 语义常相反（如 planner：per-run 说“别停继续规划”，任务超时说“到点停止、做最后判定”）。留空则用内置默认。
+                {tr("任务超时收尾（与上面的 per-run 收尾是两套）：当整个任务到达超时上限、即将结束时注入。与 per-run 语义常相反（如 planner：per-run 说“别停继续规划”，任务超时说“到点停止、做最后判定”）。留空则用内置默认。")}
               </p>
               <div className="flex items-center gap-2">
                 <Label className="text-xs">{tr("任务超时收尾提示词正文")}</Label>
@@ -564,12 +562,12 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 className="font-mono text-xs"
                 rows={10}
                 value={ttWrapup}
-                placeholder={ttWrapupDefault || "留空则使用内置默认任务超时收尾提示词"}
+                placeholder={ttWrapupDefault || tr("留空则使用内置默认任务超时收尾提示词")}
                 onChange={(e) => setTtWrapup(e.target.value)}
               />
               <div className="grid gap-1.5">
                 <Label htmlFor="tt-turns" className="text-xs">
-                  收尾轮数（0=用内置默认 {ttTurnsDefault} 轮）
+                  {tr("收尾轮数（0=用内置默认 {n0} 轮）", { n0: ttTurnsDefault })}
                 </Label>
                 <Input id="tt-turns" type="number" min={0} className="h-8 w-32"
                   value={ttTurns} onChange={(e) => setTtTurns(e.target.value)} />
@@ -910,14 +908,13 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
     if (t.on_task_timeout) parts.push(tr("任务超时"));
     if (t.on_tool_call) parts.push(tr("工具调用({n0})", { n0: t.tool_names.length }));
     if (t.on_task_create) parts.push(tr("任务创建"));
-    return parts.join(" · ") || "（无条件）";
+    return parts.join(" · ") || tr("（无条件）");
   }
 
   return (
     <div className="grid gap-4">
       <p className="text-muted-foreground text-xs">
-        触发器让这个自定义 Agent 自动运行：每次触发都<b>{tr("新建一个会话运行")}</b>（在「对话」页可见）。
-        可多选触发条件；系统会把「本次为何触发 + 相关任务/finding/目标」自动附加到你写的基础消息后面。
+        {tr("触发器让这个自定义 Agent 自动运行：每次触发都新建一个会话运行（在「对话」页可见）。可多选触发条件；系统会把「本次为何触发 + 相关任务/finding/目标」自动附加到你写的基础消息后面。")}
       </p>
 
       {/* 触发后处理策略 */}
@@ -1007,7 +1004,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 定时 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onInterval} onCheckedChange={(v) => setOnInterval(!!v)} /> 定时触发
+            <Checkbox checked={onInterval} onCheckedChange={(v) => setOnInterval(!!v)} /> {tr("定时触发")}
           </label>
           {onInterval && (
             <div className="grid gap-1.5">
@@ -1026,7 +1023,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* finding */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onFinding} onCheckedChange={(v) => setOnFinding(!!v)} /> 发现 finding 时触发
+            <Checkbox checked={onFinding} onCheckedChange={(v) => setOnFinding(!!v)} /> {tr("发现 finding 时触发")}
           </label>
           {onFinding && (
             <Textarea className="text-xs" rows={2} value={findingMsg}
@@ -1037,7 +1034,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 目标达成 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onGoalMet} onCheckedChange={(v) => setOnGoalMet(!!v)} /> 目标达成时触发
+            <Checkbox checked={onGoalMet} onCheckedChange={(v) => setOnGoalMet(!!v)} /> {tr("目标达成时触发")}
           </label>
           {onGoalMet && (
             <Textarea className="text-xs" rows={2} value={goalMsg}
@@ -1048,7 +1045,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 任务超时 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onTaskTimeout} onCheckedChange={(v) => setOnTaskTimeout(!!v)} /> 任务超时时触发
+            <Checkbox checked={onTaskTimeout} onCheckedChange={(v) => setOnTaskTimeout(!!v)} /> {tr("任务超时时触发")}
           </label>
           {onTaskTimeout && (
             <Textarea className="text-xs" rows={2} value={taskTimeoutMsg}
@@ -1059,12 +1056,12 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 工具调用 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onToolCall} onCheckedChange={(v) => setOnToolCall(!!v)} /> 工具调用时触发
+            <Checkbox checked={onToolCall} onCheckedChange={(v) => setOnToolCall(!!v)} /> {tr("工具调用时触发")}
           </label>
           {onToolCall && (
             <div className="grid gap-1.5">
               <div className="text-muted-foreground text-xs">
-                选择要监听的工具（至少一个）；任务执行中这些工具每次<b>{tr("调用完成")}</b>都会触发。已选 {toolNames.length} 个。
+                {tr("选择要监听的工具（至少一个）；任务执行中这些工具每次调用完成都会触发。已选 {n0} 个。", { n0: toolNames.length })}
               </div>
               <div className="max-h-40 overflow-y-auto rounded-md border p-2">
                 {tools.length === 0 && <span className="text-muted-foreground text-xs">{tr("（工具列表为空）")}</span>}
@@ -1090,7 +1087,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 任务创建 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onTaskCreate} onCheckedChange={(v) => setOnTaskCreate(!!v)} /> 任务创建时触发
+            <Checkbox checked={onTaskCreate} onCheckedChange={(v) => setOnTaskCreate(!!v)} /> {tr("任务创建时触发")}
           </label>
           {onTaskCreate && (
             <Textarea className="text-xs" rows={2} value={taskCreateMsg}
@@ -1104,7 +1101,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
           </Button>
           {editingId != null && (
             <Button size="sm" variant="ghost" onClick={resetForm} disabled={saving}>
-              <XIcon /> 取消编辑
+              <XIcon /> {tr("取消编辑")}
             </Button>
           )}
         </div>
@@ -1131,15 +1128,15 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
                 )}
               </div>
               <div className="text-muted-foreground grid gap-0.5 text-xs">
-                {t.interval_sec > 0 && t.interval_message && <div className="line-clamp-1">定时：{t.interval_message}</div>}
+                {t.interval_sec > 0 && t.interval_message && <div className="line-clamp-1">{tr("定时：{n0}", { n0: t.interval_message })}</div>}
                 {t.on_finding && t.finding_message && <div className="line-clamp-1">finding：{t.finding_message}</div>}
-                {t.on_goal_met && t.goal_message && <div className="line-clamp-1">目标：{t.goal_message}</div>}
-                {t.on_task_timeout && t.task_timeout_message && <div className="line-clamp-1">超时：{t.task_timeout_message}</div>}
-                {t.on_task_create && t.task_create_message && <div className="line-clamp-1">任务创建：{t.task_create_message}</div>}
+                {t.on_goal_met && t.goal_message && <div className="line-clamp-1">{tr("目标：{n0}", { n0: t.goal_message })}</div>}
+                {t.on_task_timeout && t.task_timeout_message && <div className="line-clamp-1">{tr("超时：{n0}", { n0: t.task_timeout_message })}</div>}
+                {t.on_task_create && t.task_create_message && <div className="line-clamp-1">{tr("任务创建：{n0}", { n0: t.task_create_message })}</div>}
                 {t.on_tool_call && (
                   <>
-                    <div className="line-clamp-1">工具：{t.tool_names.join("、") || "（未选）"}</div>
-                    {t.tool_call_message && <div className="line-clamp-1">消息：{t.tool_call_message}</div>}
+                    <div className="line-clamp-1">{tr("工具：{n0}", { n0: t.tool_names.join("、") || tr("（未选）") })}</div>
+                    {t.tool_call_message && <div className="line-clamp-1">{tr("消息：{n0}", { n0: t.tool_call_message })}</div>}
                   </>
                 )}
               </div>

@@ -2293,5 +2293,13 @@
   "↑ 更早历史": "↑ Earlier history",
   "输入 {n0} · 输出 {n1}": "Input {n0} · Output {n1}",
   "缓存读取 {n0} · 缓存写入 {n1}": "Cache read {n0} · Cache write {n1}",
-  "缓存读取 {n0}": "Cache read {n0}"
+  "缓存读取 {n0}": "Cache read {n0}",
+  "{n0} 个任务无法归档：{n1}": "{n0} tasks cannot be archived: {n1}",
+  "确定更新到 {n0}？\n\n": "Update to {n0}?\n\n",
+  "{n0}\n\n是否覆盖同名 Skill？": "{n0}\n\nOverwrite the Skill with the same name?",
+  "{n0}{n1} worker 可用 Read/Bash 按路径打开：\n{n2}\n": "{n0}{n1} workers can open by path with Read/Bash:\n{n2}\n",
+  "SQL注入\n命令执行": "SQL Injection\nCommand Execution",
+  "example.com\n203.0.113.10\n198.51.100.0/24\n京ICP备12345678号-1\n企业名称关键词": "example.com\n203.0.113.10\n198.51.100.0/24\nICP record #12345678-1\ncompany name keyword",
+  "## 执行方法\n\n1. 先探测错误\n2. 区分盲注类型\n\n脚本放 scripts/ 目录。": "## Method\n\n1. Probe for errors first\n2. Distinguish blind-injection types\n\nPut scripts in the scripts/ directory.",
+  "\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；": "\nNote: in-container update only replaces the program itself, not the image's toolchain (playwright / nmap, etc.);"
 }

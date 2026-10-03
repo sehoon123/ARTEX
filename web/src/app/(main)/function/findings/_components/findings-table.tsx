@@ -154,13 +154,13 @@ export function FindingsTable({
             />
           </TableHead>
           <TableHead className="w-8" />
-          <TableHead className="w-20">严重度</TableHead>
-          <TableHead>漏洞名称</TableHead>
-          <TableHead className="w-44">{"资产"}</TableHead>
+          <TableHead className="w-20">{tr("严重度")}</TableHead>
+          <TableHead>{tr("漏洞名称")}</TableHead>
+          <TableHead className="w-44">{tr("资产")}</TableHead>
           <TableHead className="w-28">{tr("状态")}</TableHead>
           <TableHead className="w-32">{tr("所属任务")}</TableHead>
           <TableHead className="w-24">{tr("时间")}</TableHead>
-          <TableHead className="w-48">{"操作"}</TableHead>
+          <TableHead className="w-48">{tr("操作")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -277,20 +277,20 @@ export function FindingsTable({
                       <Button asChild size="sm" variant="ghost">
                         <Link href={`/chat?c=${retest.conversation_id}`} title={tr("查看正在进行的复测会话")}>
                           <Spinner data-icon="inline-start" />
-                          复测中
+                          {tr("复测中")}
                         </Link>
                       </Button>
                     ) : null}
                     {!retest && f.finding_id && !f.inherited ? (
                       <Button size="sm" variant="ghost" onClick={() => onRetest(f)} title={tr("在独立会话中复测该漏洞")}>
                         <RotateCcwIcon data-icon="inline-start" />
-                        复测
+                        {tr("复测")}
                       </Button>
                     ) : null}
                     {f.finding_id && f.task_id && (
                       <Button size="sm" variant="ghost" onClick={() => onDeepen(f)}>
                         <FlaskConicalIcon data-icon="inline-start" />
-                        深入
+                        {tr("深入")}
                       </Button>
                     )}
                     {f.finding_id && (
@@ -307,7 +307,7 @@ export function FindingsTable({
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>确认删除该漏洞？</AlertDialogTitle>
+                            <AlertDialogTitle>{tr("确认删除该漏洞？")}</AlertDialogTitle>
                             <AlertDialogDescription className="break-words">
                               「
                               <span className="break-all">
@@ -336,7 +336,7 @@ export function FindingsTable({
                       {f.finding_id && edit && (
                         <div className="flex flex-wrap items-end gap-3 rounded-md border bg-background px-3 py-2.5">
                           <div className="flex min-w-[12rem] flex-1 flex-col gap-1">
-                            <Label className="text-xs text-muted-foreground">漏洞名称</Label>
+                            <Label className="text-xs text-muted-foreground">{tr("漏洞名称")}</Label>
                             <Input
                               value={edit.name}
                               onChange={(e) => onEditChange((s) => (s ? { ...s, name: e.target.value } : s))}
@@ -344,7 +344,7 @@ export function FindingsTable({
                             />
                           </div>
                           <div className="flex min-w-[10rem] flex-col gap-1">
-                            <Label className="text-xs text-muted-foreground">类别</Label>
+                            <Label className="text-xs text-muted-foreground">{tr("类别")}</Label>
                             <Input
                               value={edit.vulnclass}
                               onChange={(e) => onEditChange((s) => (s ? { ...s, vulnclass: e.target.value } : s))}
@@ -370,13 +370,13 @@ export function FindingsTable({
                             </Select>
                           </div>
                           <Button size="sm" disabled={saving} onClick={() => onSave(f)}>
-                            {saving ? "保存中…" : "保存"}
+                            {saving ? tr("保存中…") : tr("保存")}
                           </Button>
                         </div>
                       )}
                       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <ShieldAlertIcon className="size-3.5" />
-                        证据
+                        {tr("证据")}
                         {f.vulnclass && (
                           <span>
                             · 类型：
@@ -405,7 +405,7 @@ export function FindingsTable({
                           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                             <span className="flex items-center gap-2">
                               <FileTextIcon className="size-3.5" />
-                              详细报告
+                              {tr("详细报告")}
                             </span>
                             {reports[rowKey]?.status === "done" && reports[rowKey]?.text.trim() && (
                               <CopyButton
@@ -421,9 +421,9 @@ export function FindingsTable({
                             if (!rep || rep.status === "loading")
                               return <p className="text-xs text-muted-foreground">{tr("加载中…")}</p>;
                             if (rep.status === "error")
-                              return <p className="text-xs text-muted-foreground">报告加载失败。</p>;
+                              return <p className="text-xs text-muted-foreground">{tr("报告加载失败。")}</p>;
                             if (!rep.text.trim())
-                              return <p className="text-xs text-muted-foreground">暂无详细报告。</p>;
+                              return <p className="text-xs text-muted-foreground">{tr("暂无详细报告。")}</p>;
                             return (
                               // break-words 会继承到段落/列表,pre 另加
                               // whitespace-pre-wrap 让代码块也换行——否则长代码行/长 URL
@@ -445,7 +445,7 @@ export function FindingsTable({
         {items.length === 0 && (
           <TableRow>
             <TableCell colSpan={COLUMN_COUNT} className="py-12 text-center text-sm text-muted-foreground">
-              没有匹配的发现。
+              {tr("没有匹配的发现。")}
             </TableCell>
           </TableRow>
         )}

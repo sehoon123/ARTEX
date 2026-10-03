@@ -202,7 +202,7 @@ export default function NotifyPage() {
     setTesting(true);
     try {
       const r = await api.notifyTestChannel(editing.id);
-      toast.success(`已发出测试消息（${r.latency_ms} ms），请到群里确认`);
+      toast.success(tr("已发出测试消息（{n0} ms），请到群里确认", { n0: r.latency_ms }));
     } catch (e) {
       // 后端把渠道返回的原始错误如实回传，这是排查配置的唯一线索，原样展示。
       toast.error(tr("测试失败：") + (e as Error).message, { duration: 12000 });
@@ -214,7 +214,7 @@ export default function NotifyPage() {
   async function removeChannel(ch: NotificationChannel) {
     try {
       await api.notifyDeleteChannel(ch.id);
-      toast.success(`已删除：${ch.name}`);
+      toast.success(tr("已删除：{n0}", { n0: ch.name }));
       setOpen(false);
       load();
     } catch (e) {
@@ -236,7 +236,7 @@ export default function NotifyPage() {
     try {
       await api.setSettings({ notify_enabled: on });
       setMeta((m) => (m ? { ...m, enabled: on } : m));
-      toast.success(on ? "推送已开启" : "推送已暂停");
+      toast.success(on ? tr("推送已开启") : tr("推送已暂停"));
     } catch (e) {
       toast.error(tr("操作失败：") + (e as Error).message);
     } finally {
@@ -268,7 +268,7 @@ export default function NotifyPage() {
     <div className="flex flex-1 flex-col gap-4 md:gap-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{"通知推送"}</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{tr("通知推送")}</h1>
           <p className="text-muted-foreground text-sm">
             发现漏洞时推送到钉钉 / 飞书 / 企业微信等渠道 · 每个渠道可独立设推送时机与过滤规则
           </p>
@@ -277,7 +277,7 @@ export default function NotifyPage() {
           // 用 div 而不是 label：Switch 自带 aria-label，外面再套一层 label
           // 既关联不到任何原生控件，又会让点击文字看起来应该能切换。
           <div className="flex shrink-0 items-center gap-2 text-sm">
-            <span className="text-muted-foreground">总开关</span>
+            <span className="text-muted-foreground">{tr("总开关")}</span>
             <Switch
               checked={meta.enabled}
               disabled={globalSaving}
@@ -298,7 +298,7 @@ export default function NotifyPage() {
             label={tr("最久积压")}
             value={formatBacklog(meta.stats.backlog_age_ms)}
             // 积压年龄比积压条数有用得多：积压 3 条可以是从 3 秒到 3 小时。
-            hint={meta.stats.backlog_age_ms > 5 * 60_000 ? "推送可能卡住了" : undefined}
+            hint={meta.stats.backlog_age_ms > 5 * 60_000 ? tr("推送可能卡住了") : undefined}
             tone={meta.stats.backlog_age_ms > 5 * 60_000 ? "red" : undefined}
           />
         </div>
@@ -306,21 +306,21 @@ export default function NotifyPage() {
 
       <Card className="gap-3">
         <CardHeader>
-          <CardTitle className="text-base">全局设置</CardTitle>
+          <CardTitle className="text-base">{tr("全局设置")}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="n-base">回链地址</Label>
+            <Label htmlFor="n-base">{tr("回链地址")}</Label>
             <Input
               id="n-base"
               placeholder="https://artex.example.com"
               value={baseURL}
               onChange={(e) => setBaseURL(e.target.value)}
             />
-            <p className="text-muted-foreground text-xs">消息里「查看详情」按钮指向的地址。留空则不带按钮。</p>
+            <p className="text-muted-foreground text-xs">{tr("消息里「查看详情」按钮指向的地址。留空则不带按钮。")}</p>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="n-digest">汇总周期（分钟）</Label>
+            <Label htmlFor="n-digest">{tr("汇总周期（分钟）")}</Label>
             <Input
               id="n-digest"
               type="number"
@@ -330,7 +330,7 @@ export default function NotifyPage() {
               value={digestMin}
               onChange={(e) => setDigestMin(e.target.value)}
             />
-            <p className="text-muted-foreground text-xs">仅对「汇总」模式的渠道生效。</p>
+            <p className="text-muted-foreground text-xs">{tr("仅对「汇总」模式的渠道生效。")}</p>
           </div>
           <div className="sm:col-span-2">
             <Button onClick={saveGlobal} disabled={globalSaving}>
@@ -342,8 +342,8 @@ export default function NotifyPage() {
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as "channels" | "deliveries")} className="flex flex-col gap-4">
         <TabsList>
-          <TabsTrigger value="channels">{"渠道"}</TabsTrigger>
-          <TabsTrigger value="deliveries">投递记录</TabsTrigger>
+          <TabsTrigger value="channels">{tr("渠道")}</TabsTrigger>
+          <TabsTrigger value="deliveries">{tr("投递记录")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="channels">
@@ -354,7 +354,7 @@ export default function NotifyPage() {
               className="text-foreground/70 border-foreground/70 hover:bg-muted/60 hover:shadow-sm flex min-h-[130px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed transition"
             >
               <PlusIcon className="size-6" />
-              <span className="text-sm">添加渠道</span>
+              <span className="text-sm">{tr("添加渠道")}</span>
             </button>
 
             {channels.map((ch) => (
@@ -397,7 +397,7 @@ export default function NotifyPage() {
                 <CardContent className="grid gap-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline">{KIND_LABEL[ch.kind] ?? ch.kind}</Badge>
-                    <Badge variant="outline">{ch.mode === "digest" ? "汇总" : "实时"}</Badge>
+                    <Badge variant="outline">{ch.mode === "digest" ? tr("汇总") : tr("实时")}</Badge>
                     {!ch.enabled && <Badge variant="outline">{tr("已停用")}</Badge>}
                   </div>
                   <FilterSummary filter={ch.filter} />
@@ -415,17 +415,17 @@ export default function NotifyPage() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-full data-[side=right]:sm:max-w-lg">
           <SheetHeader>
-            <SheetTitle>{editing ? editing.name : "添加通知渠道"}</SheetTitle>
+            <SheetTitle>{editing ? editing.name : tr("添加通知渠道")}</SheetTitle>
             <SheetDescription>
               {KIND_LABEL[form.kind] ?? form.kind}
-              {defaultRate > 0 ? ` · 默认限流 ${defaultRate} 条/分钟` : " · 不限流"}
+              {defaultRate > 0 ? tr(" · 默认限流 {n0} 条/分钟", { n0: defaultRate }) : tr(" · 不限流")}
             </SheetDescription>
           </SheetHeader>
 
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4">
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label>渠道类型</Label>
+                <Label>{tr("渠道类型")}</Label>
                 <Select
                   value={form.kind}
                   onValueChange={(v) => {
@@ -453,7 +453,7 @@ export default function NotifyPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="n-name">渠道名称</Label>
+                <Label htmlFor="n-name">{tr("渠道名称")}</Label>
                 <Input
                   id="n-name"
                   placeholder={tr("应急响应群 / 日常播报群")}
@@ -479,14 +479,14 @@ export default function NotifyPage() {
               )}
 
               <div className="grid gap-2">
-                <Label>推送时机</Label>
+                <Label>{tr("推送时机")}</Label>
                 <Select value={form.mode} onValueChange={(v) => setF({ mode: v as "realtime" | "digest" })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="realtime">实时 · 每条漏洞单独发一条</SelectItem>
-                    <SelectItem value="digest">汇总 · 按周期合并成一条</SelectItem>
+                    <SelectItem value="realtime">{tr("实时 · 每条漏洞单独发一条")}</SelectItem>
+                    <SelectItem value="digest">{tr("汇总 · 按周期合并成一条")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-muted-foreground text-xs">
@@ -495,12 +495,12 @@ export default function NotifyPage() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="n-rate">限流（条/分钟）</Label>
+                <Label htmlFor="n-rate">{tr("限流（条/分钟）")}</Label>
                 <Input
                   id="n-rate"
                   type="number"
                   min={0}
-                  placeholder={defaultRate > 0 ? String(defaultRate) : "0 = 不限"}
+                  placeholder={defaultRate > 0 ? String(defaultRate) : tr("0 = 不限")}
                   value={form.ratePerMin}
                   onChange={(e) => setF({ ratePerMin: e.target.value })}
                 />
@@ -510,10 +510,10 @@ export default function NotifyPage() {
               </div>
 
               <div className="border-t pt-4">
-                <p className="mb-3 text-sm font-medium">过滤规则（留空即不过滤）</p>
+                <p className="mb-3 text-sm font-medium">{tr("过滤规则（留空即不过滤）")}</p>
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label>最低级别</Label>
+                    <Label>{tr("最低级别")}</Label>
                     <Select
                       value={form.minSeverity || "all"}
                       onValueChange={(v) => setF({ minSeverity: v === "all" ? "" : v })}
@@ -531,10 +531,10 @@ export default function NotifyPage() {
                     </Select>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="n-inc">只推这些漏洞类型</Label>
+                    <Label htmlFor="n-inc">{tr("只推这些漏洞类型")}</Label>
                     <Textarea
                       id="n-inc"
-                      placeholder={"SQL注入\n命令执行"}
+                      placeholder={tr("SQL注入\\n命令执行")}
                       value={form.includeText}
                       onChange={(e) => setF({ includeText: e.target.value })}
                     />
@@ -543,17 +543,17 @@ export default function NotifyPage() {
                     </p>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="n-exc">排除这些漏洞类型</Label>
+                    <Label htmlFor="n-exc">{tr("排除这些漏洞类型")}</Label>
                     <Textarea
                       id="n-exc"
-                      placeholder={"信息泄露"}
+                      placeholder={tr("信息泄露")}
                       value={form.excludeText}
                       onChange={(e) => setF({ excludeText: e.target.value })}
                     />
-                    <p className="text-muted-foreground text-xs">排除优先于包含：同时命中时会被排除。</p>
+                    <p className="text-muted-foreground text-xs">{tr("排除优先于包含：同时命中时会被排除。")}</p>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="n-tasks">限定任务 ID</Label>
+                    <Label htmlFor="n-tasks">{tr("限定任务 ID")}</Label>
                     <Input
                       id="n-tasks"
                       placeholder="1, 2, 3"
@@ -562,20 +562,20 @@ export default function NotifyPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="n-assets">限定资产 ID</Label>
+                    <Label htmlFor="n-assets">{tr("限定资产 ID")}</Label>
                     <Input
                       id="n-assets"
                       placeholder="10, 11"
                       value={form.assetIDsText}
                       onChange={(e) => setF({ assetIDsText: e.target.value })}
                     />
-                    <p className="text-muted-foreground text-xs">任务/资产留空=不限；填写后要求与漏洞有交集。</p>
+                    <p className="text-muted-foreground text-xs">{tr("任务/资产留空=不限；填写后要求与漏洞有交集。")}</p>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Switch
                       checked={form.onStatusChange}
                       onCheckedChange={(v) => setF({ onStatusChange: v })}
-                      aria-label={"接收状态变更"}
+                      aria-label={tr("接收状态变更")}
                     />
                     漏洞处置状态变更时也推送（仅实时模式）
                   </div>
@@ -590,7 +590,7 @@ export default function NotifyPage() {
 
             <div className="flex gap-2 pt-2 pb-6">
               <Button onClick={saveForm} disabled={saving}>
-                {editing ? "保存" : "添加"}
+                {editing ? tr("保存") : tr("添加")}
               </Button>
               {editing && (
                 <Button variant="outline" onClick={testChannel} disabled={testing}>

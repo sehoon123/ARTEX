@@ -56,7 +56,7 @@ export function UpdateCard() {
         setInfo(r);
         if (!quiet) {
           if (r.error) toast.error(tr("检查更新失败：") + r.error);
-          else if (r.has_update) toast.success(`发现新版本 ${r.latest}`);
+          else if (r.has_update) toast.success(tr("发现新版本 {n0}", { n0: r.latest }));
           else if (r.comparable) toast.success(tr("当前已是最新版本"));
         }
       })
@@ -84,7 +84,7 @@ export function UpdateCard() {
         if (r.ok) {
           const j = (await r.json()) as { version?: string };
           if (j.version && j.version !== fromVersion) {
-            toast.success(`已更新到 ${j.version}，正在重新加载页面`);
+            toast.success(tr("已更新到 {n0}，正在重新加载页面", { n0: j.version }));
             await sleep(800);
             window.location.reload();
             return;
@@ -95,7 +95,7 @@ export function UpdateCard() {
       }
     }
     setRestarting(false);
-    toast.error("等待服务重启超时。请检查后端日志，或确认 artex 是通过 start.sh / start.bat 启动的。");
+    toast.error(tr("等待服务重启超时。请检查后端日志，或确认 artex 是通过 start.sh / start.bat 启动的。"));
   }, []);
 
   // 订阅更新进度。SSE 不走 Next 的 /api 重写（那层会缓冲，事件推不出来）。
@@ -135,10 +135,10 @@ export function UpdateCard() {
     if (!info) return;
     const from = info.current;
     const ok = window.confirm(
-      `确定更新到 ${info.latest}？\n\n` +
+      tr("确定更新到 {n0}？\\n\\n", { n0: info.latest }) +
         "更新会重启程序，正在运行的任务会被中断。\n" +
         (info.mode === "docker"
-          ? "\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；" +
+          ? tr("\\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；") +
             "若新版本依赖新工具，请改用 docker compose pull。"
           : ""),
     );
@@ -192,11 +192,11 @@ export function UpdateCard() {
           <DownloadIcon className="size-4" />
           版本与更新
         </CardTitle>
-        <CardDescription>从 GitHub 检查并安装新版本。更新会重启程序，正在运行的任务会被中断。</CardDescription>
+        <CardDescription>{tr("从 GitHub 检查并安装新版本。更新会重启程序，正在运行的任务会被中断。")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-muted-foreground">当前版本</span>
+          <span className="text-muted-foreground">{tr("当前版本")}</span>
           <Badge variant="secondary" className="font-mono">
             {info?.current ?? "…"}
           </Badge>
@@ -205,12 +205,12 @@ export function UpdateCard() {
               <Badge variant="outline" className="font-mono">
                 {info.os}/{info.arch}
               </Badge>
-              <Badge variant="outline">{info.mode === "docker" ? "Docker" : "独立程序"}</Badge>
+              <Badge variant="outline">{info.mode === "docker" ? "Docker" : tr("独立程序")}</Badge>
             </>
           )}
           {info?.latest && (
             <>
-              <span className="text-muted-foreground">最新版本</span>
+              <span className="text-muted-foreground">{tr("最新版本")}</span>
               <Badge variant={info.has_update ? "default" : "secondary"} className="font-mono">
                 {info.latest}
               </Badge>
@@ -279,7 +279,7 @@ export function UpdateCard() {
           <div className="space-y-1.5">
             <Progress value={pct} className={downloading ? undefined : "animate-pulse"} />
             <p className="text-xs text-muted-foreground">
-              {restarting ? "正在重启并应用新版本，请稍候（页面会自动刷新）…" : progress?.message}
+              {restarting ? tr("正在重启并应用新版本，请稍候（页面会自动刷新）…") : progress?.message}
             </p>
           </div>
         )}
@@ -295,7 +295,7 @@ export function UpdateCard() {
             disabled={busy || restarting || !info?.has_update || info?.asset_available === false}
           >
             <DownloadIcon className="size-4" />
-            {info?.has_update ? `更新到 ${info.latest}` : "立即更新"}
+            {info?.has_update ? tr("更新到 {n0}", { n0: info.latest }) : tr("立即更新")}
           </Button>
           {info?.has_backup && (
             <Button variant="ghost" size="sm" onClick={doRollback} disabled={busy || restarting}>

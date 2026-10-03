@@ -119,10 +119,10 @@ export function ApprovalExecutionFocus({
     >
       <span className={error ? "text-destructive" : "text-muted-foreground"}>
         {error
-          ? `无法定位：${error}`
+          ? tr("无法定位：{n0}", { n0: error })
           : history.ready
-            ? `已展开审批 #${state.id} 对应的工具调用`
-            : `正在加载审批 #${state.id} 所在的对话位置…`}
+            ? tr("已展开审批 #{n0} 对应的工具调用", { n0: state.id })
+            : tr("正在加载审批 #{n0} 所在的对话位置…", { n0: state.id })}
       </span>
       <div className="flex gap-2">
         {error ? (

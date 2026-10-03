@@ -82,7 +82,7 @@ export default function LoginPage() {
   if (checking) {
     return (
       <div role="status" className="flex min-h-dvh items-center justify-center text-muted-foreground">
-        正在检查登录状态…
+        {tr("正在检查登录状态…")}
       </div>
     );
   }
@@ -104,22 +104,22 @@ export default function LoginPage() {
       <div className="flex w-full items-center justify-center bg-background p-8 lg:w-2/3">
         <div className="w-full max-w-md space-y-10 py-24 lg:py-32">
           <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-medium tracking-tight">{"登录"}</h2>
-            <p className="mx-auto max-w-xl text-muted-foreground">{"欢迎回来，请输入密码以继续使用 ARTEX"}</p>
+            <h2 className="text-2xl font-medium tracking-tight">{tr("登录")}</h2>
+            <p className="mx-auto max-w-xl text-muted-foreground">{tr("欢迎回来，请输入密码以继续使用 ARTEX")}</p>
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="username">{"用户名"}</Label>
+              <Label htmlFor="username">{tr("用户名")}</Label>
               <Input id="username" value="ARTEX" readOnly className="bg-muted text-muted-foreground" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password">{"密码"}</Label>
+              <Label htmlFor="password">{tr("密码")}</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={"请输入密码"}
+                placeholder={tr("请输入密码")}
                 autoFocus
                 autoComplete="current-password"
               />
@@ -132,7 +132,7 @@ export default function LoginPage() {
                 className="mt-0.5"
               />
               <Label htmlFor="agree-terms" className="text-sm font-normal leading-relaxed text-muted-foreground">
-                我已阅读并同意
+                {tr("我已阅读并同意")}
                 <button
                   type="button"
                   onClick={() => setTermsOpen(true)}
@@ -144,7 +144,7 @@ export default function LoginPage() {
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading || !password || !agreed}>
-              {loading ? "登录中..." : "登录"}
+              {loading ? tr("登录中...") : tr("登录")}
             </Button>
           </form>
         </div>
@@ -157,7 +157,7 @@ export default function LoginPage() {
               <ShieldCheck className="size-5" />
             </div>
             <div className="space-y-0.5">
-              <DialogTitle className="text-base">ARTEX 使用须知与免责声明</DialogTitle>
+              <DialogTitle className="text-base">{tr("ARTEX 使用须知与免责声明")}</DialogTitle>
               <p className="text-xs text-muted-foreground">
                 版本 v1.0 · 生效日期 2026-09-18 · 请在登录前完整阅读以下全部条款
               </p>
@@ -216,10 +216,10 @@ export default function LoginPage() {
                 <li>
                   严禁对任何网站、线上服务、他人或第三方所有的联网系统发起扫描、探测、利用或攻击（无论是否已获得授权、是否为您自有资产）；
                 </li>
-                <li>严禁将本软件用于任何实际的渗透测试、攻防对抗、红蓝演练或生产环境；</li>
-                <li>严禁将本软件用于非法入侵、数据窃取、勒索、拒绝服务（DoS/DDoS）或任何破坏性、犯罪性活动；</li>
-                <li>严禁移除、篡改或规避本软件及其输出中的任何版权、许可或安全提示信息；</li>
-                <li>严禁从事任何违反您所在国家或地区法律、法规及监管规定的行为。</li>
+                <li>{tr("严禁将本软件用于任何实际的渗透测试、攻防对抗、红蓝演练或生产环境；")}</li>
+                <li>{tr("严禁将本软件用于非法入侵、数据窃取、勒索、拒绝服务（DoS/DDoS）或任何破坏性、犯罪性活动；")}</li>
+                <li>{tr("严禁移除、篡改或规避本软件及其输出中的任何版权、许可或安全提示信息；")}</li>
+                <li>{tr("严禁从事任何违反您所在国家或地区法律、法规及监管规定的行为。")}</li>
               </ul>
             </section>
 
@@ -292,7 +292,7 @@ export default function LoginPage() {
 
           <DialogFooter className="mx-0 mb-0 flex-col items-stretch gap-2 rounded-b-xl px-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
-              {readToEnd ? "您已浏览全部条款" : "请将条款滚动至底部后再确认"}
+              {readToEnd ? tr("您已浏览全部条款") : tr("请将条款滚动至底部后再确认")}
             </p>
             <DialogClose asChild>
               <Button
@@ -303,7 +303,7 @@ export default function LoginPage() {
                   setError("");
                 }}
               >
-                我已阅读并同意全部条款
+                {tr("我已阅读并同意全部条款")}
               </Button>
             </DialogClose>
           </DialogFooter>

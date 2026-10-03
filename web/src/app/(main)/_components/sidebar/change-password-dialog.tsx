@@ -56,7 +56,7 @@ export function ChangePasswordDialog({
         toast.success(tr("密码已修改"));
         onOpenChange(false);
       })
-      .catch((err) => toast.error(`修改失败：${(err as Error).message}`))
+      .catch((err) => toast.error(tr("修改失败：{n0}", { n0: (err as Error).message })))
       .finally(() => setSaving(false));
   }
 
@@ -65,14 +65,14 @@ export function ChangePasswordDialog({
       <DialogContent className="sm:max-w-md">
         <form onSubmit={submit}>
           <DialogHeader>
-            <DialogTitle>{"修改密码"}</DialogTitle>
+            <DialogTitle>{tr("修改密码")}</DialogTitle>
             <DialogDescription>
               用户名固定为 <b>ARTEX</b>。需先输入当前密码验证；修改后已签发的登录 token 仍有效直至过期。
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3 py-4">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="cp-old">{"当前密码"}</Label>
+              <Label htmlFor="cp-old">{tr("当前密码")}</Label>
               <Input
                 id="cp-old"
                 type="password"
@@ -83,7 +83,7 @@ export function ChangePasswordDialog({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="cp-new">{"新密码"}</Label>
+              <Label htmlFor="cp-new">{tr("新密码")}</Label>
               <Input
                 id="cp-new"
                 type="password"
@@ -94,7 +94,7 @@ export function ChangePasswordDialog({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="cp-confirm">{"确认新密码"}</Label>
+              <Label htmlFor="cp-confirm">{tr("确认新密码")}</Label>
               <Input
                 id="cp-confirm"
                 type="password"
@@ -107,10 +107,10 @@ export function ChangePasswordDialog({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-              取消
+              {tr("取消")}
             </Button>
             <Button type="submit" disabled={saving}>
-              {saving ? "修改中…" : "确认修改"}
+              {saving ? tr("修改中…") : tr("确认修改")}
             </Button>
           </DialogFooter>
         </form>

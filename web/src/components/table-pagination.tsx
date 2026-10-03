@@ -65,13 +65,13 @@ export function TablePagination({
             ))}
           </SelectContent>
         </Select>
-        <span>条/页</span>
+        <span>{tr("条/页")}</span>
         {total > 0 ? (
           <span className="tabular-nums">
             {from}–{to} / 共 {total} 条
           </span>
         ) : (
-          <span>共 0 条</span>
+          <span>{tr("共 0 条")}</span>
         )}
       </div>
 

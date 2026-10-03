@@ -99,13 +99,13 @@ function statusTone(code: number) {
 const PAGE_SIZES = [25, 50, 100, 200];
 
 const TABS: { key: string; label: string; icon: LucideIcon }[] = [
-  { key: "company", label: "企业", icon: BuildingIcon },
-  { key: "root_domain", label: "根域名", icon: GlobeIcon },
+  { key: "company", label: tr("企业"), icon: BuildingIcon },
+  { key: "root_domain", label: tr("根域名"), icon: GlobeIcon },
   { key: "ip", label: "IP", icon: NetworkIcon },
-  { key: "subdomain", label: "子域名", icon: GlobeIcon },
-  { key: "app", label: "应用", icon: SmartphoneIcon },
-  { key: "service", label: "服务", icon: LayoutTemplateIcon },
-  { key: "endpoint", label: "接口", icon: LinkIcon },
+  { key: "subdomain", label: tr("子域名"), icon: GlobeIcon },
+  { key: "app", label: tr("应用"), icon: SmartphoneIcon },
+  { key: "service", label: tr("服务"), icon: LayoutTemplateIcon },
+  { key: "endpoint", label: tr("接口"), icon: LinkIcon },
 ];
 
 export default function AssetsPage() {
@@ -193,7 +193,7 @@ export default function AssetsPage() {
     setDeleting(true);
     try {
       const res = await api.deleteAssets(deleteIds);
-      toast.success(`已删除 ${res.deleted} 条资产`);
+      toast.success(tr("已删除 {n0} 条资产", { n0: res.deleted }));
       setSelected(new Set());
       refresh();
     } catch (e) {
@@ -211,8 +211,8 @@ export default function AssetsPage() {
       const res = await api.deleteCompany(companyDeleteTarget.id, companyDeleteAssets);
       const msg =
         companyDeleteAssets && res.assets_deleted > 0
-          ? `已删除企业，同时删除 ${res.assets_deleted} 条资产`
-          : "已删除企业";
+          ? tr("已删除企业，同时删除 {n0} 条资产", { n0: res.assets_deleted })
+          : tr("已删除企业");
       toast.success(msg);
       refresh();
     } catch (e) {
@@ -317,7 +317,7 @@ export default function AssetsPage() {
     <div className="flex h-[calc(100vh-6rem)] min-h-0 flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{"资产"}</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{tr("资产")}</h1>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">
@@ -329,7 +329,7 @@ export default function AssetsPage() {
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={refresh} disabled={loading}>
-            <RefreshCwIcon className={cn("size-4", loading && "animate-spin")} /> 刷新
+            <RefreshCwIcon className={cn("size-4", loading && "animate-spin")} /> {tr("刷新")}
           </Button>
           <CompanyDialog onSaved={refresh} />
         </div>
@@ -355,10 +355,10 @@ export default function AssetsPage() {
               <Table>
                 <TableHeader className="sticky top-0 z-10 bg-card">
                   <TableRow>
-                    <TableHead>{"企业"}</TableHead>
-                    <TableHead className="w-24 text-right">资产数</TableHead>
-                    <TableHead>{"资产范围"}</TableHead>
-                    <TableHead className="w-36 text-right">{"操作"}</TableHead>
+                    <TableHead>{tr("企业")}</TableHead>
+                    <TableHead className="w-24 text-right">{tr("资产数")}</TableHead>
+                    <TableHead>{tr("资产范围")}</TableHead>
+                    <TableHead className="w-36 text-right">{tr("操作")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -381,7 +381,7 @@ export default function AssetsPage() {
                             ))}
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground">未设置范围</span>
+                          <span className="text-xs text-muted-foreground">{tr("未设置范围")}</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
@@ -396,7 +396,7 @@ export default function AssetsPage() {
                               setCompanyDeleteTarget(c);
                               setCompanyDeleteAssets(false);
                             }}
-                            aria-label={`删除企业 ${c.name}`}
+                            aria-label={tr("删除企业 {n0}", { n0: c.name })}
                           >
                             <Trash2Icon className="size-3.5" />
                           </Button>
@@ -440,7 +440,7 @@ export default function AssetsPage() {
                 <TableCell className="font-mono text-xs font-medium">{a.domain}</TableCell>
                 <TableCell className="text-xs">{a.icp || "—"}</TableCell>
                 <TableCell className="text-xs">
-                  {companyName(a.company_id) || <span className="text-muted-foreground">未归属</span>}
+                  {companyName(a.company_id) || <span className="text-muted-foreground">{tr("未归属")}</span>}
                 </TableCell>
                 <TableCell className="w-8 pl-0">
                   <Button
@@ -448,7 +448,7 @@ export default function AssetsPage() {
                     size="icon"
                     className="size-7 text-muted-foreground hover:text-destructive"
                     onClick={() => openDelete([a.id])}
-                    aria-label={`删除资产 ${a.domain || a.id}`}
+                    aria-label={tr("删除资产 {n0}", { n0: a.domain || a.id })}
                   >
                     <Trash2Icon className="size-3.5" />
                   </Button>
@@ -495,7 +495,7 @@ export default function AssetsPage() {
                     size="icon"
                     className="size-7 text-muted-foreground hover:text-destructive"
                     onClick={() => openDelete([a.id])}
-                    aria-label={`删除资产 ${a.ip || a.id}`}
+                    aria-label={tr("删除资产 {n0}", { n0: a.ip || a.id })}
                   >
                     <Trash2Icon className="size-3.5" />
                   </Button>
@@ -537,7 +537,7 @@ export default function AssetsPage() {
                     size="icon"
                     className="size-7 text-muted-foreground hover:text-destructive"
                     onClick={() => openDelete([a.id])}
-                    aria-label={`删除资产 ${a.domain || a.id}`}
+                    aria-label={tr("删除资产 {n0}", { n0: a.domain || a.id })}
                   >
                     <Trash2Icon className="size-3.5" />
                   </Button>
@@ -577,7 +577,7 @@ export default function AssetsPage() {
                     size="icon"
                     className="size-7 text-muted-foreground hover:text-destructive"
                     onClick={() => openDelete([a.id])}
-                    aria-label={`删除资产 ${a.app_name || a.id}`}
+                    aria-label={tr("删除资产 {n0}", { n0: a.app_name || a.id })}
                   >
                     <Trash2Icon className="size-3.5" />
                   </Button>
@@ -672,7 +672,7 @@ export default function AssetsPage() {
                       size="icon"
                       className="size-7 text-muted-foreground hover:text-destructive"
                       onClick={() => openDelete([a.id])}
-                      aria-label={`删除资产 ${a.url || a.id}`}
+                      aria-label={tr("删除资产 {n0}", { n0: a.url || a.id })}
                     >
                       <Trash2Icon className="size-3.5" />
                     </Button>
@@ -724,7 +724,7 @@ export default function AssetsPage() {
                     size="icon"
                     className="size-7 text-muted-foreground hover:text-destructive"
                     onClick={() => openDelete([a.id])}
-                    aria-label={`删除资产 ${a.url || a.id}`}
+                    aria-label={tr("删除资产 {n0}", { n0: a.url || a.id })}
                   >
                     <Trash2Icon className="size-3.5" />
                   </Button>
@@ -738,14 +738,14 @@ export default function AssetsPage() {
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{"确认删除"}</AlertDialogTitle>
+            <AlertDialogTitle>{tr("确认删除")}</AlertDialogTitle>
             <AlertDialogDescription>
               将永久删除 <span className="font-semibold tabular-nums">{deleteIds.length}</span>{" "}
               条资产记录，此操作不可撤销。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>{"取消"}</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{tr("取消")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -754,7 +754,7 @@ export default function AssetsPage() {
               disabled={deleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleting ? "删除中…" : "确认删除"}
+              {deleting ? tr("删除中…") : tr("确认删除")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -774,7 +774,7 @@ export default function AssetsPage() {
             <AlertDialogTitle>删除企业 · {companyDeleteTarget?.name}</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-3">
-                <p>此操作将永久删除该企业及其资产范围配置，不可撤销。</p>
+                <p>{tr("此操作将永久删除该企业及其资产范围配置，不可撤销。")}</p>
                 <label
                   htmlFor="delete-assets-opt"
                   className="flex cursor-pointer items-center gap-2.5 rounded-md border p-3 hover:bg-muted/50"
@@ -786,14 +786,14 @@ export default function AssetsPage() {
                   />
                   <span className="text-sm leading-snug">
                     同时删除该企业下的所有资产
-                    <span className="block text-xs text-muted-foreground">不勾选则保留资产，仅取消归属关系</span>
+                    <span className="block text-xs text-muted-foreground">{tr("不勾选则保留资产，仅取消归属关系")}</span>
                   </span>
                 </label>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={companyDeleting}>{"取消"}</AlertDialogCancel>
+            <AlertDialogCancel disabled={companyDeleting}>{tr("取消")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -802,7 +802,7 @@ export default function AssetsPage() {
               disabled={companyDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {companyDeleting ? "删除中…" : "确认删除"}
+              {companyDeleting ? tr("删除中…") : tr("确认删除")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -871,7 +871,7 @@ function AssetCard({
             ) : (
               <TableRow>
                 <TableCell colSpan={cols.length} className="py-12 text-center text-sm text-muted-foreground">
-                  {loaded ? "暂无数据。" : "加载中…"}
+                  {loaded ? tr("暂无数据。") : tr("加载中…")}
                 </TableCell>
               </TableRow>
             )}
@@ -1000,14 +1000,14 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
       const res = await api.createCompany(name.trim(), parsedScope.rules);
       const added = res.scope_added ?? 0;
       const invalid = res.scope_invalid ?? 0;
-      if (invalid > 0) toast.warning(`已创建企业，添加 ${added} 条范围；${invalid} 行无效`);
-      else toast.success(`已创建企业，添加 ${added} 条范围`);
+      if (invalid > 0) toast.warning(tr("已创建企业，添加 {n0} 条范围；{n1} 行无效", { n0: added, n1: invalid }));
+      else toast.success(tr("已创建企业，添加 {n0} 条范围", { n0: added }));
       setOpen(false);
       onSaved();
     } catch (e) {
       const msg = String((e as Error)?.message ?? e);
       if (/:\s*409$/.test(msg)) toast.error(tr("企业已存在，请换个名称"));
-      else toast.error(`保存失败：${msg}`);
+      else toast.error(tr("保存失败：{n0}", { n0: msg }));
     } finally {
       setBusy(false);
     }
@@ -1017,18 +1017,18 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button size="sm">
-          <BuildingIcon data-icon="inline-start" /> 新增企业
+          <BuildingIcon data-icon="inline-start" /> {tr("新增企业")}
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full! max-w-none! gap-0 p-0 sm:w-[520px]! sm:max-w-[520px]!">
         <SheetHeader className="border-b p-6">
-          <SheetTitle>新增企业</SheetTitle>
-          <SheetDescription>配置企业及其资产范围。关键词只作为 Agent 提示，不会自动归属资产。</SheetDescription>
+          <SheetTitle>{tr("新增企业")}</SheetTitle>
+          <SheetDescription>{tr("配置企业及其资产范围。关键词只作为 Agent 提示，不会自动归属资产。")}</SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-6">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="cn-name">企业名称</FieldLabel>
+              <FieldLabel htmlFor="cn-name">{tr("企业名称")}</FieldLabel>
               <Input
                 id="cn-name"
                 placeholder={tr("如 Acme Corp（名称唯一）")}
@@ -1041,10 +1041,10 @@ function CompanyDialog({ onSaved }: { onSaved: () => void }) {
         </div>
         <SheetFooter className="flex-row justify-end gap-2 border-t p-4">
           <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>
-            取消
+            {tr("取消")}
           </Button>
           <Button onClick={submit} disabled={busy || !name.trim() || parsedScope.errors.length > 0}>
-            {busy ? "保存中…" : "保存"}
+            {busy ? tr("保存中…") : tr("保存")}
           </Button>
         </SheetFooter>
       </SheetContent>
@@ -1079,13 +1079,13 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
     try {
       const res = await api.updateCompanyScope(company.id, parsedScope.rules, reason);
       const errCount = res.invalid ?? 0;
-      if (errCount > 0) toast.warning(`已保存；${errCount} 行无效`);
-      else toast.success(`范围已更新，共 ${res.added} 条`);
+      if (errCount > 0) toast.warning(tr("已保存；{n0} 行无效", { n0: errCount }));
+      else toast.success(tr("范围已更新，共 {n0} 条", { n0: res.added }));
       showScopeWarnings(res.warnings);
       setOpen(false);
       onSaved();
     } catch (e) {
-      toast.error(`保存失败：${String((e as Error)?.message ?? e)}`);
+      toast.error(tr("保存失败：{n0}", { n0: String((e as Error)?.message ?? e) }));
     } finally {
       setBusy(false);
     }
@@ -1095,7 +1095,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="h-7">
-          编辑
+          {tr("编辑")}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -1113,7 +1113,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
             parsed={parsedScope}
           />
           <Field>
-            <FieldLabel htmlFor="es-reason">归属依据（可选）</FieldLabel>
+            <FieldLabel htmlFor="es-reason">{tr("归属依据（可选）")}</FieldLabel>
             <Input
               id="es-reason"
               placeholder={tr("如 证书 / whois / ASN 佐证")}
@@ -1124,10 +1124,10 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
         </FieldGroup>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>
-            取消
+            {tr("取消")}
           </Button>
           <Button onClick={submit} disabled={busy || parsedScope.errors.length > 0}>
-            {busy ? "保存中…" : "覆盖保存"}
+            {busy ? tr("保存中…") : tr("覆盖保存")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -1162,13 +1162,13 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
     try {
       const res = await api.addCompanyScope(company.id, parsedScope.rules, reason);
       const errCount = res.invalid ?? 0;
-      if (errCount > 0) toast.warning(`已保存；${errCount} 行无效`);
-      else toast.success(`已追加 ${res.added} 条范围`);
+      if (errCount > 0) toast.warning(tr("已保存；{n0} 行无效", { n0: errCount }));
+      else toast.success(tr("已追加 {n0} 条范围", { n0: res.added }));
       showScopeWarnings(res.warnings);
       setOpen(false);
       onSaved();
     } catch (e) {
-      toast.error(`保存失败：${String((e as Error)?.message ?? e)}`);
+      toast.error(tr("保存失败：{n0}", { n0: String((e as Error)?.message ?? e) }));
     } finally {
       setBusy(false);
     }
@@ -1178,13 +1178,13 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="h-7">
-          追加
+          {tr("追加")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>追加资产范围 · {company.name}</DialogTitle>
-          <DialogDescription>新范围会追加到现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。</DialogDescription>
+          <DialogDescription>{tr("新范围会追加到现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。")}</DialogDescription>
         </DialogHeader>
         <FieldGroup className="py-2">
           <ScopeTextEditor
@@ -1194,7 +1194,7 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
             parsed={parsedScope}
           />
           <Field>
-            <FieldLabel htmlFor="as-reason">归属依据（可选）</FieldLabel>
+            <FieldLabel htmlFor="as-reason">{tr("归属依据（可选）")}</FieldLabel>
             <Input
               id="as-reason"
               placeholder={tr("如 证书 / whois / ASN 佐证")}
@@ -1205,10 +1205,10 @@ function AppendScopeDialog({ company, onSaved }: { company: Company; onSaved: ()
         </FieldGroup>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>
-            取消
+            {tr("取消")}
           </Button>
           <Button onClick={submit} disabled={busy || parsedScope.rules.length === 0 || parsedScope.errors.length > 0}>
-            {busy ? "保存中…" : "追加"}
+            {busy ? tr("保存中…") : tr("追加")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -56,7 +56,7 @@ function AgentGridCard({
   async function del() {
     try {
       await api.deleteAgent(agent.key);
-      toast.success(`已删除 Agent「${agent.name}」`);
+      toast.success(tr("已删除 Agent「{n0}」", { n0: agent.name }));
       onDeleted();
     } catch (e) {
       toast.error(tr("删除失败：") + (e as Error).message);
@@ -71,16 +71,16 @@ function AgentGridCard({
           <span className="text-muted-foreground font-mono text-xs">{agent.key}</span>
           {agent.builtin ? (
             <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-              内置
+              {tr("内置")}
             </Badge>
           ) : (
             <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-              自定义
+              {tr("自定义")}
             </Badge>
           )}
           {!agent.enabled && (
             <Badge variant="outline" className="text-destructive px-1.5 py-0 text-[10px]">
-              已停用
+              {tr("已停用")}
             </Badge>
           )}
         </div>
@@ -90,7 +90,7 @@ function AgentGridCard({
         <div className="text-muted-foreground flex flex-wrap gap-1.5 text-[10px]">
           <span className="rounded border px-1.5 py-0.5">MCP {agent.mcp_count ?? 0}</span>
           <span className="rounded border px-1.5 py-0.5">Skill {agent.skill_count ?? 0}</span>
-          <span className="rounded border px-1.5 py-0.5">工具 {agent.tool_count ?? 0}</span>
+          <span className="rounded border px-1.5 py-0.5">{tr("工具")}{agent.tool_count ?? 0}</span>
         </div>
       </button>
       {!agent.builtin && (
@@ -133,7 +133,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
     setBusy(true);
     try {
       const a = await api.createAgent(key.trim(), name.trim(), description.trim());
-      toast.success(`已创建 Agent「${a.name}」`);
+      toast.success(tr("已创建 Agent「{n0}」", { n0: a.name }));
       setOpen(false);
       setKey("");
       setName("");
@@ -158,7 +158,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>新建自定义 Agent</DialogTitle>
+          <DialogTitle>{tr("新建自定义 Agent")}</DialogTitle>
           <DialogDescription>
             创建一个会话型助手。key 用于内部标识，创建后不可更改；名称与描述用于识别。
           </DialogDescription>
@@ -174,11 +174,11 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
               className="font-mono"
             />
             {key.length > 0 && !keyOk && (
-              <span className="text-destructive text-xs">小写字母开头，仅含小写字母/数字/下划线</span>
+              <span className="text-destructive text-xs">{tr("小写字母开头，仅含小写字母/数字/下划线")}</span>
             )}
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="agent-name">{"名称"}</Label>
+            <Label htmlFor="agent-name">{tr("名称")}</Label>
             <Input
               id="agent-name"
               placeholder={tr("如 研究助手")}
@@ -187,7 +187,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
             />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="agent-desc">{"描述"}</Label>
+            <Label htmlFor="agent-desc">{tr("描述")}</Label>
             <Textarea
               id="agent-desc"
               placeholder={tr("一句话说明这个 Agent 是干什么的")}
@@ -199,7 +199,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
         </div>
         <DialogFooter>
           <Button onClick={create} disabled={!canCreate}>
-            创建
+            {tr("创建")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -239,12 +239,12 @@ export default function AgentsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Agent 清单</CardTitle>
+          <CardTitle>{tr("Agent 清单")}</CardTitle>
           <CardDescription>共 {agents.length} 个</CardDescription>
         </CardHeader>
         <CardContent>
           {agents.length === 0 ? (
-            <p className="text-muted-foreground py-6 text-center text-sm">（暂无 Agent）</p>
+            <p className="text-muted-foreground py-6 text-center text-sm">{tr("（暂无 Agent）")}</p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {agents.map((a) => (
@@ -268,7 +268,7 @@ export default function AgentsPage() {
                   <span className="text-muted-foreground font-mono text-xs">{editing.key}</span>
                   {!editing.builtin && (
                     <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-                      自定义
+                      {tr("自定义")}
                     </Badge>
                   )}
                 </SheetTitle>

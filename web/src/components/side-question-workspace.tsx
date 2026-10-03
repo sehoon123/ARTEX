@@ -31,19 +31,19 @@ import { cn } from "@/lib/utils";
 type ComposerLayout = "inline" | "stacked";
 
 const preparationLabels = {
-  preparing: "正在准备上下文…",
-  summarizing_history: "正在整理早期旁路问答…",
-  compressing_snapshot: "正在压缩旁路上下文副本…",
-  retrying: "模型上下文超限，正在缩减后重试…",
-  answering: "正在回答…",
+  preparing: tr("正在准备上下文…"),
+  summarizing_history: tr("正在整理早期旁路问答…"),
+  compressing_snapshot: tr("正在压缩旁路上下文副本…"),
+  retrying: tr("模型上下文超限，正在缩减后重试…"),
+  answering: tr("正在回答…"),
 };
 
 export function SideQuestionButton({ side }: { side: SideQuestions }) {
   if (!side.enabled) return null;
   return (
-    <Button variant="outline" size="sm" onClick={() => side.setOpen(true)} title="/btw 旁路提问">
+    <Button variant="outline" size="sm" onClick={() => side.setOpen(true)} title={tr("/btw 旁路提问")}>
       <MessageCircleQuestionIcon data-icon="inline-start" />
-      旁路提问
+      {tr("旁路提问")}
     </Button>
   );
 }
@@ -66,9 +66,9 @@ function SidePanel({
   useEffect(() => {
     if (pinned.current && viewport.current) viewport.current.scrollTop = viewport.current.scrollHeight;
   }, [tail?.answer, tail?.id]);
-  const status = { running: "回答中", completed: "已完成", failed: "失败", cancelled: "已停止", interrupted: "已中断" };
+  const status = { running: tr("回答中"), completed: tr("已完成"), failed: tr("失败"), cancelled: tr("已停止"), interrupted: tr("已中断") };
   return (
-    <section className="flex h-full min-h-0 flex-col bg-background" aria-label={"旁路提问面板"}>
+    <section className="flex h-full min-h-0 flex-col bg-background" aria-label={tr("旁路提问面板")}>
       <div className="flex items-center gap-2 border-b p-3">
         <div className="min-w-0 flex-1">
           <p className="font-medium">
@@ -81,7 +81,7 @@ function SidePanel({
           size="icon-sm"
           onClick={() => setConfirm(true)}
           disabled={!side.items.length || side.busy}
-          aria-label={"清空旁路历史"}
+          aria-label={tr("清空旁路历史")}
         >
           <Trash2Icon />
         </Button>
@@ -116,8 +116,8 @@ function SidePanel({
         {!side.loading && side.items.length === 0 && (
           <Empty>
             <EmptyHeader>
-              <EmptyTitle>随时问一个问题</EmptyTitle>
-              <EmptyDescription>根据当前 Agent 的上下文回答，主任务继续运行。</EmptyDescription>
+              <EmptyTitle>{tr("随时问一个问题")}</EmptyTitle>
+              <EmptyDescription>{tr("根据当前 Agent 的上下文回答，主任务继续运行。")}</EmptyDescription>
             </EmptyHeader>
           </Empty>
         )}
@@ -164,7 +164,7 @@ function SidePanel({
           <InputGroupTextarea
             rows={1}
             className={cn("overflow-y-auto", inlineComposer ? "max-h-40 min-h-0" : "max-h-36 min-h-9")}
-            aria-label={"旁路问题"}
+            aria-label={tr("旁路问题")}
             placeholder={tr("询问当前上下文…")}
             value={side.draft}
             maxLength={4000}
@@ -178,7 +178,7 @@ function SidePanel({
             }}
           />
           <InputGroupAddon align={inlineComposer ? "inline-end" : "block-end"}>
-            {!inlineComposer && <span className="text-muted-foreground text-xs">独立问答 · 无工具执行</span>}
+            {!inlineComposer && <span className="text-muted-foreground text-xs">{tr("独立问答 · 无工具执行")}</span>}
             {side.running ? (
               <InputGroupButton
                 className="ml-auto"
@@ -205,19 +205,19 @@ function SidePanel({
         </InputGroup>
       </div>
       {inlineComposer && (
-        <div className="shrink-0 truncate px-3 pt-0.5 pb-1 text-muted-foreground text-xs">独立问答 · 无工具执行</div>
+        <div className="shrink-0 truncate px-3 pt-0.5 pb-1 text-muted-foreground text-xs">{tr("独立问答 · 无工具执行")}</div>
       )}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>清空旁路历史？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("清空旁路历史？")}</AlertDialogTitle>
             <AlertDialogDescription>
               删除当前 Agent 的旁路问答，并停止正在生成的旁路回答。主会话和上下文快照会保留。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{"取消"}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void side.clear()}>清空历史</AlertDialogAction>
+            <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => void side.clear()}>{tr("清空历史")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -255,7 +255,7 @@ export function SideQuestionWorkspace({
       <Drawer open={mobile && side.open && side.enabled} onOpenChange={side.setOpen}>
         <DrawerContent className="h-[85svh]">
           <DrawerHeader className="sr-only">
-            <DrawerTitle>旁路提问</DrawerTitle>
+            <DrawerTitle>{tr("旁路提问")}</DrawerTitle>
             <DrawerDescription>{label} 的独立问答</DrawerDescription>
           </DrawerHeader>
           <SidePanel side={side} label={label} composerLayout={composerLayout} />

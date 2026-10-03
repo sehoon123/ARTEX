@@ -43,9 +43,9 @@ export function FindingRetestDialog({ findingId, findingName, onClose, onStarted
       const result = await api.startFindingRetest(findingId, notes.trim());
       onStarted?.(result.retest);
       onClose();
-      toast.success(result.created ? "复测已启动，可点击「复测中」查看会话" : "该漏洞正在复测，可查看已有会话");
+      toast.success(result.created ? tr("复测已启动，可点击「复测中」查看会话") : tr("该漏洞正在复测，可查看已有会话"));
     } catch (e) {
-      toast.error(`发起复测失败：${(e as Error).message}`);
+      toast.error(tr("发起复测失败：{n0}", { n0: (e as Error).message }));
     } finally {
       submitLock.current = false;
       setSubmitting(false);
@@ -65,7 +65,7 @@ export function FindingRetestDialog({ findingId, findingName, onClose, onStarted
         </DialogHeader>
         <FieldGroup>
           <Field data-disabled={submitting}>
-            <FieldLabel htmlFor={notesId}>补充说明（可选）</FieldLabel>
+            <FieldLabel htmlFor={notesId}>{tr("补充说明（可选）")}</FieldLabel>
             <Textarea
               id={notesId}
               value={notes}
@@ -75,16 +75,16 @@ export function FindingRetestDialog({ findingId, findingName, onClose, onStarted
               onChange={(e) => setNotes(e.target.value)}
               placeholder={tr("例如：使用原测试账号验证原接口；修复版本为 v2。")}
             />
-            <FieldDescription>可补充修复版本、测试条件或本次限制。</FieldDescription>
+            <FieldDescription>{tr("可补充修复版本、测试条件或本次限制。")}</FieldDescription>
           </Field>
         </FieldGroup>
         <DialogFooter>
           <Button variant="outline" disabled={submitting} onClick={onClose}>
-            取消
+            {tr("取消")}
           </Button>
           <Button disabled={submitting} onClick={() => void start()}>
             {submitting ? <Spinner data-icon="inline-start" /> : <RotateCcwIcon data-icon="inline-start" />}
-            {submitting ? "正在创建…" : "开始复测"}
+            {submitting ? tr("正在创建…") : tr("开始复测")}
           </Button>
         </DialogFooter>
       </DialogContent>

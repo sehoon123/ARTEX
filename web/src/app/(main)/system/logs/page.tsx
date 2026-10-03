@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils";
 const MOCK_LOGS: LogLine[] = [
   { seq: 1, ts: "2026-07-26T03:55:00Z", level: "info", tag: "engine", text: "ARTEX v0.1.0 backend listening on :8787 (workers=3)" },
   { seq: 2, ts: "2026-07-26T03:55:01Z", level: "info", tag: "config", text: "LLM configured from DB: anthropic / claude-opus-4-8" },
-  { seq: 3, ts: "2026-07-26T03:56:10Z", level: "info", tag: "planner", text: "task t-acme-web: 第 3 轮规划，生成意图 i-4" },
-  { seq: 4, ts: "2026-07-26T03:57:00Z", level: "warn", tag: "guard", text: "block bash: 目标越界 out.evil.example 不在 scope 内" },
-  { seq: 5, ts: "2026-07-26T03:57:30Z", level: "info", tag: "work#1", text: "report_finding: Default Credentials (high) 已落库" },
-  { seq: 6, ts: "2026-07-26T03:58:20Z", level: "error", tag: "work#3", text: "intercept: mysqldump 命中破坏性规则，等待人工审批" },
+  { seq: 3, ts: "2026-07-26T03:56:10Z", level: "info", tag: "planner", text: tr("task t-acme-web: 第 3 轮规划，生成意图 i-4") },
+  { seq: 4, ts: "2026-07-26T03:57:00Z", level: "warn", tag: "guard", text: tr("block bash: 目标越界 out.evil.example 不在 scope 内") },
+  { seq: 5, ts: "2026-07-26T03:57:30Z", level: "info", tag: "work#1", text: tr("report_finding: Default Credentials (high) 已落库") },
+  { seq: 6, ts: "2026-07-26T03:58:20Z", level: "error", tag: "work#3", text: tr("intercept: mysqldump 命中破坏性规则，等待人工审批") },
 ];
 
 const levelTone: Record<LogLine["level"], string> = {
@@ -143,8 +143,8 @@ export default function LogsPage() {
   return (
     <div className="flex flex-1 flex-col gap-3">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight">系统日志</h1>
-        <p className="text-muted-foreground text-sm">后端实时日志流(planner / worker / 数据库 / 流量 …)</p>
+        <h1 className="text-xl font-semibold tracking-tight">{tr("系统日志")}</h1>
+        <p className="text-muted-foreground text-sm">{tr("后端实时日志流(planner / worker / 数据库 / 流量 …)")}</p>
       </div>
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -163,7 +163,7 @@ export default function LogsPage() {
                 className="h-8"
                 onClick={() => setLevel(lv)}
               >
-                {lv === "all" ? "全部" : lv}
+                {lv === "all" ? tr("全部") : lv}
               </Button>
             ))}
           </div>
@@ -173,15 +173,15 @@ export default function LogsPage() {
             className="h-8"
             onClick={() => setPaused((p) => !p)}
           >
-            {paused ? "已暂停" : "暂停"}
+            {paused ? tr("已暂停") : tr("暂停")}
           </Button>
           <Button size="sm" variant="outline" className="h-8" onClick={() => setLines([])}>
-            清空
+            {tr("清空")}
           </Button>
           <span className="ml-auto text-xs text-muted-foreground">
             {counts.total} 行 ·{" "}
             <span className="text-amber-600 dark:text-amber-400">{counts.warn} 警告</span> ·{" "}
-            <span className="text-red-600 dark:text-red-400">{counts.error} 错误</span>
+            <span className="text-red-600 dark:text-red-400">{counts.error} {tr("错误")}</span>
           </span>
         </div>
 
@@ -201,12 +201,12 @@ export default function LogsPage() {
                 disabled={loadingHistory}
                 onClick={loadOlderHistory}
               >
-                {loadingHistory ? "加载中…" : "加载更早日志"}
+                {loadingHistory ? tr("加载中…") : tr("加载更早日志")}
               </Button>
             </div>
           )}
           {filtered.length === 0 ? (
-            <p className="py-10 text-center text-muted-foreground">暂无日志。</p>
+            <p className="py-10 text-center text-muted-foreground">{tr("暂无日志。")}</p>
           ) : (
             filtered.map((l) => {
               const body =

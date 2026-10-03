@@ -58,12 +58,12 @@ const METHOD_COLOR: Record<string, string> = {
 };
 
 const TABS: { key: NewAssetType; label: string; icon: LucideIcon }[] = [
-  { key: "root_domain", label: "根域名", icon: GlobeIcon },
+  { key: "root_domain", label: tr("根域名"), icon: GlobeIcon },
   { key: "ip", label: "IP", icon: NetworkIcon },
-  { key: "subdomain", label: "子域名", icon: GlobeIcon },
-  { key: "app", label: "应用", icon: SmartphoneIcon },
-  { key: "service", label: "服务", icon: LayoutTemplateIcon },
-  { key: "endpoint", label: "接口", icon: LinkIcon },
+  { key: "subdomain", label: tr("子域名"), icon: GlobeIcon },
+  { key: "app", label: tr("应用"), icon: SmartphoneIcon },
+  { key: "service", label: tr("服务"), icon: LayoutTemplateIcon },
+  { key: "endpoint", label: tr("接口"), icon: LinkIcon },
 ];
 
 function firstText(values: Array<string | undefined>, fallback: string): string {
@@ -294,11 +294,11 @@ function AddTaskAssetsSheet({
     try {
       const result = await api.registerTaskAssetScopes(taskId, parsedScope.rules);
       const assetSummary = result.assets_linked + result.assets_existing;
-      toast.success(`已登记 ${result.requested} 条范围，关联 ${assetSummary} 项域名/IP 资产`);
+      toast.success(tr("已登记 {n0} 条范围，关联 {n1} 项域名/IP 资产", { n0: result.requested, n1: assetSummary }));
       onAttached();
       onOpenChange(false);
     } catch (reason) {
-      toast.error(`新增失败：${String((reason as Error)?.message ?? reason)}`);
+      toast.error(tr("新增失败：{n0}", { n0: String((reason as Error)?.message ?? reason) }));
     } finally {
       setSaving(false);
     }
@@ -308,7 +308,7 @@ function AddTaskAssetsSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-xl">
         <SheetHeader>
-          <SheetTitle>新增测试资产</SheetTitle>
+          <SheetTitle>{tr("新增测试资产")}</SheetTitle>
           <SheetDescription>
             直接填写测试范围。域名和 IP 会创建或复用全局资产；CIDR、ICP 和关键词作为 Agent 范围上下文。
           </SheetDescription>
@@ -320,12 +320,12 @@ function AddTaskAssetsSheet({
             onValueChange={setScopeText}
             parsed={parsedScope}
             label={tr("测试资产与范围")}
-            description={"每行一条，自动识别域名、IP、CIDR、ICP 备案和关键词。"}
+            description={tr("每行一条，自动识别域名、IP、CIDR、ICP 备案和关键词。")}
           />
         </div>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-            取消
+            {tr("取消")}
           </Button>
           <Button
             onClick={() => void attach()}
@@ -405,7 +405,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
           setRows([]);
           setTotal(0);
         } else {
-          toast.error(`加载任务资产失败：${message}`);
+          toast.error(tr("加载任务资产失败：{n0}", { n0: message }));
         }
       } finally {
         if (active && assetsRequestRef.current === request) {
@@ -439,11 +439,11 @@ export function AssetsTab({ taskId }: { taskId: string }) {
     setRemoving(true);
     try {
       await api.detachTaskAsset(taskId, removeTarget.id);
-      toast.success(`已将 ${assetLabel(removeTarget)} 移出当前任务`);
+      toast.success(tr("已将 {n0} 移出当前任务", { n0: assetLabel(removeTarget) }));
       setRemoveTarget(null);
       refresh();
     } catch (reason) {
-      toast.error(`移出失败：${String((reason as Error)?.message ?? reason)}`);
+      toast.error(tr("移出失败：{n0}", { n0: String((reason as Error)?.message ?? reason) }));
     } finally {
       setRemoving(false);
     }
@@ -454,7 +454,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
       variant="ghost"
       size="icon-sm"
       onClick={() => setRemoveTarget(asset)}
-      aria-label={`将资产 ${assetLabel(asset)} 移出任务`}
+      aria-label={tr("将资产 {n0} 移出任务", { n0: assetLabel(asset) })}
       title={tr("移出任务")}
     >
       <Trash2Icon />
@@ -483,7 +483,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
         </div>
         <Button size="sm" onClick={() => setAddOpen(true)}>
           <PlusIcon data-icon="inline-start" />
-          新增测试资产
+          {tr("新增测试资产")}
         </Button>
       </div>
 
@@ -681,14 +681,14 @@ export function AssetsTab({ taskId }: { taskId: string }) {
       <AlertDialog open={Boolean(removeTarget)} onOpenChange={(open) => !open && !removing && setRemoveTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>移出当前任务？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("移出当前任务？")}</AlertDialogTitle>
             <AlertDialogDescription className="[overflow-wrap:anywhere]">
-              {removeTarget ? `将“${assetLabel(removeTarget)}”从当前任务的测试资产中移出。` : ""}
+              {removeTarget ? tr("将“{n0}”从当前任务的测试资产中移出。", { n0: assetLabel(removeTarget) }) : ""}
               全局资产、关联流量和历史黑板锚点会继续保留。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={removing}>{"取消"}</AlertDialogCancel>
+            <AlertDialogCancel disabled={removing}>{tr("取消")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               disabled={removing}
@@ -698,7 +698,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
               }}
             >
               {removing ? <Spinner data-icon="inline-start" /> : <Trash2Icon data-icon="inline-start" />}
-              {removing ? "移出中" : "确认移出"}
+              {removing ? tr("移出中") : tr("确认移出")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

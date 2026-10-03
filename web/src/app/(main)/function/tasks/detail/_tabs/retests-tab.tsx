@@ -76,7 +76,7 @@ export function RetestsTab({ taskId }: { taskId: string }) {
           <AlertDescription>
             加载任务漏洞失败：{error}
             <Button variant="outline" size="sm" onClick={refresh}>
-              重试
+              {tr("重试")}
             </Button>
           </AlertDescription>
         </Alert>
@@ -85,7 +85,7 @@ export function RetestsTab({ taskId }: { taskId: string }) {
         <Card className="min-w-0">
           <CardHeader>
             <CardTitle>选择漏洞{data ? ` · ${data.total}` : ""}</CardTitle>
-            <CardDescription>查看本任务漏洞的复测记录，或发起新的复测。</CardDescription>
+            <CardDescription>{tr("查看本任务漏洞的复测记录，或发起新的复测。")}</CardDescription>
           </CardHeader>
           <CardContent className="flex max-h-[32rem] flex-col overflow-y-auto">
             {!loaded && !error ? <Skeleton className="h-24 w-full" /> : null}
@@ -95,7 +95,7 @@ export function RetestsTab({ taskId }: { taskId: string }) {
                 <Button
                   variant={finding.id === selectedId ? "secondary" : "ghost"}
                   className="h-auto w-full shrink-0 flex-col items-start gap-2 whitespace-normal py-3 text-left"
-                  aria-label={`选择漏洞：${findingLabel(finding)}`}
+                  aria-label={tr("选择漏洞：{n0}", { n0: findingLabel(finding) })}
                   aria-pressed={finding.id === selectedId}
                   onClick={() => setSelectedId(finding.id)}
                 >
@@ -110,8 +110,8 @@ export function RetestsTab({ taskId }: { taskId: string }) {
             {loaded && findings.length === 0 ? (
               <Empty>
                 <EmptyHeader>
-                  <EmptyTitle>暂无可复测漏洞</EmptyTitle>
-                  <EmptyDescription>本任务发现漏洞后，可在这里手动发起复测。</EmptyDescription>
+                  <EmptyTitle>{tr("暂无可复测漏洞")}</EmptyTitle>
+                  <EmptyDescription>{tr("本任务发现漏洞后，可在这里手动发起复测。")}</EmptyDescription>
                 </EmptyHeader>
               </Empty>
             ) : null}

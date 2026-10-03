@@ -53,7 +53,7 @@ export function ReportTab({ taskId }: { taskId: string }) {
     content = (
       <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-16 text-muted-foreground text-sm">
         <FileTextIcon className="size-8 opacity-40" />
-        加载中…
+        {tr("加载中…")}
       </div>
     );
   } else if (report) {
@@ -80,7 +80,7 @@ export function ReportTab({ taskId }: { taskId: string }) {
         <div className="flex gap-2">
           {report && (
             <Button size="sm" variant="outline" onClick={copy}>
-              {copied ? <CheckIcon /> : <CopyIcon />} 复制
+              {copied ? <CheckIcon /> : <CopyIcon />} {tr("复制")}
             </Button>
           )}
         </div>

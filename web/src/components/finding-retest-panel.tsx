@@ -20,13 +20,13 @@ import { api } from "@/lib/api";
 import type { FindingRetest } from "@/lib/types";
 
 const statusLabels = {
-  pending: "等待启动",
-  running: "复测中",
-  completed: "已完成",
-  failed: "复测失败",
-  stopped: "已停止",
+  pending: tr("等待启动"),
+  running: tr("复测中"),
+  completed: tr("已完成"),
+  failed: tr("复测失败"),
+  stopped: tr("已停止"),
 };
-const verdictLabels = { reproduced: "仍可复现", fixed: "已修复", inconclusive: "无法确认" };
+const verdictLabels = { reproduced: tr("仍可复现"), fixed: tr("已修复"), inconclusive: tr("无法确认") };
 
 function active(r: FindingRetest) {
   return r.status === "pending" || r.status === "running";
@@ -85,21 +85,21 @@ export function FindingRetestPanel({
     <Card>
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1.5">
-          <CardTitle>{"漏洞复测"}</CardTitle>
-          <CardDescription>在独立会话中验证当前状态，保留每次复测的结论与证据。</CardDescription>
+          <CardTitle>{tr("漏洞复测")}</CardTitle>
+          <CardDescription>{tr("在独立会话中验证当前状态，保留每次复测的结论与证据。")}</CardDescription>
         </div>
         {running?.conversation_id != null ? (
           <Button asChild variant="outline" size="sm">
             <Link href={`/chat?c=${running.conversation_id}`} title={tr("查看正在进行的复测会话")}>
               <Spinner data-icon="inline-start" aria-hidden="true" />
-              复测中
+              {tr("复测中")}
             </Link>
           </Button>
         ) : null}
         {!running && !readOnly ? (
           <Button size="sm" onClick={() => setOpen(true)} disabled={items === null || !!error}>
             <RotateCcwIcon data-icon="inline-start" />
-            发起复测
+            {tr("发起复测")}
           </Button>
         ) : null}
       </CardHeader>
@@ -109,7 +109,7 @@ export function FindingRetestPanel({
             <AlertDescription>
               加载复测记录失败：{error}
               <Button variant="outline" size="sm" onClick={() => void load()}>
-                重试
+                {tr("重试")}
               </Button>
             </AlertDescription>
           </Alert>
@@ -119,7 +119,7 @@ export function FindingRetestPanel({
           <Empty>
             <EmptyHeader>
               <EmptyTitle>{tr("暂无复测记录")}</EmptyTitle>
-              <EmptyDescription>修复部署完成后，可发起复测并比较新旧证据。</EmptyDescription>
+              <EmptyDescription>{tr("修复部署完成后，可发起复测并比较新旧证据。")}</EmptyDescription>
             </EmptyHeader>
           </Empty>
         ) : null}

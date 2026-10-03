@@ -110,7 +110,7 @@ function CopyButton({ text }: { text: string }) {
       size="icon"
       className="size-5 shrink-0"
       disabled={disabled}
-      title={copied ? "已复制" : "复制内容"}
+      title={copied ? tr("已复制") : tr("复制内容")}
       onClick={copy}
     >
       {copied ? <CheckIcon className="size-3 text-emerald-600" /> : <CopyIcon className="size-3" />}
@@ -261,7 +261,7 @@ export default function LLMRecordsPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <RadioIcon className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-xl font-semibold tracking-tight">LLM 录制</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{tr("LLM 录制")}</h1>
           <Badge variant="secondary">{total}</Badge>
         </div>
       </div>
@@ -285,7 +285,7 @@ export default function LLMRecordsPage() {
         />
         <Select value={pickedTask} onValueChange={setPickedTask}>
           <SelectTrigger size="sm" className="w-56">
-            <SelectValue placeholder={"选择任务…"} />
+            <SelectValue placeholder={tr("选择任务…")} />
           </SelectTrigger>
           <SelectContent>
             {tasks.length === 0 ? (
@@ -307,7 +307,7 @@ export default function LLMRecordsPage() {
           size="sm"
           className="h-8"
           disabled={!pickedTask || deleting}
-          title={pickedTask ? undefined : "先在上方选择任务"}
+          title={pickedTask ? undefined : tr("先在上方选择任务")}
           onClick={() => setDeleteOpen(true)}
         >
           <Trash2Icon className="size-3.5" />
@@ -342,7 +342,7 @@ export default function LLMRecordsPage() {
               recEnabled ? "text-foreground" : "text-muted-foreground",
             )}
           >
-            {recEnabled ? "录制中" : "已关闭"}
+            {recEnabled ? tr("录制中") : tr("已关闭")}
           </label>
         </div>
 
@@ -382,11 +382,11 @@ export default function LLMRecordsPage() {
               <TableHeader className="sticky top-0 z-10 bg-card">
                 <TableRow>
                   <TableHead className="w-[130px]">{tr("时间")}</TableHead>
-                  <TableHead className="w-[60px]">{"任务"}</TableHead>
+                  <TableHead className="w-[60px]">{tr("任务")}</TableHead>
                   <TableHead className="w-[90px]">Worker</TableHead>
                   <TableHead className="w-[100px]">Profile</TableHead>
                   <TableHead className="w-[140px]">Model</TableHead>
-                  <TableHead className="w-[70px]">延迟</TableHead>
+                  <TableHead className="w-[70px]">{tr("延迟")}</TableHead>
                   <TableHead className="w-[90px]">Tokens</TableHead>
                   <TableHead className="w-[60px]">{tr("状态")}</TableHead>
                 </TableRow>
@@ -493,7 +493,7 @@ export default function LLMRecordsPage() {
                 size="sm"
                 className="ml-auto h-7 shrink-0 text-xs"
                 disabled={!hasRaw}
-                title={hasRaw ? "查看与 provider 实际收发的 HTTP 原文" : "该记录录制于此功能上线前，无原文"}
+                title={hasRaw ? tr("查看与 provider 实际收发的 HTTP 原文") : tr("该记录录制于此功能上线前，无原文")}
                 onClick={() => setRawView((v) => !v)}
               >
                 原文
@@ -562,7 +562,7 @@ export default function LLMRecordsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>{"取消"}</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{tr("取消")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -571,7 +571,7 @@ export default function LLMRecordsPage() {
               disabled={deleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleting ? "删除中…" : "确认删除"}
+              {deleting ? tr("删除中…") : tr("确认删除")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

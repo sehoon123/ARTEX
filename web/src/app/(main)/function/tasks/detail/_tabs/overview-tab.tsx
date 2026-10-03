@@ -60,24 +60,24 @@ function scopeValue(row: TaskScopeRow): string {
   if (row.value) return row.value;
   if (row.domain) return row.domain;
   if (row.net) return row.net;
-  if (row.company_id) return row.company_name?.trim() ? row.company_name : `企业 #${row.company_id}`;
+  if (row.company_id) return row.company_name?.trim() ? row.company_name : tr("企业 #{n0}", { n0: row.company_id });
   return "—";
 }
 
 const SCOPE_KIND_LABELS: Record<TaskScopeRow["kind"], string> = {
-  company: "公司",
-  root_domain: "根域名",
-  subdomain: "子域名",
+  company: tr("公司"),
+  root_domain: tr("根域名"),
+  subdomain: tr("子域名"),
   ip: "IP",
-  cidr: "网段",
+  cidr: tr("网段"),
   icp: "ICP",
-  keyword: "关键词",
+  keyword: tr("关键词"),
 };
 
 const SCOPE_SOURCE_LABELS: Record<TaskScopeRow["source"], string> = {
-  auto: "自动",
+  auto: tr("自动"),
   agent: "Agent",
-  manual: "手动",
+  manual: tr("手动"),
 };
 
 function StatCard({
@@ -184,7 +184,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       setGoalVuln("");
       await loadGoals();
     } catch (e) {
-      setGoalErr(e instanceof Error ? e.message : "添加失败");
+      setGoalErr(e instanceof Error ? e.message : tr("添加失败"));
     } finally {
       setGoalBusy(false);
     }
@@ -212,7 +212,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       cancelEditGoal();
       await loadGoals();
     } catch (e) {
-      setGoalErr(e instanceof Error ? e.message : "保存失败");
+      setGoalErr(e instanceof Error ? e.message : tr("保存失败"));
     } finally {
       setGoalBusy(false);
     }
@@ -246,7 +246,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       setConText("");
       await loadConstraints();
     } catch (e) {
-      setConErr(e instanceof Error ? e.message : "添加失败");
+      setConErr(e instanceof Error ? e.message : tr("添加失败"));
     } finally {
       setConBusy(false);
     }
@@ -274,7 +274,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       cancelEditConstraint();
       await loadConstraints();
     } catch (e) {
-      setConErr(e instanceof Error ? e.message : "保存失败");
+      setConErr(e instanceof Error ? e.message : tr("保存失败"));
     } finally {
       setConBusy(false);
     }
@@ -299,7 +299,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       setScopeValueInput("");
       await loadScope();
     } catch (e) {
-      setScopeErr(e instanceof Error ? e.message : "添加失败");
+      setScopeErr(e instanceof Error ? e.message : tr("添加失败"));
     } finally {
       setScopeBusy(false);
     }
@@ -442,11 +442,11 @@ export function OverviewTab({ taskId }: { taskId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <div className="text-xs font-medium text-muted-foreground">{"描述"}</div>
+            <div className="text-xs font-medium text-muted-foreground">{tr("描述")}</div>
             <p className="text-sm whitespace-pre-wrap break-words">{task?.description?.trim() || "—"}</p>
           </div>
           <div className="flex flex-col gap-1.5">
-            <div className="text-xs font-medium text-muted-foreground">{"目标"}</div>
+            <div className="text-xs font-medium text-muted-foreground">{tr("目标")}</div>
             <p className="text-sm whitespace-pre-wrap break-words">{task?.goal?.trim() || "—"}</p>
           </div>
         </CardContent>
@@ -486,7 +486,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               disabled={goalBusy}
             />
             <Button size="sm" variant="outline" disabled={goalBusy || !goalText.trim()} onClick={() => void addGoal()}>
-              <PlusIcon className="size-3.5" /> 添加
+              <PlusIcon className="size-3.5" /> {tr("添加")}
             </Button>
             {goalErr && <span className="text-xs text-red-500">{goalErr}</span>}
           </div>
@@ -569,7 +569,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               )}
             </div>
           ) : (
-            <p className="text-muted-foreground text-sm">暂无目标，添加后规划者会据此派发探索意图并判定达成。</p>
+            <p className="text-muted-foreground text-sm">{tr("暂无目标，添加后规划者会据此派发探索意图并判定达成。")}</p>
           )}
         </CardContent>
       </Card>
@@ -579,7 +579,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <ShieldAlertIcon className="size-4 text-amber-500" /> 操作约束
+            <ShieldAlertIcon className="size-4 text-amber-500" /> {tr("操作约束")}
             <span className="text-muted-foreground text-xs font-normal">
               （框定 planner/worker 的探索边界，共 {constraints.length} 条；改动下一轮规划生效）
             </span>
@@ -593,8 +593,8 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               value={conKind}
               onChange={(e) => setConKind(e.target.value as TaskConstraint["kind"])}
             >
-              <NativeSelectOption value="deny">{"禁止"}</NativeSelectOption>
-              <NativeSelectOption value="allow">{"允许"}</NativeSelectOption>
+              <NativeSelectOption value="deny">{tr("禁止")}</NativeSelectOption>
+              <NativeSelectOption value="allow">{tr("允许")}</NativeSelectOption>
             </NativeSelect>
             <Input
               className="h-7 min-w-56 flex-1 text-sm"
@@ -612,7 +612,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               disabled={conBusy || !conText.trim()}
               onClick={() => void addConstraint()}
             >
-              <PlusIcon className="size-3.5" /> 添加
+              <PlusIcon className="size-3.5" /> {tr("添加")}
             </Button>
             {conErr && <span className="text-xs text-red-500">{conErr}</span>}
           </div>
@@ -669,7 +669,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                           : "bg-red-500/15 text-red-600 dark:text-red-400"
                       }`}
                     >
-                      {c.kind === "allow" ? "允许" : "禁止"}
+                      {c.kind === "allow" ? tr("允许") : tr("禁止")}
                     </span>
                     <span className="min-w-0 flex-1 break-words">{c.text}</span>
                     <Button
@@ -707,7 +707,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <TargetIcon className="size-4 text-emerald-500" /> 资产测试覆盖度
-              <span className="text-muted-foreground text-xs font-normal">（粗估，仅供参考）</span>
+              <span className="text-muted-foreground text-xs font-normal">{tr("（粗估，仅供参考）")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
@@ -741,7 +741,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
           <CardTitle className="flex items-center gap-2 text-base">
             <CoinsIcon className="size-4 text-amber-500" /> LLM Token 用量
             <span className="text-muted-foreground text-xs font-normal">
-              （按模型统计{tokenTotals.calls > 0 ? `，共 ${tokenTotals.calls} 次调用` : ""}）
+              （按模型统计{tokenTotals.calls > 0 ? tr("，共 {n0} 次调用", { n0: tokenTotals.calls }) : ""}）
             </span>
           </CardTitle>
         </CardHeader>
@@ -763,7 +763,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                   <span className="font-semibold">{fmtTokens(tokenTotals.cacheRead)}</span>
                 </span>
                 <span className="tabular-nums">
-                  <span className="text-muted-foreground">缓存命中率 </span>
+                  <span className="text-muted-foreground">{tr("缓存命中率")} </span>
                   <span className="font-semibold text-emerald-500">
                     {cacheHitRate(tokenTotals.cacheRead, tokenTotals.input)}
                   </span>
@@ -774,12 +774,12 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-muted-foreground border-b text-left text-xs">
-                      <th className="py-1.5 pr-3 font-medium">模型</th>
-                      <th className="py-1.5 pr-3 text-right font-medium">调用</th>
+                      <th className="py-1.5 pr-3 font-medium">{tr("模型")}</th>
+                      <th className="py-1.5 pr-3 text-right font-medium">{tr("调用")}</th>
                       <th className="py-1.5 pr-3 text-right font-medium">{tr("输入")}</th>
                       <th className="py-1.5 pr-3 text-right font-medium">{tr("输出")}</th>
                       <th className="py-1.5 pr-3 text-right font-medium">{tr("缓存读")}</th>
-                      <th className="py-1.5 text-right font-medium">命中率</th>
+                      <th className="py-1.5 text-right font-medium">{tr("命中率")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -802,7 +802,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               </div>
             </>
           ) : (
-            <p className="text-muted-foreground text-sm">暂无 LLM 用量（任务尚未产生调用，或记录仍在写入）。</p>
+            <p className="text-muted-foreground text-sm">{tr("暂无 LLM 用量（任务尚未产生调用，或记录仍在写入）。")}</p>
           )}
         </CardContent>
       </Card>
@@ -824,26 +824,26 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               value={scopeKind}
               onChange={(e) => setScopeKind(e.target.value as TaskScopeRow["kind"])}
             >
-              <NativeSelectOption value="root_domain">{"根域名"}</NativeSelectOption>
-              <NativeSelectOption value="subdomain">{"子域名"}</NativeSelectOption>
+              <NativeSelectOption value="root_domain">{tr("根域名")}</NativeSelectOption>
+              <NativeSelectOption value="subdomain">{tr("子域名")}</NativeSelectOption>
               <NativeSelectOption value="ip">IP</NativeSelectOption>
-              <NativeSelectOption value="cidr">{"网段"}</NativeSelectOption>
+              <NativeSelectOption value="cidr">{tr("网段")}</NativeSelectOption>
               <NativeSelectOption value="icp">ICP</NativeSelectOption>
-              <NativeSelectOption value="keyword">{"关键词"}</NativeSelectOption>
-              <NativeSelectOption value="company">{"公司"}</NativeSelectOption>
+              <NativeSelectOption value="keyword">{tr("关键词")}</NativeSelectOption>
+              <NativeSelectOption value="company">{tr("公司")}</NativeSelectOption>
             </NativeSelect>
             <Input
               className="h-7 w-56 text-sm"
               placeholder={
                 scopeKind === "company"
-                  ? "公司名或 id"
+                  ? tr("公司名或 id")
                   : scopeKind === "ip" || scopeKind === "cidr"
-                    ? "如 10.0.0.1 或 10.0.0.0/24"
+                    ? tr("如 10.0.0.1 或 10.0.0.0/24")
                     : scopeKind === "icp"
-                      ? "如 京ICP备12345678号-1"
+                      ? tr("如 京ICP备12345678号-1")
                       : scopeKind === "keyword"
-                        ? "如 企业名称关键词"
-                        : "如 example.com"
+                        ? tr("如 企业名称关键词")
+                        : tr("如 example.com")
               }
               value={scopeValueInput}
               onChange={(e) => setScopeValueInput(e.target.value)}
@@ -858,7 +858,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
               disabled={scopeBusy || !scopeValueInput.trim()}
               onClick={() => void addScope()}
             >
-              <PlusIcon className="size-3.5" /> 添加
+              <PlusIcon className="size-3.5" /> {tr("添加")}
             </Button>
             {scopeErr && <span className="text-xs text-red-500">{scopeErr}</span>}
           </div>
@@ -882,13 +882,13 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                       <Trash2Icon className="size-3.5 text-red-500" />
                     </Button>
                   ) : (
-                    <span className="text-muted-foreground shrink-0 text-xs">继承</span>
+                    <span className="text-muted-foreground shrink-0 text-xs">{tr("继承")}</span>
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground text-sm">暂无测试范围，添加后可作为资产覆盖度的分母。</p>
+            <p className="text-muted-foreground text-sm">{tr("暂无测试范围，添加后可作为资产覆盖度的分母。")}</p>
           )}
         </CardContent>
       </Card>
@@ -901,7 +901,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div>
-            <div className="text-xs text-muted-foreground">引擎态</div>
+            <div className="text-xs text-muted-foreground">{tr("引擎态")}</div>
             <StatusBadge
               domain="engine"
               value={stats?.engine_mode ?? task?.engine_mode ?? "idle"}
@@ -910,11 +910,11 @@ export function OverviewTab({ taskId }: { taskId: string }) {
             />
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">运行中 Worker</div>
+            <div className="text-xs text-muted-foreground">{tr("运行中 Worker")}</div>
             <div className="mt-1 text-lg font-semibold tabular-nums">{running.length}</div>
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">{"最近活动"}</div>
+            <div className="text-xs text-muted-foreground">{tr("最近活动")}</div>
             <div className="mt-1 inline-flex items-center gap-1 text-sm">
               <ClockIcon className="size-3.5" />
               {task?.last_activity ? new Date(task.last_activity).toLocaleTimeString("zh-CN") : "—"}
@@ -928,7 +928,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
           </div>
           {task?.completed_unix && task.completed_unix > 0 ? (
             <div>
-              <div className="text-xs text-muted-foreground">完成时间</div>
+              <div className="text-xs text-muted-foreground">{tr("完成时间")}</div>
               <div className="mt-1 inline-flex items-center gap-1 text-sm">
                 <ClockIcon className="size-3.5" />
                 {new Date(task.completed_unix * 1000).toLocaleString("zh-CN")}
@@ -953,7 +953,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                 <span className="min-w-0 flex-1 truncate">{i.payload}</span>
               </div>
             ))}
-            {running.length === 0 && <p className="text-sm text-muted-foreground">暂无进行中意图</p>}
+            {running.length === 0 && <p className="text-sm text-muted-foreground">{tr("暂无进行中意图")}</p>}
           </CardContent>
         </Card>
 
@@ -966,19 +966,19 @@ export function OverviewTab({ taskId }: { taskId: string }) {
           <CardContent className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <div className="text-2xl font-semibold tabular-nums text-red-600">{taskFindings.length}</div>
-              <div className="text-xs text-muted-foreground">确认漏洞</div>
+              <div className="text-xs text-muted-foreground">{tr("确认漏洞")}</div>
             </div>
             <div>
               <div className="text-2xl font-semibold tabular-nums text-blue-600">{running.length}</div>
-              <div className="text-xs text-muted-foreground">{"执行中"}</div>
+              <div className="text-xs text-muted-foreground">{tr("执行中")}</div>
             </div>
             <div>
               <div className="text-2xl font-semibold tabular-nums">{open.length}</div>
-              <div className="text-xs text-muted-foreground">frontier 待领</div>
+              <div className="text-xs text-muted-foreground">{tr("frontier 待领")}</div>
             </div>
             <div>
               <div className="text-2xl font-semibold tabular-nums text-red-600">{blocked.length}</div>
-              <div className="text-xs text-muted-foreground">被拦意图</div>
+              <div className="text-xs text-muted-foreground">{tr("被拦意图")}</div>
             </div>
           </CardContent>
         </Card>
@@ -996,7 +996,7 @@ export function OverviewTab({ taskId }: { taskId: string }) {
                 <span className="min-w-0 flex-1 truncate">{f.summary}</span>
               </div>
             ))}
-            {taskFindings.length === 0 && <p className="text-sm text-muted-foreground">暂无发现</p>}
+            {taskFindings.length === 0 && <p className="text-sm text-muted-foreground">{tr("暂无发现")}</p>}
           </CardContent>
         </Card>
       </div>
@@ -1043,22 +1043,22 @@ export function OverviewTab({ taskId }: { taskId: string }) {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label={tr("待领意图")} value={open.length} icon={ShieldCheckIcon} sub="frontier 开放" />
-        <StatCard label={tr("确认发现")} value={taskFindings.length} icon={BugIcon} sub={"本任务"} />
-        <StatCard label={"意图总数"} value={intents.length} icon={AlertTriangleIcon} sub={"本任务全部意图"} />
+        <StatCard label={tr("待领意图")} value={open.length} icon={ShieldCheckIcon} sub={tr("frontier 开放")} />
+        <StatCard label={tr("确认发现")} value={taskFindings.length} icon={BugIcon} sub={tr("本任务")} />
+        <StatCard label={tr("意图总数")} value={intents.length} icon={AlertTriangleIcon} sub={tr("本任务全部意图")} />
       </div>
     </div>
   );
 }
 
 const TASK_RULE_KIND_OPTIONS: { value: AssetInterceptKind; label: string; placeholder: string }[] = [
-  { value: "exact_domain", label: "域名(全等)", placeholder: "example.gov.cn" },
-  { value: "exact_ip", label: "IP(全等)", placeholder: "203.0.113.10" },
-  { value: "exact_url", label: "URL(全等)", placeholder: "https://example.com/login" },
-  { value: "fuzzy_domain", label: "域名(模糊)", placeholder: ".gov.cn" },
-  { value: "fuzzy_ip", label: "IP(模糊)", placeholder: "203.0.113." },
-  { value: "fuzzy_url", label: "URL(模糊)", placeholder: "/admin" },
-  { value: "cidr", label: "CIDR 网段", placeholder: "192.168.0.0/16" },
+  { value: "exact_domain", label: tr("域名(全等)"), placeholder: "example.gov.cn" },
+  { value: "exact_ip", label: tr("IP(全等)"), placeholder: "203.0.113.10" },
+  { value: "exact_url", label: tr("URL(全等)"), placeholder: "https://example.com/login" },
+  { value: "fuzzy_domain", label: tr("域名(模糊)"), placeholder: ".gov.cn" },
+  { value: "fuzzy_ip", label: tr("IP(模糊)"), placeholder: "203.0.113." },
+  { value: "fuzzy_url", label: tr("URL(模糊)"), placeholder: "/admin" },
+  { value: "cidr", label: tr("CIDR 网段"), placeholder: "192.168.0.0/16" },
 ];
 
 const TASK_RULE_KIND_LABEL: Record<AssetInterceptKind, string> = Object.fromEntries(
@@ -1179,8 +1179,8 @@ function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
         {/* 新增表单 */}
         <div className="flex flex-wrap items-center gap-2">
           <NativeSelect size="sm" value={newAction} onChange={(e) => setNewAction(e.target.value as "block" | "allow")}>
-            <NativeSelectOption value="block">{"拦截"}</NativeSelectOption>
-            <NativeSelectOption value="allow">{"允许"}</NativeSelectOption>
+            <NativeSelectOption value="block">{tr("拦截")}</NativeSelectOption>
+            <NativeSelectOption value="allow">{tr("允许")}</NativeSelectOption>
           </NativeSelect>
           <NativeSelect size="sm" value={newKind} onChange={(e) => setNewKind(e.target.value as AssetInterceptKind)}>
             {TASK_RULE_KIND_OPTIONS.map((o) => (
@@ -1207,7 +1207,7 @@ function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
             disabled={busy}
           />
           <Button size="sm" variant="outline" disabled={busy || !newPattern.trim()} onClick={() => void add()}>
-            <PlusIcon className="size-3.5" /> 添加
+            <PlusIcon className="size-3.5" /> {tr("添加")}
           </Button>
           {err && <span className="text-xs text-red-500">{err}</span>}
         </div>
@@ -1282,7 +1282,7 @@ function TaskInterceptRulesCard({ taskId }: { taskId: string }) {
                         : "bg-red-500/15 text-red-600 dark:text-red-400"
                     }`}
                   >
-                    {r.action === "allow" ? "允许" : "拦截"}
+                    {r.action === "allow" ? tr("允许") : tr("拦截")}
                   </span>
                   <span className="text-muted-foreground shrink-0 text-xs">{TASK_RULE_KIND_LABEL[r.kind]}</span>
                   <code className="bg-muted min-w-0 flex-1 truncate rounded px-1.5 py-0.5 text-xs">{r.pattern}</code>

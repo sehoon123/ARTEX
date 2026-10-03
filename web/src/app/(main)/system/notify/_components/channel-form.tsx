@@ -1,4 +1,5 @@
 "use client";
+import { tr } from "@/lib/i18n";
 
 import { CheckIcon } from "lucide-react";
 
@@ -120,7 +121,7 @@ export function ConfigField({
   const hint = masked ? (
     <p className="text-muted-foreground flex items-center gap-1 text-xs">
       <CheckIcon className="size-3" />
-      已保存{maskedTail ? `（尾号 ${maskedTail}）` : ""} · 填入新值即覆盖，清空则删除该项
+      已保存{maskedTail ? tr("（尾号 {n0}）", { n0: maskedTail }) : ""} · 填入新值即覆盖，清空则删除该项
     </p>
   ) : (
     def.help && <p className="text-muted-foreground text-xs">{def.help}</p>
@@ -141,13 +142,13 @@ export function FilterSummary({ filter }: { filter: NotificationFilter }) {
   if (filter.min_severity) {
     parts.push(SEVERITY_OPTIONS.find((o) => o.value === filter.min_severity)?.label ?? filter.min_severity);
   }
-  if (filter.vulnclass_include?.length) parts.push(`类型含 ${filter.vulnclass_include.length} 词`);
-  if (filter.vulnclass_exclude?.length) parts.push(`排除 ${filter.vulnclass_exclude.length} 词`);
-  if (filter.task_ids?.length) parts.push(`${filter.task_ids.length} 个任务`);
-  if (filter.asset_ids?.length) parts.push(`${filter.asset_ids.length} 个资产`);
-  if (filter.on_status_change) parts.push("含状态变更");
+  if (filter.vulnclass_include?.length) parts.push(tr("类型含 {n0} 词", { n0: filter.vulnclass_include.length }));
+  if (filter.vulnclass_exclude?.length) parts.push(tr("排除 {n0} 词", { n0: filter.vulnclass_exclude.length }));
+  if (filter.task_ids?.length) parts.push(tr("{n0} 个任务", { n0: filter.task_ids.length }));
+  if (filter.asset_ids?.length) parts.push(tr("{n0} 个资产", { n0: filter.asset_ids.length }));
+  if (filter.on_status_change) parts.push(tr("含状态变更"));
   if (parts.length === 0) {
-    return <p className="text-muted-foreground text-sm">全部漏洞</p>;
+    return <p className="text-muted-foreground text-sm">{tr("全部漏洞")}</p>;
   }
   return <p className="text-muted-foreground text-sm">{parts.join(" · ")}</p>;
 }

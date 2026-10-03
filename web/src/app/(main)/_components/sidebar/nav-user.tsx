@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { EllipsisVertical, Globe, KeyRound, LogOut } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, tr } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -85,7 +85,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setPwOpen(true)}>
               <KeyRound />
-              {"修改密码"}
+              {tr("修改密码")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setLocale(nextLocale)}>
               <Globe />
@@ -94,7 +94,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
               <LogOut />
-              {"退出登录"}
+              {tr("退出登录")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

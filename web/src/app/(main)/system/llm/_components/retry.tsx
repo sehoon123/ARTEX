@@ -53,65 +53,65 @@ type LayerMeta = {
 
 export const RETRY_LAYERS = {
   connect: {
-    title: "建连重试",
-    where: "SDK · 拿到 200 之前",
+    title: tr("建连重试"),
+    where: tr("SDK · 拿到 200 之前"),
     trigger:
       "连不上或还没拿到 200：连接重置 / 读写超时 / DNS 失败等网络层错误，以及 HTTP 408、429、500、502、503、504。",
-    skips: "其余状态码（400 / 401 / 403 / 404 / 413 / 422 等）都是确定性拒绝，重发也一样失败，直接上抛。",
-    desc: "原样重发同一个请求。流一旦开始（已经拿到 200），中途断开就不归这层管了。",
-    attemptsLabel: "重试次数",
+    skips: tr("其余状态码（400 / 401 / 403 / 404 / 413 / 422 等）都是确定性拒绝，重发也一样失败，直接上抛。"),
+    desc: tr("原样重发同一个请求。流一旦开始（已经拿到 200），中途断开就不归这层管了。"),
+    attemptsLabel: tr("重试次数"),
     defAttempts: 3,
-    defInterval: "0.5s→1s→2s 指数（封顶 8s）",
-    offHint: "-1 = 一次都不重试，失败立刻上抛",
+    defInterval: tr("0.5s→1s→2s 指数（封顶 8s）"),
+    offHint: tr("-1 = 一次都不重试，失败立刻上抛"),
   },
   empty: {
-    title: "空响应重试",
-    where: "SDK · 仅 openai 格式",
+    title: tr("空响应重试"),
+    where: tr("SDK · 仅 openai 格式"),
     trigger:
       "HTTP 200、finish_reason 是正常 stop，但整条响应一个内容块都没有——网关空帧、思考字段丢帧、采样打嗝都会长这样。",
-    skips: "因 max_tokens 截断而没有内容的不算（那要靠调高输出上限解决，重发只会再撞一次）。",
-    desc: "重发整个 prompt，所以在长上下文上比较贵，次数不宜给大。",
-    attemptsLabel: "重试次数",
+    skips: tr("因 max_tokens 截断而没有内容的不算（那要靠调高输出上限解决，重发只会再撞一次）。"),
+    desc: tr("重发整个 prompt，所以在长上下文上比较贵，次数不宜给大。"),
+    attemptsLabel: tr("重试次数"),
     defAttempts: 2,
-    defInterval: "0.5s→1s→2s 指数（封顶 8s）",
-    offHint: "-1 = 空响应直接原样交出",
+    defInterval: tr("0.5s→1s→2s 指数（封顶 8s）"),
+    offHint: tr("-1 = 空响应直接原样交出"),
   },
   stream: {
-    title: "同 provider 安全窗口重试",
-    where: "本项目 · 未交付输出前",
+    title: tr("同 provider 安全窗口重试"),
+    where: tr("本项目 · 未交付输出前"),
     trigger:
       "流已经建立（拿到 200）之后才出问题：连接中途断开、供应商 overloaded、流内的 429 / 5xx 错误事件——且一个 token 都还没交给调用方。",
     skips:
       "额度耗尽（402 / insufficient_quota，交给轮询换配置）、上下文过长（413 / context length，交给压缩）、400 / 401 / 403 / 404 / 422 确定性拒绝，都不重试。",
-    desc: "在同一个配置上重放同一个请求。因为还没交付任何输出，重放不会重复模型输出或工具执行。",
-    attemptsLabel: "重试次数",
+    desc: tr("在同一个配置上重放同一个请求。因为还没交付任何输出，重放不会重复模型输出或工具执行。"),
+    attemptsLabel: tr("重试次数"),
     defAttempts: 2,
-    defInterval: "0.5s→1s 指数（封顶 4s）",
-    offHint: "-1 = 断流直接交给外层的意图重跑",
+    defInterval: tr("0.5s→1s 指数（封顶 4s）"),
+    offHint: tr("-1 = 断流直接交给外层的意图重跑"),
   },
   breaker: {
-    title: "轮询熔断",
-    where: "本项目 · 进程级，全局一份",
+    title: tr("轮询熔断"),
+    where: tr("本项目 · 进程级，全局一份"),
     trigger:
       "瞬时失败（429、5xx、网络错误）连续累计到阈值时熔断；余额不足（402）、密钥失效（401 / 403）、模型不存在（404）这类确定性失败不看阈值，第一次就熔断。",
-    skips: "成功一次即清零，所以偶尔抽风的配置不会被慢慢攒到熔断。",
-    desc: "熔断后进入冷却，冷却期内轮询直接跳过这个配置。状态落库，重启不丢。",
-    attemptsLabel: "连续失败几次熔断",
+    skips: tr("成功一次即清零，所以偶尔抽风的配置不会被慢慢攒到熔断。"),
+    desc: tr("熔断后进入冷却，冷却期内轮询直接跳过这个配置。状态落库，重启不丢。"),
+    attemptsLabel: tr("连续失败几次熔断"),
     defAttempts: 3,
-    defInterval: "1min→5min→30min 梯度",
-    offHint: "-1 = 瞬时失败永不熔断（确定性失败仍然熔断）",
+    defInterval: tr("1min→5min→30min 梯度"),
+    offHint: tr("-1 = 瞬时失败永不熔断（确定性失败仍然熔断）"),
   },
   intent: {
-    title: "意图重跑",
-    where: "本项目 · 进程级，全局一份",
+    title: tr("意图重跑"),
+    where: tr("本项目 · 进程级，全局一份"),
     trigger:
       "前面几层都没兜住：worker 以 model_error 收场——内层重试全部用尽，或者流已经开始交付输出后才断掉（那时重放不安全，只能整条重来）。",
-    skips: "额度耗尽已经由轮询换配置处理，不在这里重跑；任务被暂停 / 终止 / 进入收尾时立即让位，不占用退避时间。",
-    desc: "整条意图从头再跑一遍。它是最外层，一次重跑意味着里面几层的次数会再乘一遍。",
-    attemptsLabel: "重跑次数",
+    skips: tr("额度耗尽已经由轮询换配置处理，不在这里重跑；任务被暂停 / 终止 / 进入收尾时立即让位，不占用退避时间。"),
+    desc: tr("整条意图从头再跑一遍。它是最外层，一次重跑意味着里面几层的次数会再乘一遍。"),
+    attemptsLabel: tr("重跑次数"),
     defAttempts: 2,
-    defInterval: "固定 3s",
-    offHint: "-1 = 不重跑，该意图直接判为 blocked",
+    defInterval: tr("固定 3s"),
+    offHint: tr("-1 = 不重跑，该意图直接判为 blocked"),
   },
 } satisfies Record<string, LayerMeta>;
 
@@ -189,11 +189,11 @@ export function RetryRuleFields({
         </div>
         {/* 哪些错误会走到这层，具体到状态码——填了旋钮却看不到效果，多半是错误压根不落在这层。 */}
         <p className="text-muted-foreground text-xs">
-          <span className="font-medium text-foreground">触发</span>：{meta.trigger}
+          <span className="font-medium text-foreground">{tr("触发")}</span>：{meta.trigger}
         </p>
         {!compact && meta.skips && (
           <p className="text-muted-foreground text-xs">
-            <span className="font-medium text-foreground">不走这层</span>：{meta.skips}
+            <span className="font-medium text-foreground">{tr("不走这层")}</span>：{meta.skips}
           </p>
         )}
         {!compact && <p className="text-muted-foreground text-xs">{meta.desc}</p>}
@@ -207,7 +207,7 @@ export function RetryRuleFields({
             id={`${idPrefix}-${layer}-n`}
             min={-1}
             value={value.attempts}
-            placeholder={`默认 ${meta.defAttempts}`}
+            placeholder={tr("默认 {n0}", { n0: meta.defAttempts })}
             onChange={(n) => onChange({ ...value, attempts: n })}
           />
         </div>
@@ -222,7 +222,7 @@ export function RetryRuleFields({
             placeholder={tr("默认退避")}
             onChange={(n) => onChange({ ...value, interval_ms: n })}
           />
-          <span className="text-muted-foreground text-xs">{human ? `固定 ${human}` : meta.defInterval}</span>
+          <span className="text-muted-foreground text-xs">{human ? tr("固定 {n0}", { n0: human }) : meta.defInterval}</span>
         </div>
       </div>
       {!compact && <p className="text-muted-foreground text-xs">留空 = 用默认；{meta.offHint}。</p>}
@@ -241,7 +241,7 @@ export function ProfileRetryFields({
   return (
     <div className="grid gap-3 rounded-lg border p-3">
       <div className="grid gap-0.5">
-        <Label className="text-sm">重试覆盖</Label>
+        <Label className="text-sm">{tr("重试覆盖")}</Label>
         <p className="text-muted-foreground text-xs">
           只对这个配置生效，覆盖「重试与退避」里的全局默认。每格留空 = 跟随全局；次数填 -1 = 关掉这层重试；
           间隔填了就用固定间隔取代指数退避。熔断与意图重跑是进程级的，只能在全局那页调。
@@ -274,7 +274,7 @@ export function RetryPolicyPanel() {
       const p = await api.llmRetryPolicy();
       setPolicy({ ...ZERO_POLICY, ...p });
     } catch (e) {
-      toast.error(`读取重试策略失败：${(e as Error).message}`);
+      toast.error(tr("读取重试策略失败：{n0}", { n0: (e as Error).message }));
     } finally {
       setLoading(false);
     }
@@ -293,7 +293,7 @@ export function RetryPolicyPanel() {
       setPolicy({ ...ZERO_POLICY, ...saved });
       toast.success(tr("已保存，即时生效（正在跑的这一轮调用仍用旧参数）"));
     } catch (e) {
-      toast.error(`保存失败：${(e as Error).message}`);
+      toast.error(tr("保存失败：{n0}", { n0: (e as Error).message }));
     } finally {
       setSaving(false);
     }
@@ -313,9 +313,9 @@ export function RetryPolicyPanel() {
     <div className="grid gap-4">
       <div className="rounded-lg border bg-muted/30 p-3 text-muted-foreground text-xs leading-relaxed">
         一次模型调用的失败会依次经过五层重试，由内到外：
-        <span className="text-foreground"> 建连 → 空响应 → 同 provider 安全窗口 → 轮询熔断 → 意图重跑</span>
+        <span className="text-foreground"> {tr("建连 → 空响应 → 同 provider 安全窗口 → 轮询熔断 → 意图重跑")}</span>
         。内层用尽才轮到外层，所以次数是
-        <span className="text-foreground">相乘</span>
+        <span className="text-foreground">{tr("相乘")}</span>
         的——把每层都拉满，一次抖动能烧掉几十次请求。
         全部留空即当前默认值，与没有这页时的行为完全一致。前三层可以在每个模型配置里单独覆盖。
       </div>
@@ -329,7 +329,7 @@ export function RetryPolicyPanel() {
       <div className="flex gap-2">
         <Button onClick={save} disabled={saving}>
           {saving ? <Loader2Icon className="animate-spin" /> : <SaveIcon />}
-          保存
+          {tr("保存")}
         </Button>
         <Button variant="outline" onClick={() => setPolicy(ZERO_POLICY)} disabled={saving}>
           全部恢复默认

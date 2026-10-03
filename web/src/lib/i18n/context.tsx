@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 
 export type Locale = "en" | "ko";
 
@@ -10,33 +10,45 @@ import ko from "./ko.json";
 
 const maps: Record<string, Record<string, string>> = { en, ko };
 
-// Module-level current locale. Read by the plain t() function below so that
-// t() works anywhere (event handlers, toasts, module scope at render) without
-// a hook. The I18nProvider forces a full subtree remount on locale change
-// (via key=), so every component re-runs and re-reads the new locale.
-let currentLocale: Locale = "en";
+const STORAGE_KEY = "artex_locale";
 
-/** Translate Chinese key to the current locale. Returns the key unchanged if
+function detectLocale(): Locale {
+  if (typeof window === "undefined") return "en"; // static-export prerender
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "en" || stored === "ko") return stored;
+    return navigator.language.toLowerCase().startsWith("ko") ? "ko" : "en";
+  } catch {
+    return "en";
+  }
+}
+
+// Resolved once at module load (synchronously from localStorage on the client).
+// Because every other module imports `tr` from here, this i18n module initializes
+// first, so module-level label maps that call tr() at import time get the right
+// locale too. Changing locale does a full reload (see setLocale) so those
+// module-level constants re-evaluate.
+let currentLocale: Locale = detectLocale();
+
+/** Translate a Chinese key to the current locale. Returns the key unchanged if
  *  no translation exists (graceful fallback → original Chinese).
  *  Named `tr` (not `t`) to avoid collisions with the many local `t` variables
  *  (loop callbacks, setTimeout handles, Tool params) throughout the codebase. */
-export function tr(zh: string, params?: Record<string, string | number>): string {
+export function tr(
+  zh: string,
+  params?: Record<string, string | number | boolean | null | undefined>,
+): string {
   let str = maps[currentLocale]?.[zh] ?? zh;
   if (params) {
     for (const [k, v] of Object.entries(params)) {
-      str = str.replaceAll(`{${k}}`, String(v));
+      str = str.replaceAll(`{${k}}`, v == null ? "" : String(v));
     }
   }
   return str;
 }
 
-const STORAGE_KEY = "artex_locale";
-
-function detectLocale(): Locale {
-  if (typeof window === "undefined") return "en";
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "en" || stored === "ko") return stored;
-  return navigator.language.toLowerCase().startsWith("ko") ? "ko" : "en";
+export function getLocale(): Locale {
+  return currentLocale;
 }
 
 interface I18nCtx {
@@ -48,29 +60,20 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
-
-  useEffect(() => {
-    const l = detectLocale();
-    currentLocale = l;
-    setLocaleState(l);
-  }, []);
-
   const setLocale = (l: Locale) => {
+    if (l === currentLocale) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, l);
+    } catch {
+      /* ignore */
+    }
     currentLocale = l;
-    localStorage.setItem(STORAGE_KEY, l);
-    setLocaleState(l);
+    // Full reload so module-level constants (label maps, option arrays) that
+    // called tr() at import time re-evaluate under the new locale.
+    window.location.reload();
   };
 
-  // key={locale} remounts the whole tree on language change so plain t() calls
-  // (including those referenced in render by module-level constants) re-evaluate.
-  return (
-    <Ctx.Provider value={{ locale, setLocale, t: tr }}>
-      <div key={locale} style={{ display: "contents" }}>
-        {children}
-      </div>
-    </Ctx.Provider>
-  );
+  return <Ctx.Provider value={{ locale: currentLocale, setLocale, t: tr }}>{children}</Ctx.Provider>;
 }
 
 export function useI18n() {

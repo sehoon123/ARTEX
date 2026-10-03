@@ -63,10 +63,10 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
           }}
         >
           <SelectTrigger size="sm" className="w-44">
-            <SelectValue placeholder={"全部渠道"} />
+            <SelectValue placeholder={tr("全部渠道")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{"全部渠道"}</SelectItem>
+            <SelectItem value="all">{tr("全部渠道")}</SelectItem>
             {channels.map((c) => (
               <SelectItem key={c.id} value={String(c.id)}>
                 {c.name}
@@ -94,7 +94,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
           </SelectContent>
         </Select>
         <Button size="sm" variant="outline" onClick={load} disabled={loading}>
-          <RefreshCwIcon className={loading ? "animate-spin" : ""} /> 刷新
+          <RefreshCwIcon className={loading ? "animate-spin" : ""} /> {tr("刷新")}
         </Button>
         <span className="text-muted-foreground ml-auto text-xs">共 {total} 条</span>
       </div>
@@ -104,11 +104,11 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
           <TableHeader>
             <TableRow>
               <TableHead className="w-40">{tr("时间")}</TableHead>
-              <TableHead>{"漏洞"}</TableHead>
-              <TableHead className="w-40">{"渠道"}</TableHead>
+              <TableHead>{tr("漏洞")}</TableHead>
+              <TableHead className="w-40">{tr("渠道")}</TableHead>
               <TableHead className="w-24">{tr("状态")}</TableHead>
-              <TableHead className="w-16">尝试</TableHead>
-              <TableHead>错误</TableHead>
+              <TableHead className="w-16">{tr("尝试")}</TableHead>
+              <TableHead>{tr("错误")}</TableHead>
               <TableHead className="w-20" />
             </TableRow>
           </TableHeader>
@@ -116,7 +116,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-muted-foreground py-8 text-center">
-                  {loading ? "加载中…" : "暂无投递记录"}
+                  {loading ? tr("加载中…") : tr("暂无投递记录")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -164,13 +164,13 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
       {maxPage > 1 && (
         <div className="flex items-center justify-end gap-2">
           <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-            上一页
+            {tr("上一页")}
           </Button>
           <span className="text-muted-foreground text-sm">
             {page} / {maxPage}
           </span>
           <Button size="sm" variant="outline" disabled={page >= maxPage} onClick={() => setPage((p) => p + 1)}>
-            下一页
+            {tr("下一页")}
           </Button>
         </div>
       )}

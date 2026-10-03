@@ -199,7 +199,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
               value={value}
               disabled={disabled}
               className={className}
-              aria-label={props["aria-label"] ?? "消息，输入 @ 引用记录"}
+              aria-label={props["aria-label"] ?? tr("消息，输入 @ 引用记录")}
               aria-autocomplete="list"
               aria-controls={open ? listId : undefined}
               aria-expanded={open}
@@ -231,20 +231,20 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
           onInteractOutside={(event) => {
             if (event.target === textarea.current) event.preventDefault();
           }}
-          aria-label={"选择引用记录"}
+          aria-label={tr("选择引用记录")}
         >
           <div className="flex items-center justify-between px-2 py-1 text-muted-foreground text-xs">
             <span>
               {categories.length
-                ? "选择引用类型"
-                : `搜索${mentionKinds.find((kind) => kind.kind === search.kind)?.label ?? "全部记录"}`}
+                ? tr("选择引用类型")
+                : tr("搜索{n0}", { n0: mentionKinds.find((kind) => kind.kind === search.kind)?.label ?? tr("全部记录") })}
             </span>
-            <span>↑↓ 选择 · Enter 确认 · Esc 关闭</span>
+            <span>{tr("↑↓ 选择 · Enter 确认 · Esc 关闭")}</span>
           </div>
           <div
             id={listId}
             role="listbox"
-            aria-label={"引用候选"}
+            aria-label={tr("引用候选")}
             className="max-h-60 overflow-y-auto"
             onScroll={(event) => {
               const list = event.currentTarget;
@@ -273,7 +273,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
             {!categories.length && loading && (
               <div role="status" className="flex items-center gap-2 p-3 text-muted-foreground text-sm">
                 <Loader2Icon className="size-4 animate-spin" />
-                搜索中…
+                {tr("搜索中…")}
               </div>
             )}
             {!categories.length && !loading && error && (
@@ -283,7 +283,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
             )}
             {!categories.length && !loading && !error && !items.length && (
               <div role="status" className="p-3 text-muted-foreground text-sm">
-                没有匹配记录，请更换名称、地址或 ID
+                {tr("没有匹配记录，请更换名称、地址或 ID")}
               </div>
             )}
             {items.map((item, index) => (
@@ -314,10 +314,10 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
               {loadingMore && <span role="status">{tr("正在加载更多…")}</span>}
               {!loadingMore && nextCursor && (
                 <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={loadMore}>
-                  {pageError ? "加载失败，点击重试" : `已显示 ${items.length} 条，向下滚动加载更多`}
+                  {pageError ? tr("加载失败，点击重试") : tr("已显示 {n0} 条，向下滚动加载更多", { n0: items.length })}
                 </button>
               )}
-              {!loadingMore && !nextCursor && !loading && !error && items.length > 0 && `已显示全部 ${items.length} 条`}
+              {!loadingMore && !nextCursor && !loading && !error && items.length > 0 && tr("已显示全部 {n0} 条", { n0: items.length })}
               {!loadingMore &&
                 !nextCursor &&
                 (loading || !!error || items.length === 0) &&
@@ -336,7 +336,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
               <button
                 type="button"
                 disabled={disabled}
-                aria-label={`移除引用 ${item.label}`}
+                aria-label={tr("移除引用 {n0}", { n0: item.label })}
                 onClick={() => {
                   onValueChange(value.slice(0, item.start) + value.slice(item.start + item.token.length));
                   setCursor(null);
@@ -346,7 +346,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
               </button>
             </Badge>
           ))}
-          <span className="text-muted-foreground text-xs">发送时读取最新详情 · 最多 10 条</span>
+          <span className="text-muted-foreground text-xs">{tr("发送时读取最新详情 · 最多 10 条")}</span>
         </div>
       )}
     </div>

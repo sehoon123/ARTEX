@@ -17,13 +17,13 @@ export const ASSET_INTERCEPT_KIND_OPTIONS: {
   label: string;
   placeholder: string;
 }[] = [
-  { value: "exact_domain", label: "域名(全等)", placeholder: "example.gov.cn" },
-  { value: "exact_ip", label: "IP(全等)", placeholder: "203.0.113.10" },
-  { value: "exact_url", label: "URL(全等)", placeholder: "https://example.com/login" },
-  { value: "fuzzy_domain", label: "域名(模糊)", placeholder: ".gov.cn" },
-  { value: "fuzzy_ip", label: "IP(模糊)", placeholder: "203.0.113." },
-  { value: "fuzzy_url", label: "URL(模糊)", placeholder: "/admin" },
-  { value: "cidr", label: "CIDR 网段", placeholder: "192.168.0.0/16" },
+  { value: "exact_domain", label: tr("域名(全等)"), placeholder: "example.gov.cn" },
+  { value: "exact_ip", label: tr("IP(全等)"), placeholder: "203.0.113.10" },
+  { value: "exact_url", label: tr("URL(全等)"), placeholder: "https://example.com/login" },
+  { value: "fuzzy_domain", label: tr("域名(模糊)"), placeholder: ".gov.cn" },
+  { value: "fuzzy_ip", label: tr("IP(模糊)"), placeholder: "203.0.113." },
+  { value: "fuzzy_url", label: tr("URL(模糊)"), placeholder: "/admin" },
+  { value: "cidr", label: tr("CIDR 网段"), placeholder: "192.168.0.0/16" },
 ];
 
 // AssetInterceptRulesEditor 是「拦截/允许规则」的受控多行编辑区（拦截block/允许allow +
@@ -97,7 +97,7 @@ export function AssetInterceptRulesEditor({
         );
       })}
       <Button type="button" size="sm" variant="outline" className="w-fit" onClick={add}>
-        <PlusIcon className="size-4" /> 添加一条
+        <PlusIcon className="size-4" /> {tr("添加一条")}
       </Button>
     </div>
   );

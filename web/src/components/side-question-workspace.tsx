@@ -109,7 +109,7 @@ function SidePanel({
       >
         {side.nextCursor > 0 && (
           <Button variant="ghost" size="sm" onClick={() => void side.load(side.nextCursor)}>
-            加载更早的旁路问答
+            {tr("加载更早的旁路问答")}
           </Button>
         )}
         {side.loading && <Skeleton className="h-16 w-full" />}
@@ -212,7 +212,7 @@ function SidePanel({
           <AlertDialogHeader>
             <AlertDialogTitle>{tr("清空旁路历史？")}</AlertDialogTitle>
             <AlertDialogDescription>
-              删除当前 Agent 的旁路问答，并停止正在生成的旁路回答。主会话和上下文快照会保留。
+              {tr("删除当前 Agent 的旁路问答，并停止正在生成的旁路回答。主会话和上下文快照会保留。")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

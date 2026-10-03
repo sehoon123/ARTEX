@@ -121,7 +121,7 @@ function Row({
             className="text-muted-foreground hover:text-primary inline-flex shrink-0 items-center gap-0.5 text-xs"
             title={tr("查看漏洞详情")}
           >
-            详情
+            {tr("详情")}
             <ArrowUpRightIcon className="size-3" />
           </Link>
         )}

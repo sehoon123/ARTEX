@@ -80,7 +80,7 @@ function ScopeSentryPanel() {
       ) : (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground text-sm">
-            数据源就绪后即可选择项目 / 任务进行同步。
+            {tr("数据源就绪后即可选择项目 / 任务进行同步。")}
           </CardContent>
         </Card>
       )}
@@ -150,17 +150,17 @@ function DataSourceCard({
         {!status?.exists ? (
           <div className="flex items-center justify-between gap-4">
             <p className="text-muted-foreground text-sm">
-              尚未创建 ScopeSentry 数据源。创建后会新增一个占位 MCP（地址/密钥为空、未启用）。
+              {tr("尚未创建 ScopeSentry 数据源。创建后会新增一个占位 MCP（地址/密钥为空、未启用）。")}
             </p>
             <Button onClick={create} disabled={busy}>
-              创建数据源
+              {tr("创建数据源")}
             </Button>
           </div>
         ) : (
           <>
             {!status.configured && (
               <p className="text-amber-600 text-sm dark:text-amber-500">
-                数据源已创建但未配置，请填写 MCP 地址与 API Key 后启用。
+                {tr("数据源已创建但未配置，请填写 MCP 地址与 API Key 后启用。")}
               </p>
             )}
             {status.configured && !status.enabled && (
@@ -183,7 +183,7 @@ function DataSourceCard({
             </div>
             <div className="flex items-center gap-2">
               <Button onClick={save} disabled={busy}>
-                保存并启用
+                {tr("保存并启用")}
               </Button>
               {status.enabled && status.tools.length > 0 && (
                 <span className="text-muted-foreground text-xs">已发现 {status.tools.length} 个工具</span>
@@ -302,7 +302,7 @@ function SyncWorkbench() {
       return (
         <TableRow>
           <TableCell colSpan={4} className="py-8 text-center text-muted-foreground text-sm">
-            无数据
+            {tr("无数据")}
           </TableCell>
         </TableRow>
       );
@@ -371,7 +371,7 @@ function SyncWorkbench() {
           {dimension === "project" && (
             <label htmlFor="create-company" className="flex items-center gap-1.5 text-sm">
               <Checkbox id="create-company" checked={createCompany} onCheckedChange={(c) => setCreateCompany(!!c)} />
-              按项目建立企业并写入资产范围
+              {tr("按项目建立企业并写入资产范围")}
             </label>
           )}
         </div>

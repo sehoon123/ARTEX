@@ -310,7 +310,7 @@ function LLMProfileRow({
             disabled={disabled}
             className="flex shrink-0 items-center gap-0.5 text-primary text-xs hover:underline disabled:pointer-events-none disabled:opacity-40"
           >
-            更换
+            {tr("更换")}
             <ChevronDownIcon className="size-3" />
           </button>
         </PopoverTrigger>
@@ -1497,7 +1497,7 @@ export default function ChatPage() {
                   className="mt-1 w-full"
                   onClick={() => setVisibleConversationCount((count) => count + CONVERSATION_LIST_PAGE)}
                 >
-                  加载更多
+                  {tr("加载更多")}
                 </Button>
               )}
             </div>

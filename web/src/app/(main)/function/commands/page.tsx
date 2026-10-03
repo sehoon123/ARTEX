@@ -224,7 +224,7 @@ export default function CommandsPage() {
                 ) : commands.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="py-12 text-center text-sm text-muted-foreground">
-                      暂无工具执行记录
+                      {tr("暂无工具执行记录")}
                     </TableCell>
                   </TableRow>
                 ) : (

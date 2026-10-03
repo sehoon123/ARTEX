@@ -1196,7 +1196,7 @@ export default function FindingsPage() {
             </Button>
             <Button onClick={submitDeepen} disabled={deepening || !deepenDescription.trim()}>
               {deepening && <Spinner data-icon="inline-start" />}
-              创建深入意图
+              {tr("创建深入意图")}
             </Button>
           </DialogFooter>
         </DialogContent>

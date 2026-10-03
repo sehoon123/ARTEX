@@ -190,7 +190,7 @@ export function UpdateCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <DownloadIcon className="size-4" />
-          版本与更新
+          {tr("版本与更新")}
         </CardTitle>
         <CardDescription>{tr("从 GitHub 检查并安装新版本。更新会重启程序，正在运行的任务会被中断。")}</CardDescription>
       </CardHeader>
@@ -262,7 +262,7 @@ export function UpdateCard() {
         {info && !info.has_update && info.comparable && !info.error && (
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
             <CheckCircle2Icon className="size-3.5 text-emerald-600" />
-            当前已是最新版本。
+            {tr("当前已是最新版本。")}
           </p>
         )}
 
@@ -270,7 +270,7 @@ export function UpdateCard() {
           <p className="text-xs text-muted-foreground">
             Docker 下的更新只替换程序本身，不更新镜像里的 playwright / nmap 等工具链，且
             <span className="font-mono"> docker compose up -d </span>
-            重建容器后会退回镜像自带的版本。需要连镜像一起升级请执行
+            {tr("重建容器后会退回镜像自带的版本。需要连镜像一起升级请执行")}
             <span className="font-mono"> docker compose pull artex &amp;&amp; docker compose up -d artex</span>。
           </p>
         )}
@@ -287,7 +287,7 @@ export function UpdateCard() {
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => check(false)} disabled={checking || busy || restarting}>
             <RefreshCwIcon className={checking ? "size-4 animate-spin" : "size-4"} />
-            检查更新
+            {tr("检查更新")}
           </Button>
           <Button
             size="sm"
@@ -300,7 +300,7 @@ export function UpdateCard() {
           {info?.has_backup && (
             <Button variant="ghost" size="sm" onClick={doRollback} disabled={busy || restarting}>
               <RotateCcwIcon className="size-4" />
-              回滚到上一版本
+              {tr("回滚到上一版本")}
             </Button>
           )}
         </div>

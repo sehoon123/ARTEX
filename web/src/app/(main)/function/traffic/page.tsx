@@ -478,7 +478,7 @@ export default function TrafficPage() {
           onClick={() => setDeleteMode("all")}
         >
           <EraserIcon className="size-3.5" />
-          清空全部
+          {tr("清空全部")}
         </Button>
         <div className="relative max-w-sm flex-1">
           <SearchIcon className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -598,7 +598,7 @@ export default function TrafficPage() {
         {hasAdvancedFilter ? (
           <Button variant="ghost" size="sm" className="h-8" onClick={resetAdvancedFilters}>
             <FilterXIcon className="size-3.5" />
-            清除筛选
+            {tr("清除筛选")}
           </Button>
         ) : null}
       </div>
@@ -610,7 +610,7 @@ export default function TrafficPage() {
         </Button>
         {selectedFlows.size > 0 ? (
           <Button variant="ghost" size="sm" onClick={() => setSelectedFlows(new Set())}>
-            清空选择
+            {tr("清空选择")}
           </Button>
         ) : null}
       </div>
@@ -751,7 +751,7 @@ export default function TrafficPage() {
                   {detailLoading ? (
                     <div className="flex items-center gap-2 p-5 text-xs text-muted-foreground">
                       <Loader2Icon className="size-3.5 animate-spin" />
-                      加载报文…
+                      {tr("加载报文…")}
                     </div>
                   ) : (
                     <HttpCodeBlock raw={requestWithHost(detail?.req ?? "", selected)} />
@@ -761,7 +761,7 @@ export default function TrafficPage() {
                   {detailLoading ? (
                     <div className="flex items-center gap-2 p-5 text-xs text-muted-foreground">
                       <Loader2Icon className="size-3.5 animate-spin" />
-                      加载报文…
+                      {tr("加载报文…")}
                     </div>
                   ) : (
                     <HttpCodeBlock raw={detail?.resp ?? ""} />
@@ -789,7 +789,7 @@ export default function TrafficPage() {
                   条流量记录（含请求/响应原文），忽略当前的筛选条件，此操作不可撤销。已绑定到漏洞的流量证据保存在独立的证据库中，不受影响。
                   <br />
                   <span className="text-muted-foreground">
-                    清空后会顺带压实存储，把索引占用的磁盘空间还给系统；这期间流量录制会短暂暂停。
+                    {tr("清空后会顺带压实存储，把索引占用的磁盘空间还给系统；这期间流量录制会短暂暂停。")}
                   </span>
                 </>
               )}

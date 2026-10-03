@@ -214,7 +214,7 @@ function TaskTemplateManager({
             <div className="flex min-h-0 flex-col border-b p-3 lg:border-r lg:border-b-0">
               <Button type="button" variant="outline" className="w-full" onClick={startNew}>
                 <PlusIcon data-icon="inline-start" />
-                新建模板
+                {tr("新建模板")}
               </Button>
               <ScrollArea className="mt-2 max-h-44 lg:max-h-none lg:flex-1">
                 <div className="flex flex-col gap-1 pr-2">
@@ -296,7 +296,7 @@ function TaskTemplateManager({
                     onChange={(rules) => patchDraft({ interceptRules: rules })}
                   />
                   <FieldDescription>
-                    应用模板时预填这些任务级规则（拦截/允许，仅对新任务生效，不进全局）。
+                    {tr("应用模板时预填这些任务级规则（拦截/允许，仅对新任务生效，不进全局）。")}
                   </FieldDescription>
                 </Field>
               </FieldGroup>
@@ -306,7 +306,7 @@ function TaskTemplateManager({
             {selectedID != null && (
               <Button type="button" variant="destructive" className="sm:mr-auto" onClick={() => setDeleteOpen(true)}>
                 <Trash2Icon data-icon="inline-start" />
-                删除模板
+                {tr("删除模板")}
               </Button>
             )}
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
@@ -445,7 +445,7 @@ export function TaskTemplateControls({
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={() => openManager(null)}>
               <Settings2Icon data-icon="inline-start" />
-              管理模板
+              {tr("管理模板")}
             </Button>
             <Button
               type="button"
@@ -462,7 +462,7 @@ export function TaskTemplateControls({
               }
             >
               <SaveIcon data-icon="inline-start" />
-              另存为模板
+              {tr("另存为模板")}
             </Button>
           </div>
         </div>
@@ -518,7 +518,7 @@ export function TaskTemplateControls({
           <AlertDialogFooter>
             <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
             <AlertDialogAction onClick={() => pendingTemplate && applyTemplate(pendingTemplate)}>
-              覆盖并使用
+              {tr("覆盖并使用")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -59,8 +59,8 @@ export function FindingRetestDialog({ findingId, findingName, onClose, onStarted
           <DialogTitle>复测漏洞 #{findingId}</DialogTitle>
           <DialogDescription className="break-words">
             {findingName ? <span className="mb-2 block">{findingName}</span> : null}
-            复测 Agent
-            将读取原证据和测试约束，在独立会话中执行针对性验证。复测成功完成且确认修复后，漏洞状态自动改为「已修复」，其他结论保留原状态。
+            {tr("复测 Agent")}
+            {tr("将读取原证据和测试约束，在独立会话中执行针对性验证。复测成功完成且确认修复后，漏洞状态自动改为「已修复」，其他结论保留原状态。")}
           </DialogDescription>
         </DialogHeader>
         <FieldGroup>

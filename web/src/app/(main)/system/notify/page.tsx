@@ -270,7 +270,7 @@ export default function NotifyPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{tr("通知推送")}</h1>
           <p className="text-muted-foreground text-sm">
-            发现漏洞时推送到钉钉 / 飞书 / 企业微信等渠道 · 每个渠道可独立设推送时机与过滤规则
+            {tr("发现漏洞时推送到钉钉 / 飞书 / 企业微信等渠道 · 每个渠道可独立设推送时机与过滤规则")}
           </p>
         </div>
         {meta && (
@@ -334,7 +334,7 @@ export default function NotifyPage() {
           </div>
           <div className="sm:col-span-2">
             <Button onClick={saveGlobal} disabled={globalSaving}>
-              保存全局设置
+              {tr("保存全局设置")}
             </Button>
           </div>
         </CardContent>
@@ -447,7 +447,7 @@ export default function NotifyPage() {
                 </Select>
                 {editing && (
                   <p className="text-muted-foreground text-xs">
-                    渠道类型不可修改——改了类型等于换一套凭据，请新建渠道。
+                    {tr("渠道类型不可修改——改了类型等于换一套凭据，请新建渠道。")}
                   </p>
                 )}
               </div>
@@ -505,7 +505,7 @@ export default function NotifyPage() {
                   onChange={(e) => setF({ ratePerMin: e.target.value })}
                 />
                 <p className="text-muted-foreground text-xs">
-                  留空用渠道默认值；0 表示不限流。超限不会丢消息，只会推迟发送。
+                  {tr("留空用渠道默认值；0 表示不限流。超限不会丢消息，只会推迟发送。")}
                 </p>
               </div>
 
@@ -577,14 +577,14 @@ export default function NotifyPage() {
                       onCheckedChange={(v) => setF({ onStatusChange: v })}
                       aria-label={tr("接收状态变更")}
                     />
-                    漏洞处置状态变更时也推送（仅实时模式）
+                    {tr("漏洞处置状态变更时也推送（仅实时模式）")}
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-sm">
                 <Switch checked={form.enabled} onCheckedChange={(v) => setF({ enabled: v })} aria-label={tr("启用")} />
-                启用该渠道
+                {tr("启用该渠道")}
               </div>
             </div>
 

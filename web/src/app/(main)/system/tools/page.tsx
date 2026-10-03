@@ -246,7 +246,7 @@ function ToolEditor({
         {/* params */}
         <div className="grid gap-2">
           <Label className="text-muted-foreground text-xs">
-            参数（名称 / 类型 / 必填只读；描述与默认值可改）
+            {tr("参数（名称 / 类型 / 必填只读；描述与默认值可改）")}
           </Label>
           {rows.length === 0 && <span className="text-muted-foreground text-xs">{tr("（无参数）")}</span>}
           {rows.map((r, i) => (
@@ -265,7 +265,7 @@ function ToolEditor({
                 </Badge>
                 {r.required && (
                   <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-                    必填
+                    {tr("必填")}
                   </Badge>
                 )}
                 {r.parentKey && (
@@ -753,7 +753,7 @@ function CustomToolDialog({
                 </div>
                 <label className="mt-4 flex items-center gap-2 text-sm">
                   <Checkbox checked={ex.use_recording_proxy} onCheckedChange={(v) => setEx({ ...ex, use_recording_proxy: !!v })} />
-                  走记录代理
+                  {tr("走记录代理")}
                 </label>
               </div>
             </div>

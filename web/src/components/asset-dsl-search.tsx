@@ -342,7 +342,7 @@ export function AssetDslSearch({
         <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           ref={inputRef}
-          placeholder="DSL 搜索：domain=example AND status_code>=400"
+          placeholder={tr("DSL 搜索：domain=example AND status_code>=400")}
           value={query}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

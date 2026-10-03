@@ -108,7 +108,7 @@ function AgentGridCard({
             <AlertDialogHeader>
               <AlertDialogTitle>删除 Agent「{agent.name}」？</AlertDialogTitle>
               <AlertDialogDescription>
-                将一并删除它的提示词、变量、可见性与工具绑定。此操作不可撤销。
+                {tr("将一并删除它的提示词、变量、可见性与工具绑定。此操作不可撤销。")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -160,7 +160,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
         <DialogHeader>
           <DialogTitle>{tr("新建自定义 Agent")}</DialogTitle>
           <DialogDescription>
-            创建一个会话型助手。key 用于内部标识，创建后不可更改；名称与描述用于识别。
+            {tr("创建一个会话型助手。key 用于内部标识，创建后不可更改；名称与描述用于识别。")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
@@ -226,7 +226,7 @@ export default function AgentsPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Agent</h1>
           <p className="text-muted-foreground text-sm">
-            内置 Agent 的提示词/配置，以及自定义会话 Agent 的创建与管理
+            {tr("内置 Agent 的提示词/配置，以及自定义会话 Agent 的创建与管理")}
           </p>
         </div>
         <CreateAgentDialog

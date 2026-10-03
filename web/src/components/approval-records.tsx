@@ -181,7 +181,7 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
       <div className="flex flex-col gap-2">
         <h3 className="font-medium text-sm">{tr("模型审查上下文")}</h3>
         <p className="text-muted-foreground text-xs">
-          以下为本次实际发送给审查模型的输入快照。背景仅用于理解当前动作，裁决依据为审查策略。
+          {tr("以下为本次实际发送给审查模型的输入快照。背景仅用于理解当前动作，裁决依据为审查策略。")}
           {input.version < 4 ? tr("此记录使用旧版输入，保留当时实际发送的内容。") : null}
         </p>
       </div>
@@ -252,7 +252,7 @@ function ModelReviewContext({ input }: { input: InterceptReviewInput }) {
         <CollapsibleTrigger asChild>
           <Button variant="outline" size="sm" className="self-start">
             <ChevronDownIcon data-icon="inline-start" />
-            查看完整模型审查输入 JSON
+            {tr("查看完整模型审查输入 JSON")}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-3">
@@ -350,7 +350,7 @@ export function ApprovalDetail({
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm">
                   <ChevronDownIcon data-icon="inline-start" />
-                  查看命令内容
+                  {tr("查看命令内容")}
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
@@ -843,7 +843,7 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
         </Field>
         {filtered ? (
           <Button variant="ghost" size="sm" onClick={() => changeFilter({})}>
-            清除筛选
+            {tr("清除筛选")}
           </Button>
         ) : null}
       </FieldGroup>

@@ -213,7 +213,7 @@ function SkillsOverview({
         <Label className="text-xs text-muted-foreground">{tr("调用排行")}</Label>
         {agg.ranked.length === 0 ? (
           <p className="text-muted-foreground rounded-lg border border-dashed p-4 text-center text-xs">
-            还没有任何 Skill 调用记录。
+            {tr("还没有任何 Skill 调用记录。")}
           </p>
         ) : (
           <div className="space-y-1.5">
@@ -266,7 +266,7 @@ function SkillsOverview({
         {/* 未使用（可清理 / 需曝光） */}
         <div className="space-y-2">
           <Label className="text-xs text-muted-foreground">
-            未使用的 Skill
+            {tr("未使用的 Skill")}
             {agg.neverUsed.length > 0 && <span className="ml-1 font-normal">（{agg.neverUsed.length}）</span>}
           </Label>
           {agg.neverUsed.length === 0 ? (
@@ -1031,7 +1031,7 @@ export default function SkillsPage() {
                 )}
               </TabsTrigger>
               <TabsTrigger value="visibility">
-                可见性
+                {tr("可见性")}
                 {newVisibility.length > 0 && (
                   <span className="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 text-[10px] leading-none text-primary-foreground">
                     {newVisibility.length}

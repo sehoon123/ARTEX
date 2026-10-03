@@ -193,7 +193,7 @@ function AssetCard({
     tableRows = (
       <TableRow>
         <TableCell colSpan={cols.length} className="py-10 text-center text-muted-foreground text-sm">
-          当前分类暂无测试资产
+          {tr("当前分类暂无测试资产")}
         </TableCell>
       </TableRow>
     );
@@ -310,7 +310,7 @@ function AddTaskAssetsSheet({
         <SheetHeader>
           <SheetTitle>{tr("新增测试资产")}</SheetTitle>
           <SheetDescription>
-            直接填写测试范围。域名和 IP 会创建或复用全局资产；CIDR、ICP 和关键词作为 Agent 范围上下文。
+            {tr("直接填写测试范围。域名和 IP 会创建或复用全局资产；CIDR、ICP 和关键词作为 Agent 范围上下文。")}
           </SheetDescription>
         </SheetHeader>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4">
@@ -684,7 +684,7 @@ export function AssetsTab({ taskId }: { taskId: string }) {
             <AlertDialogTitle>{tr("移出当前任务？")}</AlertDialogTitle>
             <AlertDialogDescription className="[overflow-wrap:anywhere]">
               {removeTarget ? tr("将“{n0}”从当前任务的测试资产中移出。", { n0: assetLabel(removeTarget) }) : ""}
-              全局资产、关联流量和历史黑板锚点会继续保留。
+              {tr("全局资产、关联流量和历史黑板锚点会继续保留。")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

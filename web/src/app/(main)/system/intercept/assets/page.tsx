@@ -183,7 +183,7 @@ export default function AssetInterceptPage() {
         <div>
           <h1 className="text-lg font-semibold leading-tight">{tr("资产拦截")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            全局资产黑名单：命中的域名 / IP / URL / 网段将被拦截，不对其执行任何操作
+            {tr("全局资产黑名单：命中的域名 / IP / URL / 网段将被拦截，不对其执行任何操作")}
           </p>
         </div>
       </div>
@@ -209,7 +209,7 @@ export default function AssetInterceptPage() {
               <p className="text-sm text-muted-foreground">{tr("暂无资产拦截规则")}</p>
               <Button size="sm" variant="outline" onClick={openNew}>
                 <PlusIcon className="h-4 w-4" />
-                新建第一条规则
+                {tr("新建第一条规则")}
               </Button>
             </div>
           ) : (

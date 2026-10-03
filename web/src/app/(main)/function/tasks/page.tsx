@@ -552,7 +552,7 @@ export default function TasksPage() {
       try {
         const result = await api.controlTask(id, action);
         toast.success(
-          action === "pause" ? tr("任务 #{n0} 已暂停", { n0: id }) : tr("任务 #{n0} 已继续{n1}", { n0: id, n1: result.queued ? "，已进入队列" : "" }),
+          action === "pause" ? tr("任务 #{n0} 已暂停", { n0: id }) : tr("任务 #{n0} 已继续{n1}", { n0: id, n1: result.queued ? tr("，已进入队列") : "" }),
         );
       } catch (e) {
         toast.error(tr("{n0}失败：{n1}", { n0: action === "pause" ? tr("暂停") : tr("继续"), n1: (e as Error).message }));
@@ -845,7 +845,7 @@ export default function TasksPage() {
                 <>
                   <span className="text-xs tabular-nums">已选 {selectedIds.size} 个</span>
                   <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
-                    取消选择
+                    {tr("取消选择")}
                   </Button>
                   {pausableTaskIDs.length > 0 && (
                     <Button
@@ -915,11 +915,11 @@ export default function TasksPage() {
 
             {tasks.length === 0 ? (
               <div className="text-muted-foreground mx-4 flex items-center justify-center rounded-lg border border-dashed py-20 text-sm lg:mx-6">
-                暂无任务，点击右上角「新建任务」开始。
+                {tr("暂无任务，点击右上角「新建任务」开始。")}
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-muted-foreground mx-4 flex items-center justify-center rounded-lg border border-dashed py-20 text-sm lg:mx-6">
-                没有匹配的任务。
+                {tr("没有匹配的任务。")}
               </div>
             ) : (
               <Table className="**:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4">
@@ -1114,7 +1114,7 @@ function ConcurrencySettingsDialog() {
         <DialogHeader>
           <DialogTitle>{tr("任务并发限制")}</DialogTitle>
           <DialogDescription>
-            限制同时运行的任务数量。达到上限后，新任务会按创建顺序排队并在空位出现时自动启动。
+            {tr("限制同时运行的任务数量。达到上限后，新任务会按创建顺序排队并在空位出现时自动启动。")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-5 py-2">
@@ -2281,7 +2281,7 @@ function MoveTasksCategoryDialog({
             }}
           >
             {moving && <Spinner data-icon="inline-start" />}
-            移动
+            {tr("移动")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -2332,7 +2332,7 @@ function BulkDeleteTasksDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>确认删除所选 {ids.length} 个任务？</AlertDialogTitle>
           <AlertDialogDescription>
-            这些任务的执行记录与探索链路将被永久删除，下方清理选项对所选任务统一生效。
+            {tr("这些任务的执行记录与探索链路将被永久删除，下方清理选项对所选任务统一生效。")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="text-muted-foreground flex flex-wrap gap-1 text-xs">
@@ -2900,7 +2900,7 @@ function CategoryManagementSheet({
         <SheetTrigger asChild>
           <Button size="sm" variant="outline">
             <TagsIcon data-icon="inline-start" />
-            分类管理
+            {tr("分类管理")}
           </Button>
         </SheetTrigger>
         <SheetContent className="grid h-full w-full! max-w-none! grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:w-[48rem]! sm:max-w-[48rem]!">
@@ -2918,7 +2918,7 @@ function CategoryManagementSheet({
               <div className="flex min-h-0 flex-col border-b p-3 lg:border-r lg:border-b-0">
                 <Button type="button" variant="outline" className="w-full" onClick={startNew}>
                   <PlusIcon data-icon="inline-start" />
-                  新建分类
+                  {tr("新建分类")}
                 </Button>
                 <ScrollArea className="mt-2 max-h-44 lg:max-h-none lg:flex-1">
                   <div className="flex flex-col gap-1 pr-2">
@@ -3014,7 +3014,7 @@ function CategoryManagementSheet({
                 onClick={() => setDeleteOpen(true)}
               >
                 <Trash2Icon data-icon="inline-start" />
-                删除分类
+                {tr("删除分类")}
               </Button>
             )}
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
@@ -3296,7 +3296,7 @@ function CreateTaskSheet({
               />
               <FieldDescription>
                 最多关联 {MAX_SOURCE_TASKS}{" "}
-                个任务。实时只读继承所选任务的持久化黑板、资产范围及相关流量；新任务写入独立黑板。
+                {tr("个任务。实时只读继承所选任务的持久化黑板、资产范围及相关流量；新任务写入独立黑板。")}
               </FieldDescription>
             </Field>
             <Field>
@@ -3309,14 +3309,14 @@ function CreateTaskSheet({
               />
               <FieldDescription>
                 创建任务时会将所选企业当前已有资产加入“测试资产”，并将域名、IP、CIDR、ICP 和企业关键词提供给 Agent
-                作为范围上下文；不会自动生成意图或强制改变执行目标。
+                {tr("作为范围上下文；不会自动生成意图或强制改变执行目标。")}
               </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="task-intercept-rules">{tr("任务级资产拦截 / 允许规则（可选）")}</FieldLabel>
               <AssetInterceptRulesEditor value={interceptRules} onChange={setInterceptRules} />
               <FieldDescription>
-                仅对本任务生效，不写入全局规则。判定顺序：先按「拦截」规则（含全局）匹配，命中即禁止测试；未命中且本任务配置了「允许」规则时，须命中某条允许规则才放行，否则同样不允许测试；未配置任何允许规则则不启用白名单。
+                {tr("仅对本任务生效，不写入全局规则。判定顺序：先按「拦截」规则（含全局）匹配，命中即禁止测试；未命中且本任务配置了「允许」规则时，须命中某条允许规则才放行，否则同样不允许测试；未配置任何允许规则则不启用白名单。")}
               </FieldDescription>
             </Field>
             <Field>
@@ -3335,7 +3335,7 @@ function CreateTaskSheet({
             <Collapsible>
               <CollapsibleTrigger className="group flex w-full items-center gap-2 border-t pt-4 text-sm font-medium">
                 <ChevronRightIcon className="text-muted-foreground size-4 transition-transform group-data-[state=open]:rotate-90" />
-                高级设置
+                {tr("高级设置")}
                 <span className="text-muted-foreground ml-auto text-xs font-normal">{tr("超时 · 心跳 · 首个意图")}</span>
               </CollapsibleTrigger>
               <CollapsibleContent className="grid gap-5 pt-5">
@@ -3381,7 +3381,7 @@ function CreateTaskSheet({
                   </label>
                   <p className="text-muted-foreground text-xs">
                     开启后创建即把「描述+目标」作为一条意图下发，worker 免等首轮规划直接开跑，跑完再由 planner
-                    接手判定/补充。CTF 等常一个 work 直接解决的场景推荐开启；关闭则走标准的先规划再执行。
+                    {tr("接手判定/补充。CTF 等常一个 work 直接解决的场景推荐开启；关闭则走标准的先规划再执行。")}
                   </p>
                 </div>
                 <div className="grid gap-2">
@@ -3391,11 +3391,11 @@ function CreateTaskSheet({
                       checked={coverageEnabled}
                       onCheckedChange={(v) => setCoverageEnabled(!!v)}
                     />
-                    资产覆盖度功能
+                    {tr("资产覆盖度功能")}
                   </label>
                   <p className="text-muted-foreground text-xs">
-                    默认开启：计算并展示测试覆盖度、态势图显示测试进度、自动累积测试范围。关闭后不再计算/展示覆盖度，
-                    态势图仅展示资产不显示进度，agent 也不再获得范围类工具。关闭不影响「关联企业资产范围」。
+                    {tr("默认开启：计算并展示测试覆盖度、态势图显示测试进度、自动累积测试范围。关闭后不再计算/展示覆盖度，")}
+                    {tr("态势图仅展示资产不显示进度，agent 也不再获得范围类工具。关闭不影响「关联企业资产范围」。")}
                   </p>
                 </div>
               </CollapsibleContent>

@@ -1618,7 +1618,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   ) : (
                     <>
                       <WifiOffIcon className="size-3" />
-                      重连中
+                      {tr("重连中")}
                     </>
                   )}
                 </span>
@@ -1873,13 +1873,13 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                 {activeState?.loadingMore && (
                   <div className="flex items-center justify-center gap-2 pb-2 text-xs text-muted-foreground">
                     <Loader2Icon className="size-3.5 animate-spin" />
-                    加载更早历史…
+                    {tr("加载更早历史…")}
                   </div>
                 )}
                 {showLoader ? (
                   <div className="flex items-center gap-2 pl-9 text-xs text-muted-foreground">
                     <Loader2Icon className="size-3.5 animate-spin" />
-                    加载活动流…
+                    {tr("加载活动流…")}
                   </div>
                 ) : activeState?.error ? (
                   <div className="flex items-center gap-2 pl-9 text-xs text-red-500">
@@ -2158,7 +2158,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
               </div>
               <div className="grid gap-2">
                 <label htmlFor="cancel-reason" className="text-sm font-medium">
-                  删除原因（必填）
+                  {tr("删除原因（必填）")}
                 </label>
                 <Textarea
                   id="cancel-reason"
@@ -2189,7 +2189,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
             <AlertDialogHeader>
               <AlertDialogTitle>{tr("开启新会话？")}</AlertDialogTitle>
               <AlertDialogDescription className="break-words whitespace-normal">
-                当前会话会被归档（可随时切回），主 Agent 将以干净的上下文继续。任务的图谱、资产、目标不受影响。
+                {tr("当前会话会被归档（可随时切回），主 Agent 将以干净的上下文继续。任务的图谱、资产、目标不受影响。")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

@@ -407,7 +407,7 @@ export default function AssetsPage() {
                   {companies.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={4} className="py-10 text-center text-sm text-muted-foreground">
-                        还没有企业。点击右上角「新增企业」并填写资产范围，系统会自动认领命中的资产。
+                        {tr("还没有企业。点击右上角「新增企业」并填写资产范围，系统会自动认领命中的资产。")}
                       </TableCell>
                     </TableRow>
                   )}
@@ -785,7 +785,7 @@ export default function AssetsPage() {
                     onCheckedChange={(v) => setCompanyDeleteAssets(!!v)}
                   />
                   <span className="text-sm leading-snug">
-                    同时删除该企业下的所有资产
+                    {tr("同时删除该企业下的所有资产")}
                     <span className="block text-xs text-muted-foreground">{tr("不勾选则保留资产，仅取消归属关系")}</span>
                   </span>
                 </label>
@@ -1102,7 +1102,7 @@ function EditScopeDialog({ company, onSaved }: { company: Company; onSaved: () =
         <DialogHeader>
           <DialogTitle>编辑资产范围 · {company.name}</DialogTitle>
           <DialogDescription>
-            编辑后将替换全部现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。
+            {tr("编辑后将替换全部现有范围。ICP 精确匹配资产，企业关键词仅作为 Agent 提示。")}
           </DialogDescription>
         </DialogHeader>
         <FieldGroup className="py-2">

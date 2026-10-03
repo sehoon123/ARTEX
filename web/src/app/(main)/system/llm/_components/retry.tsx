@@ -213,7 +213,7 @@ export function RetryRuleFields({
         </div>
         <div className="flex items-center gap-2">
           <Label htmlFor={`${idPrefix}-${layer}-ms`} className="text-muted-foreground text-xs">
-            间隔 ms
+            {tr("间隔 ms")}
           </Label>
           <NumField
             id={`${idPrefix}-${layer}-ms`}
@@ -244,7 +244,7 @@ export function ProfileRetryFields({
         <Label className="text-sm">{tr("重试覆盖")}</Label>
         <p className="text-muted-foreground text-xs">
           只对这个配置生效，覆盖「重试与退避」里的全局默认。每格留空 = 跟随全局；次数填 -1 = 关掉这层重试；
-          间隔填了就用固定间隔取代指数退避。熔断与意图重跑是进程级的，只能在全局那页调。
+          {tr("间隔填了就用固定间隔取代指数退避。熔断与意图重跑是进程级的，只能在全局那页调。")}
         </p>
       </div>
       {(["connect", "empty", "stream"] as const).map((k) => (
@@ -312,12 +312,12 @@ export function RetryPolicyPanel() {
   return (
     <div className="grid gap-4">
       <div className="rounded-lg border bg-muted/30 p-3 text-muted-foreground text-xs leading-relaxed">
-        一次模型调用的失败会依次经过五层重试，由内到外：
+        {tr("一次模型调用的失败会依次经过五层重试，由内到外：")}
         <span className="text-foreground"> {tr("建连 → 空响应 → 同 provider 安全窗口 → 轮询熔断 → 意图重跑")}</span>
         。内层用尽才轮到外层，所以次数是
         <span className="text-foreground">{tr("相乘")}</span>
         的——把每层都拉满，一次抖动能烧掉几十次请求。
-        全部留空即当前默认值，与没有这页时的行为完全一致。前三层可以在每个模型配置里单独覆盖。
+        {tr("全部留空即当前默认值，与没有这页时的行为完全一致。前三层可以在每个模型配置里单独覆盖。")}
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -332,7 +332,7 @@ export function RetryPolicyPanel() {
           {tr("保存")}
         </Button>
         <Button variant="outline" onClick={() => setPolicy(ZERO_POLICY)} disabled={saving}>
-          全部恢复默认
+          {tr("全部恢复默认")}
         </Button>
       </div>
     </div>

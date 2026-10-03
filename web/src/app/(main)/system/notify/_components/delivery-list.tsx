@@ -133,7 +133,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
                       <span className="truncate text-sm">{d.title || "（无标题）"}</span>
                       {d.event_kind === "finding_status_changed" && (
                         <Badge variant="outline" className="shrink-0">
-                          状态变更
+                          {tr("状态变更")}
                         </Badge>
                       )}
                     </div>

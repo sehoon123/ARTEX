@@ -115,7 +115,7 @@ export function TrafficPickerDialog({
           <DialogHeader>
             <DialogTitle>{tr("绑定流量")}</DialogTitle>
             <DialogDescription>
-              筛选并多选请求/响应，已选记录会跨页保留。绑定后可设置用途、说明和顺序。
+              {tr("筛选并多选请求/响应，已选记录会跨页保留。绑定后可设置用途、说明和顺序。")}
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="flex flex-col gap-3 sm:flex-row">

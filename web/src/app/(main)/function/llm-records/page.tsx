@@ -290,7 +290,7 @@ export default function LLMRecordsPage() {
           <SelectContent>
             {tasks.length === 0 ? (
               <SelectItem value="__none__" disabled>
-                暂无任务记录
+                {tr("暂无任务记录")}
               </SelectItem>
             ) : (
               tasks.map((t) => (
@@ -311,7 +311,7 @@ export default function LLMRecordsPage() {
           onClick={() => setDeleteOpen(true)}
         >
           <Trash2Icon className="size-3.5" />
-          删除任务对话
+          {tr("删除任务对话")}
         </Button>
         <Select value={String(size)} onValueChange={(v) => setSize(Number(v))}>
           <SelectTrigger size="sm" className="w-28">
@@ -401,7 +401,7 @@ export default function LLMRecordsPage() {
                 ) : records.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="py-12 text-center text-sm text-muted-foreground">
-                      暂无 LLM 调用记录
+                      {tr("暂无 LLM 调用记录")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -496,7 +496,7 @@ export default function LLMRecordsPage() {
                 title={hasRaw ? tr("查看与 provider 实际收发的 HTTP 原文") : tr("该记录录制于此功能上线前，无原文")}
                 onClick={() => setRawView((v) => !v)}
               >
-                原文
+                {tr("原文")}
               </Button>
               <Button
                 variant="ghost"
@@ -518,7 +518,7 @@ export default function LLMRecordsPage() {
                   {detailLoading ? (
                     <div className="flex items-center gap-2 p-3 text-xs text-muted-foreground">
                       <Loader2Icon className="size-3.5 animate-spin" />
-                      加载…
+                      {tr("加载…")}
                     </div>
                   ) : (
                     <pre className="p-3 font-mono text-xs break-all whitespace-pre-wrap">
@@ -536,7 +536,7 @@ export default function LLMRecordsPage() {
                   {detailLoading ? (
                     <div className="flex items-center gap-2 p-3 text-xs text-muted-foreground">
                       <Loader2Icon className="size-3.5 animate-spin" />
-                      加载…
+                      {tr("加载…")}
                     </div>
                   ) : (
                     <pre className={cn(
@@ -558,7 +558,7 @@ export default function LLMRecordsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>删除任务「{pickedTask}」的全部 LLM 对话？</AlertDialogTitle>
             <AlertDialogDescription>
-              将永久删除该任务的所有 LLM 调用记录（含请求/响应原文），此操作不可撤销。
+              {tr("将永久删除该任务的所有 LLM 调用记录（含请求/响应原文），此操作不可撤销。")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

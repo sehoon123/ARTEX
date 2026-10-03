@@ -110,7 +110,7 @@ export function TrafficEvidenceViewer({
                 />
                 {detail[side].truncated && !detail[side].binary ? (
                   <Button variant="outline" size="sm" disabled={busy} onClick={() => void more(side)}>
-                    加载更多正文
+                    {tr("加载更多正文")}
                   </Button>
                 ) : null}
               </TabsContent>

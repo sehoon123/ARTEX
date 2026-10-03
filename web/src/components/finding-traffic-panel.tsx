@@ -158,7 +158,7 @@ export function FindingTrafficPanel({
                   </span>
                   <div className="flex flex-wrap gap-1">
                     <Button variant="outline" size="sm" onClick={() => setPreview(b.id)}>
-                      查看报文
+                      {tr("查看报文")}
                     </Button>
                     {!readOnly ? (
                       <>
@@ -172,7 +172,7 @@ export function FindingTrafficPanel({
                             setNote(b.note);
                           }}
                         >
-                          编辑说明
+                          {tr("编辑说明")}
                         </Button>
                         <Button
                           variant="ghost"
@@ -276,7 +276,7 @@ export function FindingTrafficPanel({
                   );
               }}
             >
-              保存说明
+              {tr("保存说明")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -127,11 +127,11 @@ export function ApprovalExecutionFocus({
       <div className="flex gap-2">
         {error ? (
           <Button size="sm" variant="outline" onClick={focus.retry}>
-            重试定位
+            {tr("重试定位")}
           </Button>
         ) : null}
         <Button size="sm" variant="ghost" onClick={focus.close}>
-          取消定位
+          {tr("取消定位")}
         </Button>
       </div>
     </div>

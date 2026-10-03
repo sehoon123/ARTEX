@@ -305,7 +305,7 @@ export default function MCPPage() {
                 checked={form.insecure}
                 onCheckedChange={(v) => setF({ insecure: v === true })}
               />
-              跳过 TLS 证书校验（自签证书）
+              {tr("跳过 TLS 证书校验（自签证书）")}
             </label>
           </div>
         )}

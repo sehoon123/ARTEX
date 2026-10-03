@@ -285,7 +285,7 @@ export default function TrafficPage() {
         if (mode === "all") {
           // Reclaimed space is the whole point of compacting an emptied index, so say so.
           const reclaimed = r.reclaimed ?? 0;
-          const freed = reclaimed > 0 ? `，释放 ${fmtBytes(reclaimed)} 存储` : "";
+          const freed = reclaimed > 0 ? tr("，释放 {n0} 存储", { n0: fmtBytes(reclaimed) }) : "";
           toast.success(tr("已清空 {n0} 条流量{n1}", { n0: r.deleted, n1: freed }));
         }
         setPage(0);

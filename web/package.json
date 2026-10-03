@@ -12,7 +12,12 @@
     "check": "biome check",
     "check:fix": "biome check --write",
     "prepare": "husky",
-    "generate:presets": "ts-node -P tsconfig.scripts.json src/scripts/generate-theme-presets.ts"
+    "generate:presets": "ts-node -P tsconfig.scripts.json src/scripts/generate-theme-presets.ts",
+    "i18n:extract": "cd .. && node scripts/i18n/extract.mjs",
+    "i18n:translate": "cd .. && node scripts/i18n/translate.mjs",
+    "i18n:wrap": "cd .. && node scripts/i18n/wrap.mjs",
+    "i18n:check": "cd .. && node scripts/i18n/wrap.mjs --check",
+    "i18n:sync": "cd .. && node scripts/i18n/sync.mjs"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [

@@ -359,7 +359,7 @@ export function ApprovalDetail({
             </Collapsible>
           ) : null}
           <p className="text-muted-foreground text-xs">
-            执行结果：<span className="text-foreground">{detail ? execution : tr("加载中…")}</span>
+            {tr("执行结果：{n0}", { n0: detail ? execution : tr("加载中…") })}
           </p>
         </div>
         <div className="flex min-w-0 flex-col gap-4 lg:border-l lg:pl-5">
@@ -374,7 +374,7 @@ export function ApprovalDetail({
             {current.reason?.replace(/^\[模型\]\s*/, "") || tr("未记录审批理由")}
           </p>
           {audit?.decision_reason ? <p className="text-sm">{audit.decision_reason}</p> : null}
-          {audit?.effective_action ? <p className="text-sm">最终动作：{actionLabels[audit.effective_action]}</p> : null}
+          {audit?.effective_action ? <p className="text-sm">{tr("最终动作：{n0}", { n0: actionLabels[audit.effective_action] })}</p> : null}
           <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-xs">
             <dt className="text-muted-foreground">{tr("来源")}</dt>
             <dd className="break-words">
@@ -404,7 +404,7 @@ export function ApprovalDetail({
         <Alert variant="destructive">
           <AlertDescription>
             <div className="flex flex-wrap items-center gap-2">
-              <span>详情加载失败：{error}</span>
+              <span>{tr("详情加载失败：{n0}", { n0: error })}</span>
               <Button variant="outline" size="sm" onClick={() => setRetry((v) => v + 1)}>
                 {tr("重试详情")}
               </Button>
@@ -461,7 +461,7 @@ export function ApprovalDetail({
                       <section className="flex min-w-0 flex-col gap-3">
                         <h3 className="font-medium text-muted-foreground text-xs">{tr("可见会话上下文")}</h3>
                         <p className="text-muted-foreground text-xs">
-                          保存于 {fmtTime(audit.captured_at)} 的会话记录片段。模型实际使用的内容以“模型审查输入”为准。
+                          {tr("保存于 {n0} 的会话记录片段。模型实际使用的内容以“模型审查输入”为准。", { n0: fmtTime(audit.captured_at) })}
                         </p>
                         {audit.context_truncated ? (
                           <p className="text-muted-foreground text-xs">{tr("仅保存最近的上下文，部分内容已截断。")}</p>
@@ -502,8 +502,8 @@ export function ApprovalDetail({
                 </Alert>
               ) : null}
               <dl className="grid gap-2 text-muted-foreground text-xs [overflow-wrap:anywhere]">
-                <div>工具调用 ID：{audit.tool_use_id || tr("未记录")}</div>
-                <div>参数摘要 SHA-256：{audit.input_digest}</div>
+                <div>{tr("工具调用 ID：{n0}", { n0: audit.tool_use_id || tr("未记录") })}</div>
+                <div>{tr("参数摘要 SHA-256：{n0}", { n0: audit.input_digest })}</div>
                 <div>审查配置指纹 SHA-256：{audit.config_digest || tr("未记录")}</div>
                 {audit.model_input_digest ? <div>模型审查输入 SHA-256：{audit.model_input_digest}</div> : null}
                 {audit.execution_ended_at ? <div>结果记录时间：{fmtTime(audit.execution_ended_at)}</div> : null}

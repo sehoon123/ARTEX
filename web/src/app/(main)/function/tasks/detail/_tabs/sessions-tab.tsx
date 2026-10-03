@@ -203,7 +203,7 @@ const TokenMetrics = React.forwardRef<
     labels?: "short" | "long";
   }
 >(({ input, cache, output, labels = "short", className, ...props }, ref) => {
-  const names = labels === "short" ? ["入", "缓", "出"] : ["input", "cache", "output"];
+  const names = labels === "short" ? [tr("入"), tr("缓"), tr("出")] : ["input", "cache", "output"];
   const values = [input, cache, output];
   return (
     <span
@@ -392,7 +392,7 @@ function SessionItem({
         )}
         {s.inherited && s.source_task_id && (
           <Badge variant="outline" className="shrink-0">
-            来源 #{s.source_task_id}
+            {tr("来源 #{n0}", { n0: s.source_task_id })}
           </Badge>
         )}
         <span
@@ -457,7 +457,7 @@ function WorkerAssetBadge({ assets }: { assets: IntentAsset[] }) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Badge variant="outline" className="max-w-60 shrink-0 font-normal" title={firstRawLabel}>
-          <span className="truncate">当前资产：{firstLabel}</span>
+          <span className="truncate">{tr("当前资产：{n0}", { n0: firstLabel })}</span>
           {displayAssets.length > 1 && <span className="shrink-0 tabular-nums">+{displayAssets.length - 1}</span>}
         </Badge>
       </TooltipTrigger>
@@ -1781,7 +1781,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
               )}
               {activeAssets && activeAssets.length > 0 && <WorkerAssetBadge assets={activeAssets} />}
               {active.inherited && active.source_task_id && (
-                <Badge variant="outline">来源任务 #{active.source_task_id} · 只读历史</Badge>
+                <Badge variant="outline">{tr("来源任务 #{n0} · 只读历史", { n0: active.source_task_id })}</Badge>
               )}
               {active.live && (
                 <span className="inline-flex items-center gap-1 rounded bg-blue-500/15 px-1.5 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400">
@@ -1791,7 +1791,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
               )}
               {activeState?.hasMore && (
                 <span className="text-[10px] text-muted-foreground" title={tr("向上滚动加载更早历史")}>
-                  ↑ 更早历史
+                  {tr("↑ 更早历史")}
                 </span>
               )}
               <div className="ml-auto flex min-w-0 max-w-full items-center justify-end gap-x-3 gap-y-1 text-xs text-muted-foreground max-sm:w-full max-sm:flex-wrap">

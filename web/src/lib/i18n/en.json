@@ -2280,5 +2280,18 @@
   "真删除会物理移除该意图，以及仅由它支撑的下游节点（级联到叶子，避免留下孤立数据）；共享节点、目标和任务根事实会保留。此操作不可恢复。规划者会收到删除通知并据此重新规划。": "A hard delete physically removes this intent and the downstream nodes supported only by it (cascading to the leaves to avoid orphaned data); shared nodes, goals, and task root facts are kept. This cannot be undone. The planner is notified of the deletion and re-plans accordingly.",
   "资产过多，已隐藏 {n0} 层级（计数仍已计入上层）。用筛选或过滤框收窄可看到完整层级。": "Too many assets; the {n0} levels are hidden (their counts are still included in the parent). Narrow with search or the filter box to see the full hierarchy.",
   "归档任务 #{n0}？": "Archive task #{n0}?",
-  "任务图谱、关联记录、独占资产与流量、工作文件和 LLM 历史将压缩到冷存储。归档完成后可在任务列表的“已归档”页还原。": "The task graph, linked records, exclusive assets and traffic, working files, and LLM history will be compressed into cold storage. After archiving, it can be restored from the \"Archived\" page in the task list."
+  "任务图谱、关联记录、独占资产与流量、工作文件和 LLM 历史将压缩到冷存储。归档完成后可在任务列表的“已归档”页还原。": "The task graph, linked records, exclusive assets and traffic, working files, and LLM history will be compressed into cold storage. After archiving, it can be restored from the \"Archived\" page in the task list.",
+  "执行结果：{n0}": "Result: {n0}",
+  "最终动作：{n0}": "Final action: {n0}",
+  "详情加载失败：{n0}": "Failed to load details: {n0}",
+  "工具调用 ID：{n0}": "Tool call ID: {n0}",
+  "参数摘要 SHA-256：{n0}": "Argument digest SHA-256: {n0}",
+  "保存于 {n0} 的会话记录片段。模型实际使用的内容以“模型审查输入”为准。": "Session transcript snippet saved at {n0}. The content actually used by the model is in \"Model review input\".",
+  "来源 #{n0}": "Source #{n0}",
+  "当前资产：{n0}": "Current asset: {n0}",
+  "来源任务 #{n0} · 只读历史": "Source task #{n0} · read-only history",
+  "↑ 更早历史": "↑ Earlier history",
+  "输入 {n0} · 输出 {n1}": "Input {n0} · Output {n1}",
+  "缓存读取 {n0} · 缓存写入 {n1}": "Cache read {n0} · Cache write {n1}",
+  "缓存读取 {n0}": "Cache read {n0}"
 }

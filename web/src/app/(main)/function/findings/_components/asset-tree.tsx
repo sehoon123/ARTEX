@@ -308,8 +308,7 @@ export function AssetTree({
 
       {truncated && (
         <p className="px-1 text-xs text-muted-foreground">
-          资产过多，已隐藏{(droppedKinds ?? []).map((k) => KIND_LABEL[k as FindingAssetKind] ?? k).join(" / ")}
-          层级（计数仍已计入上层）。用筛选或过滤框收窄可看到完整层级。
+          {tr("资产过多，已隐藏 {n0} 层级（计数仍已计入上层）。用筛选或过滤框收窄可看到完整层级。", { n0: (droppedKinds ?? []).map((k) => KIND_LABEL[k as FindingAssetKind] ?? k).join(" / ") })}
         </p>
       )}
     </div>

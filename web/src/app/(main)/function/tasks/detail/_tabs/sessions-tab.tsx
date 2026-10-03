@@ -2115,13 +2115,11 @@ export function SessionsTab({ taskId }: { taskId: string }) {
         >
           <AlertDialogContent className="max-w-[min(32rem,calc(100vw-2rem))]">
             <AlertDialogHeader>
-              <AlertDialogTitle>删除 Worker #{cancelIntent?.intent_id}？</AlertDialogTitle>
+              <AlertDialogTitle>{tr("删除 Worker #{n0}？", { n0: cancelIntent?.intent_id })}</AlertDialogTitle>
               <AlertDialogDescription className="break-words whitespace-normal">
                 {deleteMode === "hard" ? (
                   <>
-                    <strong>{tr("真删除")}</strong>{tr("会物理移除该意图，以及")}<strong>{tr("仅由它支撑")}</strong>
-                    的下游节点（级联到叶子，避免留下孤立数据）；共享节点、目标和任务根事实会保留。
-                    <strong>{tr("此操作不可恢复。")}</strong>规划者会收到删除通知并据此重新规划。
+                    {tr("真删除会物理移除该意图，以及仅由它支撑的下游节点（级联到叶子，避免留下孤立数据）；共享节点、目标和任务根事实会保留。此操作不可恢复。规划者会收到删除通知并据此重新规划。")}
                   </>
                 ) : (
                   <>

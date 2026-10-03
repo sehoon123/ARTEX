@@ -740,8 +740,7 @@ export default function AssetsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{tr("确认删除")}</AlertDialogTitle>
             <AlertDialogDescription>
-              将永久删除 <span className="font-semibold tabular-nums">{deleteIds.length}</span>{" "}
-              条资产记录，此操作不可撤销。
+              {tr("将永久删除 {n0} 条资产记录，此操作不可撤销。", { n0: deleteIds.length })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

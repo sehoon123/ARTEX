@@ -785,8 +785,7 @@ export default function TrafficPage() {
             <AlertDialogDescription>
               {deleteMode === "all" && (
                 <>
-                  将永久删除全部 <span className="font-semibold tabular-nums">{traffic?.count ?? 0}</span>{" "}
-                  条流量记录（含请求/响应原文），忽略当前的筛选条件，此操作不可撤销。已绑定到漏洞的流量证据保存在独立的证据库中，不受影响。
+                  {tr("将永久删除全部 {n0} 条流量记录（含请求/响应原文），忽略当前的筛选条件，此操作不可撤销。已绑定到漏洞的流量证据保存在独立的证据库中，不受影响。", { n0: traffic?.count ?? 0 })}
                   <br />
                   <span className="text-muted-foreground">
                     {tr("清空后会顺带压实存储，把索引占用的磁盘空间还给系统；这期间流量录制会短暂暂停。")}
@@ -795,18 +794,12 @@ export default function TrafficPage() {
               )}
               {deleteMode === "selected" && (
                 <>
-                  将永久删除 <span className="font-semibold tabular-nums">{selectedHosts.length}</span> 个目标（
-                  <span className="font-mono">
-                    {selectedHosts.slice(0, 3).join("、")}
-                    {selectedHosts.length > 3 ? "…" : ""}
-                  </span>
-                  ）的所有流量记录（含请求/响应原文），此操作不可撤销。
+                  {tr("将永久删除 {n0} 个目标（{n1}）的所有流量记录（含请求/响应原文），此操作不可撤销。", { n0: selectedHosts.length, n1: `${selectedHosts.slice(0, 3).join("、")}${selectedHosts.length > 3 ? "…" : ""}` })}
                 </>
               )}
               {deleteMode === "filter" && (
                 <>
-                  将永久删除 host 包含 <span className="font-mono font-semibold">{hostQ}</span>{" "}
-                  的所有流量记录（含请求/响应原文），此操作不可撤销。
+                  {tr("将永久删除 host 包含 {n0} 的所有流量记录（含请求/响应原文），此操作不可撤销。", { n0: hostQ })}
                 </>
               )}
             </AlertDialogDescription>

@@ -2271,5 +2271,14 @@
   "将永久删除约 {n0} 的归档包及 {n1} 条关联数据快照。此操作不可恢复。": "This will permanently delete about {n0} of archive packages and {n1} linked data snapshots. This cannot be undone.",
   "的执行记录与探索链路将被永久删除。": "'s execution records and exploration lineage will be permanently deleted.",
   "最多关联 {n0}": "Link up to {n0}",
-  "距上轮规划结束/任务开始满该时长且期间无触发，自动触发一轮规划（兜底卡死 + 唤醒去监督在跑的 worker）。下限 10 分钟。": "If this duration elapses since the last planning round ended / the task started with no trigger in between, a planning round is auto-triggered (fallback for being stuck + waking to supervise running workers). Minimum 10 minutes."
+  "距上轮规划结束/任务开始满该时长且期间无触发，自动触发一轮规划（兜底卡死 + 唤醒去监督在跑的 worker）。下限 10 分钟。": "If this duration elapses since the last planning round ended / the task started with no trigger in between, a planning round is auto-triggered (fallback for being stuck + waking to supervise running workers). Minimum 10 minutes.",
+  "将永久删除全部 {n0} 条流量记录（含请求/响应原文），忽略当前的筛选条件，此操作不可撤销。已绑定到漏洞的流量证据保存在独立的证据库中，不受影响。": "This will permanently delete all {n0} traffic records (incl. raw requests/responses), ignoring the current filters. This cannot be undone. Traffic evidence already bound to findings is stored in a separate evidence store and is unaffected.",
+  "将永久删除 {n0} 个目标（{n1}）的所有流量记录（含请求/响应原文），此操作不可撤销。": "This will permanently delete all traffic records (incl. raw requests/responses) of {n0} targets ({n1}). This cannot be undone.",
+  "将永久删除 host 包含 {n0} 的所有流量记录（含请求/响应原文），此操作不可撤销。": "This will permanently delete all traffic records (incl. raw requests/responses) whose host contains {n0}. This cannot be undone.",
+  "将永久删除 {n0} 条资产记录，此操作不可撤销。": "This will permanently delete {n0} asset records. This cannot be undone.",
+  "删除 Worker #{n0}？": "Delete Worker #{n0}?",
+  "真删除会物理移除该意图，以及仅由它支撑的下游节点（级联到叶子，避免留下孤立数据）；共享节点、目标和任务根事实会保留。此操作不可恢复。规划者会收到删除通知并据此重新规划。": "A hard delete physically removes this intent and the downstream nodes supported only by it (cascading to the leaves to avoid orphaned data); shared nodes, goals, and task root facts are kept. This cannot be undone. The planner is notified of the deletion and re-plans accordingly.",
+  "资产过多，已隐藏 {n0} 层级（计数仍已计入上层）。用筛选或过滤框收窄可看到完整层级。": "Too many assets; the {n0} levels are hidden (their counts are still included in the parent). Narrow with search or the filter box to see the full hierarchy.",
+  "归档任务 #{n0}？": "Archive task #{n0}?",
+  "任务图谱、关联记录、独占资产与流量、工作文件和 LLM 历史将压缩到冷存储。归档完成后可在任务列表的“已归档”页还原。": "The task graph, linked records, exclusive assets and traffic, working files, and LLM history will be compressed into cold storage. After archiving, it can be restored from the \"Archived\" page in the task list."
 }

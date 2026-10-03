@@ -107,7 +107,7 @@ export function FindingRetestPanel({
         {error ? (
           <Alert variant="destructive">
             <AlertDescription>
-              加载复测记录失败：{error}
+              {tr("加载复测记录失败：{n0}", { n0: error })}
               <Button variant="outline" size="sm" onClick={() => void load()}>
                 {tr("重试")}
               </Button>
@@ -153,7 +153,7 @@ export function FindingRetestPanel({
                 ) : null}
                 {item.notes ? (
                   <p className="whitespace-pre-wrap break-words text-muted-foreground text-xs">
-                    补充说明：{item.notes}
+                    {tr("补充说明：{n0}", { n0: item.notes })}
                   </p>
                 ) : null}
                 {item.status === "completed" && item.evidence ? (

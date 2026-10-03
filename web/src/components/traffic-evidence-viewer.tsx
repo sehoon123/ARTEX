@@ -72,7 +72,7 @@ export function TrafficEvidenceViewer({
     >
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>流量证据 #{bindingId}</DialogTitle>
+          <DialogTitle>{tr("流量证据 #{n0}", { n0: bindingId })}</DialogTitle>
           <DialogDescription className="break-all">
             {detail?.binding.snapshot.url ?? tr("查看绑定时保存的请求与响应")}
           </DialogDescription>
@@ -91,7 +91,7 @@ export function TrafficEvidenceViewer({
               <TabsContent key={side} value={side}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-xs text-muted-foreground">
-                    正文 {detail[side].total.toLocaleString()} 字节{detail[side].truncated ? tr(" · 当前为预览") : ""}
+                    {tr("正文 {n0} 字节{n1}", { n0: detail[side].total.toLocaleString(), n1: detail[side].truncated ? tr(" · 当前为预览") : "" })}
                   </span>
                   <Button
                     variant="outline"
@@ -102,7 +102,7 @@ export function TrafficEvidenceViewer({
                         .catch((e: Error) => toast.error(e.message))
                     }
                   >
-                    下载完整{side === "request" ? tr("请求") : tr("响应")}{tr("正文")}
+                    {tr("下载完整")}{side === "request" ? tr("请求") : tr("响应")}{tr("正文")}
                   </Button>
                 </div>
                 <HttpCodeBlock
@@ -154,7 +154,7 @@ export function CapturedTrafficViewer({ id, onClose }: { id: string | null; onCl
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{tr("预览流量")}</DialogTitle>
-          <DialogDescription>流量 ID：{id}。绑定时会保存完整正文。</DialogDescription>
+          <DialogDescription>{tr("流量 ID：{n0}。绑定时会保存完整正文。", { n0: id })}</DialogDescription>
         </DialogHeader>
         {error ? (
           <Alert variant="destructive">

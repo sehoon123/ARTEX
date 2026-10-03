@@ -142,7 +142,7 @@ export function FindingTrafficPanel({
                   <Badge variant="secondary">
                     {b.snapshot.method} · {b.snapshot.status}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">证据 #{b.id}</span>
+                  <span className="text-xs text-muted-foreground">{tr("证据 #{n0}", { n0: b.id })}</span>
                 </div>
                 <Button
                   variant="link"

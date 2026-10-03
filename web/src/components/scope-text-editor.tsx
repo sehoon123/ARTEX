@@ -22,8 +22,8 @@ export function ScopeTextEditor({
   value,
   onValueChange,
   parsed,
-  label = "资产范围",
-  description = "每行一条，自动识别域名、IP、CIDR、ICP 备案和企业关键词。",
+  label = tr("资产范围"),
+  description = tr("每行一条，自动识别域名、IP、CIDR、ICP 备案和企业关键词。"),
 }: {
   id: string;
   value: string;
@@ -53,7 +53,7 @@ export function ScopeTextEditor({
       />
       {parsed.rules.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5 text-muted-foreground text-xs">
-          <span>已识别 {parsed.rules.length} 条</span>
+          <span>{tr("已识别 {n0} 条", { n0: parsed.rules.length })}</span>
           {Object.entries(SCOPE_KIND_LABELS).map(([kind, kindLabel]) => {
             const count = counts.get(kind as CompanyScopeKind) ?? 0;
             return count > 0 ? (
@@ -68,10 +68,10 @@ export function ScopeTextEditor({
         <FieldError>
           {parsed.errors.slice(0, 5).map((item) => (
             <span key={`${item.line}-${item.error}`} className="block">
-              第 {item.line} 行：{item.error}
+              {tr("第 {n0} 行：{n1}", { n0: item.line, n1: item.error })}
             </span>
           ))}
-          {parsed.errors.length > 5 && <span className="block">另有 {parsed.errors.length - 5} 行错误</span>}
+          {parsed.errors.length > 5 && <span className="block">{tr("另有 {n0} 行错误", { n0: parsed.errors.length - 5 })}</span>}
         </FieldError>
       )}
     </Field>

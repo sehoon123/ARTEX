@@ -240,7 +240,7 @@ export function TrafficPickerDialog({
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-sm">
-              已选 {selected.size} 条 · 共 {data?.total ?? 0} 条
+              {tr("已选 {n0} 条 · 共 {n1} 条", { n0: selected.size, n1: data?.total ?? 0 })}
             </span>
             <div className="flex items-center gap-2">
               <Button
@@ -251,7 +251,7 @@ export function TrafficPickerDialog({
               >
                 {tr("上一页")}
               </Button>
-              <span className="text-xs">第 {page + 1} 页</span>
+              <span className="text-xs">{tr("第 {n0} 页", { n0: page + 1 })}</span>
               <Button
                 variant="outline"
                 size="sm"

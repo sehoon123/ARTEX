@@ -72,7 +72,7 @@ function SidePanel({
       <div className="flex items-center gap-2 border-b p-3">
         <div className="min-w-0 flex-1">
           <p className="font-medium">
-            旁路提问 <span className="text-muted-foreground">/btw</span>
+            {tr("旁路提问")} <span className="text-muted-foreground">/btw</span>
           </p>
           <p className="truncate text-muted-foreground text-xs">{label}</p>
         </div>
@@ -93,7 +93,7 @@ function SidePanel({
         {side.snapshot ? (
           <>
             <p>{side.snapshot.model.model}</p>
-            <p>上下文更新于 {new Date(side.snapshot.captured_at).toLocaleString()}</p>
+            <p>{tr("上下文更新于 {n0}", { n0: new Date(side.snapshot.captured_at).toLocaleString() })}</p>
           </>
         ) : (
           "主 Agent 首次运行后即可提问"
@@ -129,12 +129,12 @@ function SidePanel({
                 <Badge variant="secondary">{status[item.status]}</Badge>
                 <span className="truncate">{item.model.model}</span>
                 <time dateTime={item.snapshot_at} title={new Date(item.snapshot_at).toLocaleString()}>
-                  上下文 {new Date(item.snapshot_at).toLocaleTimeString()}
+                  {tr("上下文 {n0}", { n0: new Date(item.snapshot_at).toLocaleTimeString() })}
                 </time>
               </div>
               {item.context?.estimated_input_tokens != null && (
                 <p className="text-muted-foreground text-xs">
-                  最近 {item.context.recent_exchanges} 组问答原文
+                  {tr("最近 {n0} 组问答原文", { n0: item.context.recent_exchanges })}
                   {item.context.history_summarized && " · 含早期问答摘要"}
                   {item.context.snapshot_summarized && " · 使用主上下文摘要"}
                 </p>
@@ -256,7 +256,7 @@ export function SideQuestionWorkspace({
         <DrawerContent className="h-[85svh]">
           <DrawerHeader className="sr-only">
             <DrawerTitle>{tr("旁路提问")}</DrawerTitle>
-            <DrawerDescription>{label} 的独立问答</DrawerDescription>
+            <DrawerDescription>{tr("{n0} 的独立问答", { n0: label })}</DrawerDescription>
           </DrawerHeader>
           <SidePanel side={side} label={label} composerLayout={composerLayout} />
         </DrawerContent>

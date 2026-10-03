@@ -2301,5 +2301,22 @@
   "SQL注入\n命令执行": "SQL Injection\nCommand Execution",
   "example.com\n203.0.113.10\n198.51.100.0/24\n京ICP备12345678号-1\n企业名称关键词": "example.com\n203.0.113.10\n198.51.100.0/24\nICP record #12345678-1\ncompany name keyword",
   "## 执行方法\n\n1. 先探测错误\n2. 区分盲注类型\n\n脚本放 scripts/ 目录。": "## Method\n\n1. Probe for errors first\n2. Distinguish blind-injection types\n\nPut scripts in the scripts/ directory.",
-  "\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；": "\nNote: in-container update only replaces the program itself, not the image's toolchain (playwright / nmap, etc.);"
+  "\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；": "\nNote: in-container update only replaces the program itself, not the image's toolchain (playwright / nmap, etc.);",
+  "已识别 {n0} 条": "{n0} recognized",
+  "第 {n0} 行：{n1}": "Line {n0}: {n1}",
+  "另有 {n0} 行错误": "{n0} more lines with errors",
+  "上下文更新于 {n0}": "Context updated at {n0}",
+  "上下文 {n0}": "Context {n0}",
+  "最近 {n0} 组问答原文": "Last {n0} Q&A exchanges (raw)",
+  "{n0} 的独立问答": "Standalone Q&A for {n0}",
+  "流量证据 #{n0}": "Traffic evidence #{n0}",
+  "正文 {n0} 字节{n1}": "Body {n0} bytes{n1}",
+  "流量 ID：{n0}。绑定时会保存完整正文。": "Traffic ID: {n0}. The full body is saved when bound.",
+  "加载复测记录失败：{n0}": "Failed to load retest records: {n0}",
+  "补充说明：{n0}": "Notes: {n0}",
+  "已选 {n0} 条 · 共 {n1} 条": "{n0} selected · {n1} total",
+  "第 {n0} 页": "Page {n0}",
+  "最近 Todo": "Recent Todo",
+  "证据 #{n0}": "Evidence #{n0}",
+  "下载完整": "Download full "
 }

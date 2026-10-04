@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -218,7 +218,7 @@ export function TrafficPickerDialog({
                       {alreadyBound.has(e.id) ? <Badge variant="secondary">{tr("已绑定")}</Badge> : null}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-xs">
-                      {new Date(e.ts).toLocaleString("zh-CN")}
+                      {new Date(e.ts).toLocaleString(getLocale())}
                     </TableCell>
                     <TableCell>{e.status}</TableCell>
                     <TableCell>

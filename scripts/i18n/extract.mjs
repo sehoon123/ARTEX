@@ -1,5 +1,5 @@
 // Shared parser-backed inventory. Reuses the web project's existing TypeScript dependency.
-import { readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { join, relative } from "node:path";
@@ -73,7 +73,7 @@ function displayPosition(node, source) {
   }
   if (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isSatisfiesExpression(parent) || ts.isNonNullExpression(parent)) return displayPosition(parent, source);
   if (ts.isConditionalExpression(parent) && node !== parent.condition) return displayPosition(parent, source);
-  if (ts.isBinaryExpression(parent) && [ts.SyntaxKind.BarBarToken, ts.SyntaxKind.QuestionQuestionToken, ts.SyntaxKind.PlusToken].includes(parent.operatorToken.kind)) return displayPosition(parent, source);
+  if (ts.isBinaryExpression(parent) && ([ts.SyntaxKind.BarBarToken, ts.SyntaxKind.QuestionQuestionToken, ts.SyntaxKind.PlusToken].includes(parent.operatorToken.kind) || (parent.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken && node === parent.right))) return displayPosition(parent, source);
   return false;
 }
 
@@ -157,7 +157,10 @@ export function scanSource(path, text = readFileSync(path, "utf8")) {
 }
 
 export function extractStrings() {
-  return [...new Set(sourceFiles().flatMap((path) => scanSource(path).candidates.map((candidate) => candidate.key)))].sort();
+  const path = join(WEB_SRC, "lib/builtin-metadata.json");
+  const metadata = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
+  const labels = metadata ? [...Object.values(metadata.agents).flatMap((a) => [a.name, a.description]), ...metadata.variableHelp, ...metadata.interceptNames, ...metadata.assetNotes].filter(hasHan) : [];
+  return [...new Set([...sourceFiles().flatMap((path) => scanSource(path).candidates.map((candidate) => candidate.key)), ...labels])].sort();
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {

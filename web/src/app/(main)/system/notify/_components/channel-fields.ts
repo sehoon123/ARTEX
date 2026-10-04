@@ -81,10 +81,12 @@ export const CHANNEL_FIELDS: Record<string, FieldDef[]> = {
       key: "body_template",
       label: tr("请求体模板"),
       kind: "textarea",
-      help:
-        "留空用内置默认模板。变量：{{.Title}} {{.Batch}} {{.Count}} {{.HomeURL}} {{.SentAt}}，" +
-        "以及 range .Items 下的 .Name/.VulnClass/.Severity/.Summary/.Assets/.DetailURL/.StatusLabel。" +
-        "插入字符串请用 {{json .Xxx}} 而不是 {{.Xxx}}，否则标题里的引号会破坏 JSON。",
+      help: tr("留空使用内置默认模板。变量：{n0}。在 range .Items 内可使用 {n1}。插入字符串请用 {n2}，不要使用 {n3}，以免引号破坏 JSON。", {
+        n0: "{{.Title}} {{.Batch}} {{.Count}} {{.HomeURL}} {{.SentAt}}",
+        n1: ".Name/.VulnClass/.Severity/.Summary/.Assets/.DetailURL/.StatusLabel",
+        n2: "{{json .Xxx}}",
+        n3: "{{.Xxx}}",
+      }),
     },
   ],
   telegram: [

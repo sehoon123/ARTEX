@@ -1,5 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
+import { agentName as displayAgentName, agentDescription as displayAgentDescription } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -67,7 +68,7 @@ function AgentGridCard({
       <button type="button" onClick={onOpen} className="flex flex-col gap-2 text-left">
         <div className="flex flex-wrap items-center gap-2">
           <Bot className="text-muted-foreground size-4" />
-          <span className="text-sm font-medium">{agent.name}</span>
+          <span className="text-sm font-medium">{displayAgentName(agent)}</span>
           <span className="text-muted-foreground font-mono text-xs">{agent.key}</span>
           {agent.builtin ? (
             <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
@@ -85,7 +86,7 @@ function AgentGridCard({
           )}
         </div>
         <p className="text-muted-foreground line-clamp-2 min-h-8 text-xs">
-          {agent.description || tr("（无描述）")}
+          {displayAgentDescription(agent) || tr("（无描述）")}
         </p>
         <div className="text-muted-foreground flex flex-wrap gap-1.5 text-[10px]">
           <span className="rounded border px-1.5 py-0.5">MCP {agent.mcp_count ?? 0}</span>
@@ -263,7 +264,7 @@ export default function AgentsPage() {
             <>
               <SheetHeader className="px-4">
                 <SheetTitle className="flex items-center gap-2">
-                  {editing.name}
+                  {displayAgentName(editing)}
                   <span className="text-muted-foreground font-mono text-xs">{editing.key}</span>
                   {!editing.builtin && (
                     <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
@@ -271,7 +272,7 @@ export default function AgentsPage() {
                     </Badge>
                   )}
                 </SheetTitle>
-                <SheetDescription>{editing.description || tr("提示词、配置、可见资源与工具绑定")}</SheetDescription>
+                <SheetDescription>{displayAgentDescription(editing) || tr("提示词、配置、可见资源与工具绑定")}</SheetDescription>
               </SheetHeader>
               <AgentEditor agentKey={editing.key} onSaved={reload} />
             </>

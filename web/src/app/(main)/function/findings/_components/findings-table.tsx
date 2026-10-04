@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -79,7 +79,7 @@ export function isSameFinding(left: Finding, right: Finding): boolean {
 }
 
 export function fmtTime(ts: string) {
-  return new Date(ts).toLocaleString("zh-CN", {
+  return new Date(ts).toLocaleString(getLocale(), {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
@@ -130,7 +130,7 @@ export function FindingsTable({
   activeRetests,
   onDeepen,
   onDelete,
-  selectAllLabel = "选择当前页全部",
+  selectAllLabel = tr("选择当前页全部"),
 }: FindingsTableProps) {
   const selectableIds = items.map((finding) => finding.finding_id).filter((id): id is string => Boolean(id));
   const selectedCount = selectableIds.filter((id) => selectedIds.has(id)).length;

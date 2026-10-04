@@ -200,7 +200,7 @@ function TaskTemplateManager({
   }
 
   let saveLabel = saving ? tr("保存中") : tr("保存修改");
-  if (!saving && selectedID == null) saveLabel = "创建模板";
+  if (!saving && selectedID == null) saveLabel = tr("创建模板");
 
   return (
     <>
@@ -435,7 +435,7 @@ export function TaskTemplateControls({
   };
 
   let pickerPlaceholder = loading ? tr("正在加载模板") : tr("暂无任务模板");
-  if (!loading && templates.length > 0) pickerPlaceholder = "搜索并选择任务模板";
+  if (!loading && templates.length > 0) pickerPlaceholder = tr("搜索并选择任务模板");
 
   return (
     <>

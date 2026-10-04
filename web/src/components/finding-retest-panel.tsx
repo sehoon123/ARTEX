@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -135,7 +135,7 @@ export function FindingRetestPanel({
                       : statusLabels[item.status]}
                   </Badge>
                   <span className="text-muted-foreground text-xs">
-                    #{item.id} · {new Date(item.created_at).toLocaleString("zh-CN")}
+                    #{item.id} · {new Date(item.created_at).toLocaleString(getLocale())}
                   </span>
                   {item.conversation_id != null ? (
                     <Button asChild variant="ghost" size="sm" className="ml-auto">

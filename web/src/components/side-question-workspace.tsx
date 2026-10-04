@@ -135,8 +135,8 @@ function SidePanel({
               {item.context?.estimated_input_tokens != null && (
                 <p className="text-muted-foreground text-xs">
                   {tr("最近 {n0} 组问答原文", { n0: item.context.recent_exchanges })}
-                  {item.context.history_summarized && " · 含早期问答摘要"}
-                  {item.context.snapshot_summarized && " · 使用主上下文摘要"}
+                  {item.context.history_summarized && tr(" · 含早期问答摘要")}
+                  {item.context.snapshot_summarized && tr(" · 使用主上下文摘要")}
                 </p>
               )}
               {item.answer && <Markdown text={item.answer} />}

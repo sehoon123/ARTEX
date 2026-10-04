@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -42,7 +42,7 @@ const FINDING_STATUSES: FindingStatus[] = [
 ];
 
 function fmtTime(ts: string) {
-  return new Date(ts).toLocaleString("zh-CN");
+  return new Date(ts).toLocaleString(getLocale());
 }
 
 // FieldRow is one label/value line in the right-hand status panel.

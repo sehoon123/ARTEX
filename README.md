@@ -63,6 +63,10 @@ Supports syncing asset data directly from [ScopeSentry](https://github.com/Autum
 ## Installation
 
 > Requires **PostgreSQL** database; exploration needs **LLM** configuration (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`, also configurable in UI).
+>
+> **For this fork's EN/KO UI, use a fork-built binary**, not the upstream Docker image/release.
+> See the [Docker-free fork build and update instructions](scripts/i18n/README.md#installing-the-localized-fork).
+> WSL1 runtime compatibility still requires separate verification.
 
 ### Option 1: One-click Install Script (Recommended)
 
@@ -98,6 +102,9 @@ Remote MCP can be configured in system settings as `http` (Streamable HTTP) or `
 ## Internationalization (i18n)
 
 ARTEX supports **English** and **Korean**. The language can be switched via the user menu in the sidebar. The system auto-detects browser language on first visit.
+
+After an upstream merge: [localization maintenance](scripts/i18n/README.md) · [한국어 절차](scripts/i18n/README.ko.md).
+Run `npm run i18n:sync` then `npm run i18n:verify` from `web/`; changed builtin metadata needs explicit review first.
 
 ---
 

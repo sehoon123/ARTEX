@@ -1,5 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
+import { toolDescription as displayToolDescription } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -854,7 +855,7 @@ export default function InterceptPage() {
                             )}
                           </div>
                           {t.description && (
-                            <p className="text-[11px] text-muted-foreground line-clamp-1">{t.description}</p>
+                            <p className="text-[11px] text-muted-foreground line-clamp-1">{displayToolDescription(t)}</p>
                           )}
                         </label>
                       </div>

@@ -1,5 +1,6 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
+import { agentName as displayAgentName } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -48,7 +49,7 @@ import type { Agent, SkillItem, MCPServer, SkillCall, MissingSkill } from "@/lib
 
 function fmtTime(ts?: string) {
   if (!ts) return tr("从未调用");
-  return new Date(ts).toLocaleString("zh-CN", {
+  return new Date(ts).toLocaleString(getLocale(), {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
@@ -942,9 +943,9 @@ export default function SkillsPage() {
                         <label key={a.key} className="flex cursor-pointer items-center gap-2 text-sm">
                           <Checkbox
                             checked={(visibility[selectedSkill.name] ?? []).includes(a.id)}
-                            onCheckedChange={() => toggleVisibility(selectedSkill.name, a.id, a.name)}
+                            onCheckedChange={() => toggleVisibility(selectedSkill.name, a.id, displayAgentName(a))}
                           />
-                          {a.name}
+                          {displayAgentName(a)}
                         </label>
                       ))}
                       {agents.length === 0 && (
@@ -1106,7 +1107,7 @@ export default function SkillsPage() {
                           setNewVisibility((cur) => on ? [...cur, a.id] : cur.filter((id) => id !== a.id))
                         }
                       />
-                      {a.name}
+                      {displayAgentName(a)}
                     </label>
                   ))}
                 </div>

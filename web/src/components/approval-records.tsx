@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 
@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils";
 
 function fmtTime(value?: string) {
   if (!value) return "—";
-  return new Date(value).toLocaleString("zh-CN", {
+  return new Date(value).toLocaleString(getLocale(), {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
@@ -331,11 +331,11 @@ export function ApprovalDetail({
   const current = detail?.status === row.status ? detail : row;
   const audit = detail?.audit;
   let execution = audit ? executionLabels[audit.execution_status] : tr("未记录");
-  if (row.status === "pending") execution = "尚未执行";
-  if (audit && audit.correlation !== "exact" && audit.effective_action === "allow") execution = "未关联执行结果";
+  if (row.status === "pending") execution = tr("尚未执行");
+  if (audit && audit.correlation !== "exact" && audit.effective_action === "allow") execution = tr("未关联执行结果");
   const command = typeof row.tool_input?.command === "string" ? row.tool_input.command : undefined;
   let initialLabel = source(row) === "model" ? tr("模型初判") : tr("规则初判");
-  if (audit?.model_fallback) initialLabel = "模型异常回退";
+  if (audit?.model_fallback) initialLabel = tr("模型异常回退");
 
   return (
     <div className="flex min-w-0 flex-col gap-4 p-3 sm:p-5">

@@ -24,8 +24,8 @@ type CopyButtonProps = {
 // 下自动降级(见 copyText)。
 export function CopyButton({
   text,
-  successMessage = "已复制",
-  label = "复制",
+  successMessage = tr("已复制"),
+  label = tr("复制"),
   size = "sm",
   variant = "outline",
   className,

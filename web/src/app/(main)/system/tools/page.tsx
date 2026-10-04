@@ -1,5 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
+import { agentName as displayAgentName, toolDescription as displayToolDescription } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -217,7 +218,7 @@ function ToolEditor({
                     disabled={trafficGated}
                     onCheckedChange={() => toggleAgent(ag.key)}
                   />
-                  {ag.name}
+                  {displayAgentName(ag)}
                   <span className="text-muted-foreground font-mono text-xs">{ag.key}</span>
                 </label>
               ))}
@@ -232,8 +233,12 @@ function ToolEditor({
           </div>
         </div>
 
-        {/* description */}
+        {/* Display-only summary; the editable model description below stays original. */}
+        {displayToolDescription(tool) !== tool.description && (
+          <p className="text-muted-foreground text-xs">{displayToolDescription(tool)}</p>
+        )}
         <div className="grid gap-1.5">
+          <p className="text-muted-foreground text-xs">{tr("以下为模型使用的原文。界面语言不会修改其内容。")}</p>
           <Label className="text-muted-foreground text-xs">{tr("工具描述（发送给模型）")}</Label>
           <Textarea
             className="font-mono text-xs"
@@ -348,7 +353,7 @@ function ToolGridCard({ tool, onClick }: { tool: Tool; onClick: () => void }) {
         </Badge>
       </div>
       <p className="text-muted-foreground line-clamp-1 h-4 text-xs">
-        {tool.description || tr("（无描述）")}
+        {displayToolDescription(tool) || tr("（无描述）")}
       </p>
       <div className="mt-auto flex flex-wrap gap-1 pt-1">
         {tool.agents.length === 0 && (
@@ -389,6 +394,7 @@ export default function ToolsPage() {
     return (
       t.key.toLowerCase().includes(q) ||
       t.description.toLowerCase().includes(q) ||
+      displayToolDescription(t).toLowerCase().includes(q) ||
       t.agents.some((a) => a.toLowerCase().includes(q))
     );
   }, [query]);
@@ -785,7 +791,7 @@ function CustomToolDialog({
               {agents.map((a) => (
                 <label key={a.key} className="flex items-center gap-2 text-sm">
                   <Checkbox checked={bound.includes(a.key)} onCheckedChange={() => toggleAgent(a.key)} />
-                  {a.name}<span className="text-muted-foreground font-mono text-xs">{a.key}</span>
+                  {displayAgentName(a)}<span className="text-muted-foreground font-mono text-xs">{a.key}</span>
                 </label>
               ))}
             </div>

@@ -16,9 +16,11 @@
     "i18n:extract": "cd .. && node scripts/i18n/extract.mjs",
     "i18n:translate": "cd .. && node scripts/i18n/translate.mjs",
     "i18n:wrap": "cd .. && node scripts/i18n/wrap.mjs",
-    "i18n:check": "cd .. && node scripts/i18n/wrap.mjs --check",
+    "i18n:check": "cd .. && node scripts/i18n/wrap.mjs --check && node scripts/i18n/catalog-check.mjs",
     "i18n:test": "cd .. && node --test scripts/i18n/test.mjs",
-    "i18n:sync": "cd .. && node scripts/i18n/sync.mjs"
+    "i18n:sync": "cd .. && node scripts/i18n/sync.mjs",
+    "i18n:catalog": "cd .. && node scripts/i18n/catalog-check.mjs --update",
+    "i18n:verify": "npm run i18n:test && npm run i18n:check && npm run build:static"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [

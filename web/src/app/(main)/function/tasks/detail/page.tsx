@@ -100,11 +100,11 @@ function TaskLLMControl({ task, profiles, onUpdated }: { task: Task; profiles: L
   const currentTitle = [currentLabel, activeProfile?.model, backupCount > 0 ? tr("{n0} 个备用", { n0: backupCount }) : ""]
     .filter(Boolean)
     .join(" · ");
-  let editorDescription = "调整顺序或当前配置后，将从下一次 LLM 调用开始生效。";
-  if (terminal) editorDescription = "任务已结束，改动只影响后续的主 Agent 对话。";
-  let saveLabel = "保存";
-  if (exhausted) saveLabel = "保存并重置";
-  if (saving) saveLabel = "保存中";
+  let editorDescription = tr("调整顺序或当前配置后，将从下一次 LLM 调用开始生效。");
+  if (terminal) editorDescription = tr("任务已结束，改动只影响后续的主 Agent 对话。");
+  let saveLabel = tr("保存");
+  if (exhausted) saveLabel = tr("保存并重置");
+  if (saving) saveLabel = tr("保存中");
 
   const syncDraft = React.useCallback(() => {
     const next = taskProfileIDs(task);
@@ -326,7 +326,7 @@ function TaskDetailInner() {
   const engineMode = paused ? "paused" : (task.engine_mode ?? "idle");
   let controlVariant: "default" | "secondary" | "outline" = "outline";
   let controlIcon = <PauseIcon data-icon="inline-start" />;
-  let controlLabel = "暂停";
+  let controlLabel = tr("暂停");
   if (terminal) {
     controlVariant = "secondary";
     controlIcon = <CheckIcon data-icon="inline-start" />;
@@ -334,7 +334,7 @@ function TaskDetailInner() {
   } else if (paused) {
     controlVariant = "default";
     controlIcon = <PlayIcon data-icon="inline-start" />;
-    controlLabel = "恢复";
+    controlLabel = tr("恢复");
   }
   const archiveTrigger = (
     <Button

@@ -63,6 +63,10 @@ AI 자율 침투 테스트 시스템 (Go 백엔드 + Next.js 프론트엔드)
 ## 설치
 
 > **PostgreSQL** 데이터베이스가 필요합니다. 탐색에는 **LLM** 설정(`ANTHROPIC_API_KEY` 또는 `OPENAI_API_KEY`, UI에서도 설정 가능)이 필요합니다.
+>
+> **이 포크의 EN/KO UI는 포크에서 빌드한 바이너리로 설치**하세요. 업스트림 Docker 이미지/릴리스에는 패치가 없습니다.
+> [Docker 없는 설치·업데이트 절차](scripts/i18n/README.ko.md#4-포크-버전을-빌드설치)를 참고하세요.
+> WSL1의 실제 실행 호환성은 아직 별도 검증이 필요합니다.
 
 ### 방법 1: 원클릭 설치 스크립트 (권장)
 
@@ -96,6 +100,9 @@ docker compose up -d          # autumn27/artex 이미지 + postgres pull
 ## 국제화 (i18n)
 
 ARTEX는 **영어**와 **한국어**를 지원합니다. 사이드바의 사용자 메뉴에서 언어를 변경할 수 있습니다. 첫 방문 시 브라우저 언어를 자동 감지합니다.
+
+업스트림 병합 후: [한국어 유지보수 절차](scripts/i18n/README.ko.md) · [English](scripts/i18n/README.md).
+`web/`에서 `npm run i18n:sync` → `npm run i18n:verify`로 검증하세요. 내장 메타데이터 변경은 먼저 검토해야 합니다.
 
 ---
 

@@ -1,5 +1,6 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
+import { toolDescription as displayToolDescription, variableDescription as displayVariableDescription } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -375,7 +376,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p className="font-medium">{v.description}</p>
+                    <p className="font-medium">{displayVariableDescription(v, detail?.agent)}</p>
                     <p className="text-muted-foreground mt-1">{tr("示例：{n0}", { n0: v.example })}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -424,7 +425,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   <span className="text-muted-foreground truncate flex-1">{ver.note}</span>
                   {ver.ts && (
                     <span className="text-muted-foreground/60 shrink-0 tabular-nums">
-                      {new Date(ver.ts).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                      {new Date(ver.ts).toLocaleDateString(getLocale(), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
                     </span>
                   )}
                   <Button variant="ghost" size="icon-sm" className="size-6 shrink-0" onClick={() => setViewVer(ver)}>
@@ -457,7 +458,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   {viewVer?.note || tr("（无备注）")}
                   {viewVer?.ts && (
                     <span className="ml-2 text-muted-foreground/60">
-                      {new Date(viewVer.ts).toLocaleString("zh-CN")}
+                      {new Date(viewVer.ts).toLocaleString(getLocale())}
                     </span>
                   )}
                 </DialogDescription>
@@ -651,7 +652,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 ) : (
                   t.description && (
                     <span className="text-muted-foreground ml-auto line-clamp-1 max-w-[55%] text-xs">
-                      {t.description}
+                      {displayToolDescription(t)}
                     </span>
                   )
                 )}
@@ -1072,7 +1073,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
                         onCheckedChange={() => toggleTool(tool.key)} />
                       <span className="min-w-0">
                         <span className="font-medium">{tool.key}</span>
-                        {tool.description && <span className="text-muted-foreground line-clamp-1"> {tool.description}</span>}
+                        {tool.description && <span className="text-muted-foreground line-clamp-1"> {displayToolDescription(tool)}</span>}
                       </span>
                     </label>
                   ))}

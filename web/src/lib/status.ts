@@ -1,3 +1,5 @@
+import { tr } from "@/lib/i18n";
+
 // Centralised status → color/label semantics, reused across the whole app.
 // Spec §8.3: 意图 / 覆盖 / 任务 / 严重度 each have a consistent color set.
 
@@ -124,5 +126,8 @@ const maps = {
 export type StatusDomain = keyof typeof maps;
 
 export function statusMeta(domain: StatusDomain, key: string): StatusMeta {
-  return maps[domain][key] ?? { label: key, tone: "neutral" };
+  const map = maps[domain];
+  if (!Object.hasOwn(map, key)) return { label: key, tone: "neutral" };
+  const meta = map[key];
+  return { ...meta, label: tr(meta.label) }; // Label only; domain, stored status and tone stay unchanged.
 }

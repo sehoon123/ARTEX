@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import vm from "node:vm";
 import test from "node:test";
-import { writeAtomic } from "./extract.mjs";
+import { writeAtomic, sourceFiles } from "./extract.mjs";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const require = createRequire(join(root, "web/package.json"));
@@ -563,4 +563,212 @@ test("invalid batch/limit fail promptly instead of looping or reporting false co
   const f = fixture('"use client";\nexport const Demo=()=> <p>新的界面标题</p>;\n');
   try { for (const env of [{ BATCH: "0" }, { BATCH: "NaN" }, { LIMIT: "-1" }]) { const result = await f.run("translate", [], env); assert.ok(result.signal == null); assert.equal(result.code, 1); } }
   finally { f.close(); }
+});
+
+function loadBuiltinLabels(locale) {
+  const runtime = loadRuntime(locale);
+  const originals = json(join(root, "web/src/lib/builtin-tool-descriptions.json"));
+  const sandbox = { exports: {}, require: (path) => path === "@/lib/i18n" ? runtime : path === "./builtin-tool-descriptions.json" ? originals : path === "./builtin-metadata.json" ? json(join(root, "web/src/lib/builtin-metadata.json")) : require(path) };
+  vm.runInNewContext(ts.transpileModule(read(join(root, "web/src/lib/builtin-labels.ts")), { compilerOptions }).outputText, sandbox);
+  return { ...sandbox.exports, originals, runtime };
+}
+
+function displayComponent(path, locale, exports) {
+  const labels = loadBuiltinLabels(locale);
+  const passthrough = ({ children }) => React.createElement("span", null, children);
+  const ui = new Proxy({}, { get: () => passthrough });
+  const sandbox = { exports: {}, require: (path) => path === "@/lib/i18n" ? labels.runtime : path === "@/lib/builtin-labels" ? labels : path === "@/lib/utils" ? { cn: (...parts) => parts.filter(Boolean).join(" "), copyText: async () => true } : path === "react" ? React : path === "react/jsx-runtime" ? require(path) : ui };
+  vm.runInNewContext(ts.transpileModule(read(join(root, path)) + `\nexport { ${exports} };`, { compilerOptions }).outputText, sandbox);
+  return { ...sandbox.exports, ...labels };
+}
+
+for (const locale of ["en", "ko"]) {
+  test(`populated builtin tool cards render ${locale} summaries without changing source data`, () => {
+    const labels = displayComponent("web/src/app/(main)/system/tools/page.tsx", locale, "ToolGridCard");
+    for (const [key, description] of Object.entries(labels.originals)) {
+      const tool = { key, description, system: true, agents: ["worker"], schema: { properties: {} }, enabled: true };
+      const before = JSON.stringify(tool);
+      const html = renderToString(React.createElement(labels.ToolGridCard, { tool, onClick: () => {} }));
+      assert.ok(html.includes(renderToString(React.createElement(React.Fragment, null, dictionaries[locale][`builtin.tool.${key}.summary`]))), key);
+      assert.ok(!/[\u4e00-\u9fff]/.test(html), key);
+      assert.equal(JSON.stringify(tool), before);
+      assert.equal(labels.toolDescription({ ...tool, system: false }), description);
+      assert.equal(labels.toolDescription({ ...tool, description: "用户改写的说明" }), "用户改写的说明");
+    }
+    assert.equal(labels.toolDescription({ key: "constructor", system: true, description: "未知工具" }), "未知工具");
+  });
+
+  test(`builtin agents and reserved intercept labels render ${locale}; custom data remains verbatim`, () => {
+    const labels = displayComponent("web/src/app/(main)/system/agents/page.tsx", locale, "AgentGridCard");
+    const agent = { key: "goals", name: "目标拆解", description: "把渗透任务目标拆解成若干独立、可验证的子目标。", builtin: true, enabled: true };
+    const before = JSON.stringify(agent);
+    const html = renderToString(React.createElement(labels.AgentGridCard, { agent, onOpen: () => {}, onDeleted: () => {} }));
+    assert.ok(html.includes(dictionaries[locale][agent.name]));
+    assert.ok(!/[\u4e00-\u9fff]/.test(html));
+    assert.equal(JSON.stringify(agent), before);
+    assert.equal(labels.agentName({ ...agent, builtin: false }), agent.name);
+    assert.equal(labels.agentName({ ...agent, name: "规划" }), "规划", "An edited builtin name must not be hidden by another known key");
+    assert.equal(labels.agentName({ ...agent, key: "constructor" }), agent.name);
+    assert.equal(labels.agentDescription({ ...agent, builtin: false }), agent.description);
+    assert.equal(labels.agentDescription({ ...agent, description: "任务总目标" }), "任务总目标", "Edited builtin descriptions stay original");
+    assert.equal(labels.agentDescription({ builtin: true }), "");
+    assert.equal(labels.interceptName, undefined, "Name matches cannot prove builtin command-rule provenance");
+    assert.match(read(join(root, "web/src/app/(main)/system/intercept/page.tsx")), /\{rule\.name\}/);
+    const approvals = read(join(root, "web/src/components/approval-records.tsx"));
+    assert.match(approvals, /\{row\.rule_name \|\| tr\(/);
+    assert.match(approvals, /\{audit\.rule_name\}/);
+    const metadata = json(join(root, "web/src/lib/builtin-metadata.json"));
+    assert.equal(labels.variableDescription({ name: "Now", description: metadata.globalVariables.Now }), dictionaries[locale][metadata.globalVariables.Now]);
+    assert.equal(labels.variableDescription({ name: "Now", description: "任务总目标" }), "任务总目标", "Global help must match the same name, not any other known variable");
+    assert.equal(labels.variableDescription({ name: "Custom", description: "任务总目标" }), "任务总目标");
+    for (const [key, builtin] of Object.entries(metadata.agents)) for (const [name, description] of Object.entries(builtin.variables)) {
+      assert.equal(labels.variableDescription({ name, description }, { key, builtin: true }), dictionaries[locale][description]);
+      assert.equal(labels.variableDescription({ name, description }, { key, builtin: false }), description);
+      assert.equal(labels.variableDescription({ name: "Custom", description }, { key, builtin: true }), description);
+    }
+    for (const rule of metadata.assetRules) {
+      assert.equal(labels.assetNote({ ...rule, builtin: true }), dictionaries[locale][rule.note]);
+      assert.equal(labels.assetNote({ ...rule, builtin: false }), rule.note);
+      assert.equal(labels.assetNote({ ...rule, builtin: true, pattern: "edited.example" }), rule.note);
+      assert.equal(labels.assetNote({ ...rule, builtin: true, kind: "exact_domain" }), rule.note);
+      assert.equal(labels.assetNote({ ...rule, builtin: true, note: "规划" }), "规划", "Edited builtin asset notes stay original");
+    }
+  });
+
+  test(`localized asset-rule groupings retain all seven original option values in ${locale}`, () => {
+    const path = join(root, "web/src/app/(main)/system/intercept/assets/page.tsx");
+    const source = ts.createSourceFile(path, read(path), ts.ScriptTarget.Latest, true);
+    const declarations = source.statements.filter((node) => ts.isVariableStatement(node) && node.declarationList.declarations.some((d) => ["KIND_OPTIONS", "KIND_GROUPS"].includes(d.name.getText(source)))).map((n) => n.getText(source)).join("\n");
+    const sandbox = { exports: {}, tr: loadRuntime(locale).tr };
+    vm.runInNewContext(ts.transpileModule(declarations + "\nexport { KIND_OPTIONS, KIND_GROUPS };", { compilerOptions }).outputText, sandbox);
+    const { KIND_OPTIONS: options, KIND_GROUPS: groups } = sandbox.exports;
+    assert.equal(groups.length, 3);
+    assert.equal(groups.flatMap((g) => options.filter((o) => o.group === g)).length, 7);
+    assert.equal(options.map((o) => o.value).join(","), "exact_domain,exact_ip,exact_url,fuzzy_domain,fuzzy_ip,fuzzy_url,cidr");
+    assert.ok(!/[\u4e00-\u9fff]/.test(groups.join(" ")));
+  });
+
+  test(`webhook help is localized in ${locale} while template tokens remain literal`, () => {
+    const sandbox = { exports: {}, require: (path) => path === "@/lib/i18n" ? loadRuntime(locale) : require(path) };
+    vm.runInNewContext(ts.transpileModule(read(join(root, "web/src/app/(main)/system/notify/_components/channel-fields.ts")), { compilerOptions }).outputText, sandbox);
+    const help = sandbox.exports.CHANNEL_FIELDS.webhook.find((field) => field.key === "body_template").help;
+    assert.ok(!/[\u4e00-\u9fff]/.test(help));
+    for (const token of ["{{.Title}}", "{{.Batch}}", "{{.Count}}", "{{.HomeURL}}", "{{.SentAt}}", "range .Items", ".StatusLabel", "{{json .Xxx}}", "{{.Xxx}}"] ) assert.ok(help.includes(token), token);
+  });
+}
+
+test("new Specs with computed descriptions fail instead of silently passing the metadata inventory", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "artex-catalog-source-"));
+  try {
+    mkdirSync(join(dir, "traffic"));
+    writeFileSync(join(dir, "traffic/meta.go"), 'package traffic\nvar metadata = actool.Spec{Name: "new_tool", Description: computeDescription()}\n');
+    await assert.rejects(exec("go", ["run", join(root, "scripts/i18n/catalog.go"), dir], { timeout: 60000 }), /Unsupported description for new_tool/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("static backend tool metadata matches the display snapshot without executing any tool", async () => {
+  const { stdout } = await exec("go", ["run", join(root, "scripts/i18n/catalog.go"), root], { cwd: root, timeout: 60000 });
+  const entries = JSON.parse(stdout);
+  assert.equal(new Set(entries.map((entry) => entry.key)).size, entries.length, "Duplicate tool keys need manual review");
+  const current = Object.fromEntries(entries.map((entry) => [entry.key, entry.text]));
+  assert.deepEqual(current, json(join(root, "web/src/lib/builtin-tool-descriptions.json")), "Backend metadata changed: review/update display summaries and their exact-source snapshot");
+  for (const key of Object.keys(current)) for (const locale of ["en", "ko"]) assert.ok(dictionaries[locale][`builtin.tool.${key}.summary`], `${locale}: ${key}`);
+});
+
+for (const locale of ["en", "ko"]) {
+  test(`shared status metadata translates ${locale} labels without changing keys, tones or unknown values`, () => {
+    const sandbox = { exports: {}, require: (path) => path === "@/lib/i18n" ? loadRuntime(locale) : require(path) };
+    vm.runInNewContext(ts.transpileModule(read(join(root, "web/src/lib/status.ts")) + "\nexport { maps };", { compilerOptions }).outputText, sandbox);
+    const { maps, statusMeta } = sandbox.exports;
+    for (const [domain, entries] of Object.entries(maps)) for (const [key, meta] of Object.entries(entries)) {
+      const before = JSON.stringify(meta), display = statusMeta(domain, key);
+      assert.equal(display.label, dictionaries[locale][meta.label] ?? meta.label);
+      assert.equal(display.tone, meta.tone);
+      assert.equal(JSON.stringify(meta), before);
+      assert.ok(!/\p{Script=Han}/u.test(display.label));
+    }
+    assert.equal(statusMeta("delivery", "用户状态").label, "用户状态");
+    assert.equal(statusMeta("delivery", "constructor").label, "constructor");
+  });
+
+  test(`chat default-profile label and tooltip render ${locale} without rewriting profile names`, () => {
+    const view = displayComponent("web/src/app/(main)/chat/page.tsx", locale, "LLMProfileRow");
+    const profiles = [{ id: "1", name: "Fixture LLM", is_default: true }];
+    const before = JSON.stringify(profiles);
+    const html = renderToString(React.createElement(view.LLMProfileRow, { profiles, selected: null, onChange: () => {} }));
+    assert.ok(html.includes(`title="${view.runtime.tr("默认（{n0}）", { n0: profiles[0].name })}"`));
+    assert.ok(!/\p{Script=Han}/u.test(html));
+    assert.equal(JSON.stringify(profiles), before);
+    const custom = renderToString(React.createElement(view.LLMProfileRow, { profiles: [{ ...profiles[0], name: "用户模型名称" }], selected: 1, onChange: () => {} }));
+    assert.ok(custom.includes('title="用户模型名称"'));
+  });
+
+  test(`CopyButton defaults and activity-time tooltip use ${locale} display text`, () => {
+    const copy = displayComponent("web/src/components/copy-button.tsx", locale, "CopyButton");
+    const html = renderToString(React.createElement(copy.CopyButton, { text: "fixture-only" }));
+    assert.ok(html.includes(dictionaries[locale]["复制"]));
+    assert.ok(!/\p{Script=Han}/u.test(html));
+    const time = displayComponent("web/src/components/transcript.tsx", locale, "ActivityTime");
+    const date = renderToString(React.createElement(time.ActivityTime, { ts: "2026-10-03T12:34:00Z" }));
+    assert.ok(date.includes("title="));
+    assert.ok(!/\p{Script=Han}/u.test(date));
+  });
+}
+
+test("conditional display hints are wrapped but logical predicates/protocol comparisons are preserved", async () => {
+  const f = fixture('"use client"; export function Demo({loading,flag}) { const protocol = flag === "立即同步"; return <p>{loading && "立即同步"}{flag === "立即同步" && <i>ok</i>}</p> }');
+  try {
+    const result = await f.run("wrap");
+    assert.equal(result.code, 0, result.stderr);
+    assert.match(read(f.file), /loading && tr\("立即同步"\)/);
+    assert.equal(read(f.file).match(/flag === "立即同步"/g).length, 2);
+    assert.equal((await f.run("wrap", ["--check"])).code, 0);
+  } finally { f.close(); }
+});
+
+test("known builtin Agent/variable/rule metadata matches its reviewed source-only snapshot", async () => {
+  const { stdout } = await exec("go", ["run", join(root, "scripts/i18n/catalog.go"), root, "--metadata"], { cwd: root, timeout: 60000 });
+  const metadata = JSON.parse(stdout);
+  assert.deepEqual(metadata, json(join(root, "web/src/lib/builtin-metadata.json")));
+  const labels = [...Object.values(metadata.agents).flatMap((a) => [a.name, a.description]), ...metadata.variableHelp, ...metadata.interceptNames, ...metadata.assetNotes];
+  for (const locale of ["en", "ko"]) for (const key of labels.filter((s) => /\p{Script=Han}/u.test(s))) assert.ok(dictionaries[locale][key], `${locale}: ${key}`);
+});
+
+test("reviewed snapshot refresh reports untranslated new metadata instead of silently passing", async () => {
+  const f = fixture('"use client"; export const Demo=()=>null;', { "名称": ["Name", "이름"], "说明": ["Description", "설명"], "变量": ["Variable", "변수"], "[内置] 规则": ["Rule", "규칙"], "[内置] 资产": ["Asset", "자산"] });
+  try {
+    for (const dir of ["agent", "server", "traffic", "db"]) mkdirSync(join(f.dir, dir));
+    writeFileSync(join(f.dir, "agent/meta.go"), 'package agent\nvar tool=readTool("fixture_tool", "模型说明")\n');
+    writeFileSync(join(f.dir, "db/db.go"), 'package db\nvar builtinAgents=[]builtinAgent{{"a", "名称", "role", "说明", nil}}\nfunc seedDefaultAssetInterceptRules(){ rules:=[]struct{kind,pattern,note string}{{"fuzzy_domain", ".gov", "[内置] 资产"}}; _=rules }\nconst rule="[内置] 规则"\n');
+    writeFileSync(join(f.dir, "server/server_mgmt.go"), 'package server\nvar globalPromptVars=[]db.PromptVar{{Name:"Now", Description:"变量"}}\n');
+    for (const lang of ["en", "ko"]) {
+      const p = join(f.dir, `web/src/lib/i18n/${lang}.json`), d = json(p);
+      d["builtin.tool.fixture_tool.summary"] = "UI summary";
+      writeFileSync(p, JSON.stringify(d));
+    }
+    const { stdout } = await exec("go", ["run", join(root, "scripts/i18n/catalog.go"), f.dir, "--metadata"], { timeout: 60000 });
+    const metadata = join(f.dir, "web/src/lib/builtin-metadata.json");
+    writeFileSync(metadata, stdout);
+    writeFileSync(join(f.dir, "web/src/lib/builtin-tool-descriptions.json"), JSON.stringify({ fixture_tool: "模型说明" }));
+    assert.equal((await f.run("catalog-check")).code, 0);
+    const file = join(f.dir, "db/db.go"); writeFileSync(file, read(file).replace('"名称"', '"新增名称"'));
+    const before = read(metadata);
+    const check = await f.run("catalog-check"); assert.notEqual(check.code, 0); assert.match(check.stderr, /Built-in metadata changed/); assert.equal(read(metadata), before);
+    const updated = await f.run("catalog-check", ["--update"]); assert.notEqual(updated.code, 0); assert.match(updated.stderr, /missing builtin display translations/); assert.match(read(metadata), /新增名称/);
+    assert.ok(!Object.hasOwn(json(join(f.dir, "web/src/lib/i18n/en.json")), "新增名称"));
+    const missing = await f.run("extract"); assert.match(missing.stdout, /新增名称/);
+    writeFileSync(file, read(file).replace('"新增名称"', 'computedName()'));
+    const unsupported = await f.run("catalog-check", ["--update"]); assert.notEqual(unsupported.code, 0); assert.match(unsupported.stderr, /Unsupported builtin display label/);
+  } finally { f.close(); }
+});
+
+test("UI date formatters cannot silently reintroduce forced Chinese locale after an upstream merge", () => {
+  for (const path of sourceFiles()) {
+    const source = ts.createSourceFile(path, read(path), ts.ScriptTarget.Latest, true);
+    function visit(node) {
+      if ((ts.isCallExpression(node) || ts.isNewExpression(node)) && node.arguments?.[0] && ts.isStringLiteral(node.arguments[0]) && node.arguments[0].text === "zh-CN" && /toLocale(?:DateString|String|TimeString)|Intl\.DateTimeFormat/.test(node.expression.getText(source))) assert.fail(`${path}: hardcoded Chinese display date locale`);
+      ts.forEachChild(node, visit);
+    }
+    visit(source);
+  }
 });

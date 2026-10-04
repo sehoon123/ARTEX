@@ -1,0 +1,112 @@
+{
+  "agents": {
+    "auto": {
+      "name": "Auto",
+      "description": "平台操作助手：用工具管理任务(建/看/暂停/给提示)与资产，并可创建/修改 skill、自定义工具、MCP。",
+      "variables": {}
+    },
+    "goals": {
+      "name": "目标拆解",
+      "description": "把渗透任务目标拆解成若干独立、可验证的子目标。",
+      "variables": {
+        "EngagementDescription": "任务描述（测试对象/背景）"
+      }
+    },
+    "mainagent": {
+      "name": "主",
+      "description": "人机接口：观察进展，把人的意图落成 hint 或高优先级意图。",
+      "variables": {
+        "AssetSummary": "开局态势摘要(可选)",
+        "FindingsSummary": "已确认漏洞摘要(可选)",
+        "Goal": "当前任务目标"
+      }
+    },
+    "pentest": {
+      "name": "渗透测试",
+      "description": "独立渗透 agent：一人从侦察→找攻击面→深入利用→验证→收尾走完整条链，自己规划、自己执行、自己对抗式验证。",
+      "variables": {}
+    },
+    "planner": {
+      "name": "规划",
+      "description": "读取态势、判定目标，只在确有未覆盖的新方向时补充探索意图（每任务一个规划循环）。",
+      "variables": {
+        "AssetSummary": "资产计数/类型分布摘要(可选)",
+        "Goal": "任务总目标"
+      }
+    },
+    "worker": {
+      "name": "执行",
+      "description": "领取一条意图执行，把发现的事实/漏洞写回知识图谱后停止。",
+      "variables": {
+        "ProxyAddr": "记录代理地址(驱动 if 双文案)",
+        "WorkerName": "worker 自我标识(可选)"
+      }
+    }
+  },
+  "variableHelp": [
+    "任务描述（测试对象/背景）",
+    "任务总目标",
+    "资产计数/类型分布摘要(可选)",
+    "当前任务目标",
+    "开局态势摘要(可选)",
+    "已确认漏洞摘要(可选)",
+    "记录代理地址(驱动 if 双文案)",
+    "worker 自我标识(可选)",
+    "服务端当前时间（每次运行实时刷新；可与固定起始时间相减判断已用时长）",
+    "服务端数据根目录（所有任务/会话产物的根；各 agent 实际写盘在其下的子目录，如 <DataDir>/<taskID>）"
+  ],
+  "globalVariables": {
+    "DataDir": "服务端数据根目录（所有任务/会话产物的根；各 agent 实际写盘在其下的子目录，如 <DataDir>/<taskID>）",
+    "Now": "服务端当前时间（每次运行实时刷新；可与固定起始时间相减判断已用时长）"
+  },
+  "interceptNames": [
+    "[内置] 递归强制删除 rm -rf",
+    "[内置] 删除系统关键目录",
+    "[内置] 磁盘格式化 mkfs",
+    "[内置] 覆写磁盘设备 dd",
+    "[内置] Fork 炸弹",
+    "[内置] 关机 / 重启",
+    "[内置] 杀死全部进程",
+    "[内置] 磁盘擦除 shred / wipe",
+    "[内置] 清空防火墙规则",
+    "[内置] SQL DROP DATABASE / TABLE / SCHEMA",
+    "[内置] SQL TRUNCATE",
+    "[内置] MongoDB drop / dropDatabase",
+    "[内置] Redis FLUSHALL / FLUSHDB",
+    "[内置] curl / wget 发送 DELETE 请求",
+    "[内置] Python HTTP 客户端 DELETE（requests/httpx/aiohttp）",
+    "[内置] 脚本中声明 HTTP DELETE 方法（JS/通用）",
+    "[内置] 批量清空 / 清除接口路径",
+    "[内置] 破坏性系统命令",
+    "[内置] 数据外泄管道",
+    "[内置] 删除类接口路径"
+  ],
+  "assetNotes": [
+    "[内置] 政府网站 (.gov)",
+    "[内置] 政府网站 (.gov.cn)",
+    "[内置] 教育网站 (.edu)",
+    "[内置] 教育网站 (.edu.cn)"
+  ],
+  "assetRules": [
+    {
+      "kind": "fuzzy_domain",
+      "pattern": ".gov",
+      "note": "[内置] 政府网站 (.gov)"
+    },
+    {
+      "kind": "fuzzy_domain",
+      "pattern": ".gov.cn",
+      "note": "[内置] 政府网站 (.gov.cn)"
+    },
+    {
+      "kind": "fuzzy_domain",
+      "pattern": ".edu",
+      "note": "[内置] 教育网站 (.edu)"
+    },
+    {
+      "kind": "fuzzy_domain",
+      "pattern": ".edu.cn",
+      "note": "[内置] 教育网站 (.edu.cn)"
+    }
+  ]
+}

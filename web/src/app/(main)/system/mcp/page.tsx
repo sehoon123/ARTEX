@@ -1,5 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
+import { agentName as displayAgentName } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -415,9 +416,9 @@ export default function MCPPage() {
                     <label key={a.key} className="flex items-center gap-2 text-sm">
                       <Checkbox
                         checked={(visibility[s.id] ?? []).includes(a.id)}
-                        onCheckedChange={() => toggleVisibility(s.id, a.id, a.name)}
+                        onCheckedChange={() => toggleVisibility(s.id, a.id, displayAgentName(a))}
                       />
-                      {a.name}
+                      {displayAgentName(a)}
                     </label>
                   ))}
                 </div>

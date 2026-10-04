@@ -1,5 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
+import { assetNote as displayAssetNote } from "@/lib/builtin-labels";
 
 import * as React from "react";
 
@@ -36,7 +37,7 @@ const KIND_LABEL: Record<AssetInterceptKind, string> = Object.fromEntries(
   KIND_OPTIONS.map((o) => [o.value, o.label]),
 ) as Record<AssetInterceptKind, string>;
 
-const KIND_GROUPS = ["全等匹配", "模糊匹配", "网段"];
+const KIND_GROUPS = [...new Set(KIND_OPTIONS.map((option) => option.group))];
 
 function KindBadge({ kind }: { kind: AssetInterceptKind }) {
   const fuzzy = kind.startsWith("fuzzy_");
@@ -239,7 +240,7 @@ export default function AssetInterceptPage() {
                             {tr("内置")}
                           </Badge>
                         )}
-                        <span className="truncate">{rule.note}</span>
+                        <span className="truncate">{displayAssetNote(rule)}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-center">

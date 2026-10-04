@@ -1,5 +1,6 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
+import { agentName as displayAgentName, agentDescription as displayAgentDescription } from "@/lib/builtin-labels";
 
 import * as React from "react";
 
@@ -118,9 +119,10 @@ function groupByAgent(conversations: Conversation[], agentByKey: Map<string, Age
   for (const conversation of conversations) {
     let group = groups.get(conversation.agent_key);
     if (!group) {
+      const agent = agentByKey.get(conversation.agent_key);
       group = {
         key: conversation.agent_key,
-        name: agentByKey.get(conversation.agent_key)?.name || conversation.agent_key,
+        name: agent ? displayAgentName(agent) : conversation.agent_key,
         conversations: [],
         runningCount: 0,
       };
@@ -295,7 +297,7 @@ function LLMProfileRow({
   const [open, setOpen] = React.useState(false);
   const activeDefault = profiles.find((p) => p.is_default);
   const current = selected != null ? profiles.find((p) => Number(p.id) === selected) : null;
-  const label = current ? current.name : `默认${activeDefault ? `（${activeDefault.name}）` : ""}`;
+  const label = current ? current.name : activeDefault ? tr("默认（{n0}）", { n0: activeDefault.name }) : tr("默认");
 
   return (
     <div className="flex min-w-0 shrink-0 items-center gap-1 px-1 pt-0.5 pb-1">
@@ -430,7 +432,7 @@ function DraftChat({
             <SelectItem key={a.key} value={a.key}>
               <span className="flex items-center gap-2">
                 <Bot className="size-3.5" />
-                {a.name}
+                {displayAgentName(a)}
                 {!a.builtin && (
                   <Badge variant="outline" className="px-1 py-0 text-[9px]">
                     {tr("自定义")}
@@ -451,8 +453,8 @@ function DraftChat({
         <div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
           <Bot className="text-primary size-6" />
         </div>
-        <div className="text-sm font-medium">{tr("开始和「")}{agent?.name ?? "Agent"}{tr("」对话")}</div>
-        {agent?.description && <p className="text-muted-foreground max-w-md text-xs">{agent.description}</p>}
+        <div className="text-sm font-medium">{tr("开始和「")}{agent ? displayAgentName(agent) : "Agent"}{tr("」对话")}</div>
+        {agent?.description && <p className="text-muted-foreground max-w-md text-xs">{displayAgentDescription(agent)}</p>}
       </div>
 
       <Composer
@@ -761,11 +763,11 @@ function ChatView({
   }
 
   return (
-    <SideQuestionWorkspace side={side} label={agent?.name ?? conv.agent_key} composerLayout="inline">
+    <SideQuestionWorkspace side={side} label={agent ? displayAgentName(agent) : conv.agent_key} composerLayout="inline">
       {/* header: which agent + live + token meta */}
       <div className="flex min-w-0 flex-wrap items-center gap-2 border-b px-4 py-2.5">
         <Bot className="text-muted-foreground size-4 shrink-0" />
-        <span className="min-w-0 max-w-48 truncate text-sm font-medium">{agent?.name ?? conv.agent_key}</span>
+        <span className="min-w-0 max-w-48 truncate text-sm font-medium">{agent ? displayAgentName(agent) : conv.agent_key}</span>
         <span className="text-muted-foreground hidden shrink-0 font-mono text-xs sm:inline">{conv.agent_key}</span>
         {agent && !agent.builtin && (
           <Badge variant="outline" className="shrink-0 px-1.5 py-0 text-[10px]">
@@ -773,7 +775,7 @@ function ChatView({
           </Badge>
         )}
         {agent?.description && (
-          <span className="text-muted-foreground min-w-0 truncate text-xs">{agent.description}</span>
+          <span className="text-muted-foreground min-w-0 truncate text-xs">{displayAgentDescription(agent)}</span>
         )}
         {running && <LiveBadge />}
         <SideQuestionButton side={side} />
@@ -797,7 +799,7 @@ function ChatView({
         <div className="min-w-0 max-w-full px-4 py-3" ref={contentRef}>
           {messages.length === 0 && !running ? (
             <div className="text-muted-foreground py-10 text-center text-sm">
-              {tr("开始和「")}{agent?.name ?? conv.agent_key}{tr("」对话")}</div>
+              {tr("开始和「")}{agent ? displayAgentName(agent) : conv.agent_key}{tr("」对话")}</div>
           ) : (
             <>
               {hasMore && (
@@ -940,12 +942,12 @@ const ConversationItem = React.memo(function ConversationItem({
             {showAgent && (
               <>
                 <Bot className="size-3 shrink-0" />
-                <span className="min-w-0 truncate">{agent?.name ?? conv.agent_key}</span>
+                <span className="min-w-0 truncate">{agent ? displayAgentName(agent) : conv.agent_key}</span>
                 <span className="shrink-0">·</span>
               </>
             )}
             <span className="shrink-0">
-              {new Date(conv.created_at).toLocaleDateString("zh-CN", {
+              {new Date(conv.created_at).toLocaleDateString(getLocale(), {
                 month: "numeric",
                 day: "numeric",
                 hour: "2-digit",
@@ -1209,8 +1211,11 @@ export default function ChatPage() {
     const keys = new Set([...chatAgents.map((agent) => agent.key), ...counts.keys()]);
     if (agentFilter !== null) keys.add(agentFilter);
     return [...keys]
-      .map((key) => ({ key, name: agentByKey.get(key)?.name || key, count: counts.get(key) ?? 0 }))
-      .sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+      .map((key) => {
+        const agent = agentByKey.get(key);
+        return { key, name: agent ? displayAgentName(agent) : key, count: counts.get(key) ?? 0 };
+      })
+      .sort((a, b) => a.name.localeCompare(b.name, getLocale()));
   }, [convs, chatAgents, agentByKey, agentFilter]);
   const conversationCountLabel =
     agentFilter === null ? tr("共 {n0} 个", { n0: convs.length }) : tr("{n0} / {n1} 个", { n0: filteredConversations.length, n1: convs.length });

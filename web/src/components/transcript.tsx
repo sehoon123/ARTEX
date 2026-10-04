@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import * as React from "react";
 import {
@@ -138,11 +138,11 @@ function ActivityTime({ ts }: { ts: string }) {
   return (
     <time
       dateTime={date.toISOString()}
-      title={date.toLocaleString("zh-CN")}
+      title={date.toLocaleString(getLocale())}
       className="text-[10px] text-muted-foreground tabular-nums"
       suppressHydrationWarning
     >
-      {date.toLocaleString("zh-CN", {
+      {date.toLocaleString(getLocale(), {
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",

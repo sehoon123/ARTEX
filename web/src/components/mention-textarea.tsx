@@ -320,7 +320,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
               {!loadingMore &&
                 !nextCursor &&
                 (loading || !!error || items.length === 0) &&
-                "输入名称、地址或 ID 搜索记录"}
+                tr("输入名称、地址或 ID 搜索记录")}
             </p>
           )}
         </PopoverContent>

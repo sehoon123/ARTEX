@@ -50,6 +50,9 @@ with `I18N_BASE_URL` for a compatible gateway.
 - Excluded from wrapping (`WRAP_EXCLUDE` in `extract.mjs`): `lib/status.ts` and
   `navigation/sidebar/sidebar-items.ts` (their Chinese is a key consumed via
   `tr(x.label)` at render) and `config/app-config.ts` (imported by a Server Component).
+- `wrap.mjs` auto-skips any file that declares a **local `tr`** (e.g.
+  `const tr = await api.tasks()`), which would shadow the imported translation
+  function — it prints a warning so you wrap that file by hand (or rename the local).
 - Manual edits to `en.json`/`ko.json` are preserved — `translate.mjs` only fills gaps.
   To re-translate one string, delete its key and re-run.
 - Placeholders `{n0} {n1} …` and `{args}` are preserved by the translator prompt.

@@ -20,9 +20,21 @@ const HAN = "\\u4e00-\\u9fff";
 const hasHan = (s) => /[\u4e00-\u9fff]/.test(s);
 const J = (s) => JSON.stringify(s);
 
+// A file that declares its OWN local `tr` (variable/param) would have the imported
+// translation `tr` shadowed — wrapping a string there could call a non-function.
+// Detect and skip such files (warn) rather than risk a runtime bug.
+const LOCAL_TR = /\b(?:const|let|var)\s+tr\b|\(\s*tr\s*[,:)]|,\s*tr\s*[,:)]|\btr\s*=>/;
+
 const files = execSync(`rg -l '[\\p{Han}]' -g '*.tsx' -g '*.ts' ${WEB_SRC}`, { encoding: "utf8" })
   .trim().split("\n").filter(Boolean)
-  .filter((f) => !f.includes("/mock/") && !WRAP_EXCLUDE.some((x) => f.includes(x)));
+  .filter((f) => !f.includes("/mock/") && !WRAP_EXCLUDE.some((x) => f.includes(x)))
+  .filter((f) => {
+    if (LOCAL_TR.test(readFileSync(f, "utf8"))) {
+      console.error(`! skip ${f}: declares a local \`tr\` (would shadow the translation fn) — wrap it manually`);
+      return false;
+    }
+    return true;
+  });
 
 // template literal body -> tr("shape", { n0: expr0, ... }) if the shape is a known key
 function tmplToTr(body) {

@@ -159,12 +159,12 @@ export default function DashboardPage() {
       if (loading) return;
       loading = true;
       try {
-        const tr = await api.tasks();
+        const res = await api.tasks();
         if (!alive) return;
-        const nextSignature = JSON.stringify(tr.tasks);
+        const nextSignature = JSON.stringify(res.tasks);
         if (nextSignature !== signature) {
           signature = nextSignature;
-          setTasks(tr.tasks);
+          setTasks(res.tasks);
         }
       } catch {
         /* transient errors — next poll retries */

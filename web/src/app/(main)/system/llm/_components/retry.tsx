@@ -312,12 +312,7 @@ export function RetryPolicyPanel() {
   return (
     <div className="grid gap-4">
       <div className="rounded-lg border bg-muted/30 p-3 text-muted-foreground text-xs leading-relaxed">
-        {tr("一次模型调用的失败会依次经过五层重试，由内到外：")}
-        <span className="text-foreground"> {tr("建连 → 空响应 → 同 provider 安全窗口 → 轮询熔断 → 意图重跑")}</span>
-        。内层用尽才轮到外层，所以次数是
-        <span className="text-foreground">{tr("相乘")}</span>
-        的——把每层都拉满，一次抖动能烧掉几十次请求。
-        {tr("全部留空即当前默认值，与没有这页时的行为完全一致。前三层可以在每个模型配置里单独覆盖。")}
+        {tr("一次模型调用的失败会依次经过五层重试，由内到外：建连 → 空响应 → 同 provider 安全窗口 → 轮询熔断 → 意图重跑。内层用尽才轮到外层，所以次数是相乘的——把每层都拉满，一次抖动能烧掉几十次请求。全部留空即当前默认值，与没有这页时的行为完全一致。前三层可以在每个模型配置里单独覆盖。")}
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

@@ -17,6 +17,8 @@ export const WRAP_EXCLUDE = [
 ];
 
 const HAN = /[\u4e00-\u9fff]/;
+// A standalone JSX-text run (same shape wrap.mjs accepts): CJK + safe inline punctuation.
+const RUN = /^[\u4e00-\u9fff][\u4e00-\u9fff0-9A-Za-z /·、，。！？：；（）()「」《》…·%\-\u2192\u00b7—]*$/;
 
 function listFiles() {
   const out = execSync(
@@ -51,8 +53,15 @@ export function extractStrings() {
   const found = new Set();
   for (const file of listFiles()) {
     const text = readFileSync(file, "utf8");
+    let inBlockComment = false; // inside /* ... */ or {/* ... */}
     for (const raw of text.split("\n")) {
       const t = raw.trim();
+      // track multi-line block comments so their body lines are skipped
+      if (inBlockComment) {
+        if (t.includes("*/")) inBlockComment = false;
+        continue;
+      }
+      if ((t.startsWith("/*") || t.startsWith("{/*")) && !t.includes("*/")) { inBlockComment = true; continue; }
       if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*") || t.startsWith("{/*")) continue;
       if (t.startsWith("import ") || t.startsWith("export type") || t.startsWith("export interface")) continue;
       // strip existing tr("...") / tr(`...`) and line comments so we don't re-extract wrapped text
@@ -76,6 +85,10 @@ export function extractStrings() {
         const sh = templateShape(m[1]);
         if (isClean(sh)) found.add(sh);
       }
+      // standalone JSX text on its own line (multi-line text node), e.g. a label
+      // sitting alone between <Button> ... </Button> across lines. Require >=2 CJK
+      // chars so trailing fragments like "条）" after a {expr} aren't captured.
+      if (RUN.test(t) && isClean(t) && (t.match(/[\u4e00-\u9fff]/g) || []).length >= 2) found.add(t);
     }
   }
   return [...found].sort();

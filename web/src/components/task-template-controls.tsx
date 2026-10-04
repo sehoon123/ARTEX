@@ -322,7 +322,7 @@ function TaskTemplateManager({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除模板「{draft.name || tr("未命名模板")}」？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除模板「")}{draft.name || tr("未命名模板")}{tr("」？")}</AlertDialogTitle>
             <AlertDialogDescription>{tr("已由该模板创建的任务不会受到影响。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -512,7 +512,7 @@ export function TaskTemplateControls({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>使用模板「{pendingTemplate?.name}」？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("使用模板「")}{pendingTemplate?.name}{tr("」？")}</AlertDialogTitle>
             <AlertDialogDescription>{tr("当前已填写的描述和目标将被模板内容覆盖。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

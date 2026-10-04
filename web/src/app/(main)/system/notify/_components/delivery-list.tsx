@@ -96,7 +96,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
         <Button size="sm" variant="outline" onClick={load} disabled={loading}>
           <RefreshCwIcon className={loading ? "animate-spin" : ""} /> {tr("刷新")}
         </Button>
-        <span className="text-muted-foreground ml-auto text-xs">共 {total} 条</span>
+        <span className="text-muted-foreground ml-auto text-xs">{tr("共") + " "}{total} {" " + tr("条")}</span>
       </div>
 
       <Card className="py-0">
@@ -150,8 +150,7 @@ export function DeliveryList({ channels }: { channels: NotificationChannel[] }) 
                     {/* 只有失败/跳过的才给重发入口：已送达的重发会造成重复推送。 */}
                     {(d.state === "failed" || d.state === "skipped") && (
                       <Button size="sm" variant="outline" onClick={() => retry(d.id)}>
-                        <RotateCcwIcon /> 重发
-                      </Button>
+                        <RotateCcwIcon /> {" " + tr("重发")}</Button>
                     )}
                   </TableCell>
                 </TableRow>

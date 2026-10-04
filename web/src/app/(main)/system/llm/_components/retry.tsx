@@ -81,8 +81,7 @@ export const RETRY_LAYERS = {
     where: tr("本项目 · 未交付输出前"),
     trigger:
       "流已经建立（拿到 200）之后才出问题：连接中途断开、供应商 overloaded、流内的 429 / 5xx 错误事件——且一个 token 都还没交给调用方。",
-    skips:
-      "额度耗尽（402 / insufficient_quota，交给轮询换配置）、上下文过长（413 / context length，交给压缩）、400 / 401 / 403 / 404 / 422 确定性拒绝，都不重试。",
+    skips: tr("额度耗尽（402 / insufficient_quota，交给轮询换配置）、上下文过长（413 / context length，交给压缩）、400 / 401 / 403 / 404 / 422 确定性拒绝，都不重试。"),
     desc: tr("在同一个配置上重放同一个请求。因为还没交付任何输出，重放不会重复模型输出或工具执行。"),
     attemptsLabel: tr("重试次数"),
     defAttempts: 2,
@@ -189,11 +188,11 @@ export function RetryRuleFields({
         </div>
         {/* 哪些错误会走到这层，具体到状态码——填了旋钮却看不到效果，多半是错误压根不落在这层。 */}
         <p className="text-muted-foreground text-xs">
-          <span className="font-medium text-foreground">{tr("触发")}</span>：{meta.trigger}
+          <span className="font-medium text-foreground">{tr("触发")}</span>{tr("：")}{tr(meta.trigger)}
         </p>
         {!compact && meta.skips && (
           <p className="text-muted-foreground text-xs">
-            <span className="font-medium text-foreground">{tr("不走这层")}</span>：{meta.skips}
+            <span className="font-medium text-foreground">{tr("不走这层")}</span>{tr("：")}{meta.skips}
           </p>
         )}
         {!compact && <p className="text-muted-foreground text-xs">{meta.desc}</p>}
@@ -225,7 +224,7 @@ export function RetryRuleFields({
           <span className="text-muted-foreground text-xs">{human ? tr("固定 {n0}", { n0: human }) : meta.defInterval}</span>
         </div>
       </div>
-      {!compact && <p className="text-muted-foreground text-xs">留空 = 用默认；{meta.offHint}。</p>}
+      {!compact && <p className="text-muted-foreground text-xs">{tr("留空 = 用默认；")}{meta.offHint}{tr("。")}</p>}
     </div>
   );
 }
@@ -243,8 +242,7 @@ export function ProfileRetryFields({
       <div className="grid gap-0.5">
         <Label className="text-sm">{tr("重试覆盖")}</Label>
         <p className="text-muted-foreground text-xs">
-          只对这个配置生效，覆盖「重试与退避」里的全局默认。每格留空 = 跟随全局；次数填 -1 = 关掉这层重试；
-          {tr("间隔填了就用固定间隔取代指数退避。熔断与意图重跑是进程级的，只能在全局那页调。")}
+          {tr("只对这个配置生效，覆盖「重试与退避」里的全局默认。每格留空 = 跟随全局；次数填 -1 = 关掉这层重试；")}{tr("间隔填了就用固定间隔取代指数退避。熔断与意图重跑是进程级的，只能在全局那页调。")}
         </p>
       </div>
       {(["connect", "empty", "stream"] as const).map((k) => (
@@ -304,8 +302,7 @@ export function RetryPolicyPanel() {
   if (loading) {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-dashed p-10 text-muted-foreground text-sm">
-        <Loader2Icon className="size-4 animate-spin" /> 读取重试策略…
-      </div>
+        <Loader2Icon className="size-4 animate-spin" /> {" " + tr("读取重试策略…")}</div>
     );
   }
 

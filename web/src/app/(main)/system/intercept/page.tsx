@@ -273,8 +273,7 @@ function JudgeCard() {
                       <SelectItem value={FOLLOW_ACTIVE}>{tr("跟随激活配置")}</SelectItem>
                       {profiles.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
-                          {p.name}（{p.model}）
-                        </SelectItem>
+                          {p.name}{tr("（")}{p.model}{tr("）")}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

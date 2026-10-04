@@ -160,8 +160,7 @@ export default function CommandsPage() {
           <SelectContent>
             {PAGE_SIZES.map((n) => (
               <SelectItem key={n} value={String(n)}>
-                {n} / 页
-              </SelectItem>
+                {n} {" " + tr("/ 页")}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -283,9 +282,8 @@ export default function CommandsPage() {
               {stats.length > 0 && (
                 <>
                   {" · "}
-                  <span className="tabular-nums">{stats.length}</span> 个工具 ·{" "}
-                  <span className="tabular-nums">{statsTotal}</span> 次调用
-                  {statsErrors > 0 && (
+                  <span className="tabular-nums">{stats.length}</span> {" " + tr("个工具 ·")}{" "}
+                  <span className="tabular-nums">{statsTotal}</span> {" " + tr("次调用")}{statsErrors > 0 && (
                     <>
                       {tr(" · 失败 ")}
                       <span className="tabular-nums text-red-600 dark:text-red-400">{statsErrors}</span>

@@ -216,7 +216,7 @@ function AssetList({ assets, dense = false }: { assets: FindingAsset[]; dense?: 
   if (assets.length === 0) return null;
   return (
     <div>
-      <div className="mb-1.5 text-xs font-medium text-muted-foreground">涉及资产 · {assets.length}</div>
+      <div className="mb-1.5 text-xs font-medium text-muted-foreground">{tr("涉及资产 ·") + " "}{assets.length}</div>
       <ul className="flex flex-wrap gap-1.5">
         {assets.map((a) => {
           // 运行时 a.type 可能是标签表未覆盖的类型,退回原始字符串。转一层类型让回退不被判成多余。
@@ -312,7 +312,7 @@ function RelatedList({
                   </HoverCardContent>
                 </HoverCard>
               ) : (
-                <span className="text-muted-foreground">节点 #{row.id}</span>
+                <span className="text-muted-foreground">{tr("节点 #")}{row.id}</span>
               )}
             </li>
           );
@@ -400,7 +400,7 @@ function BroadcastRow({
           <div className="mt-2 ml-5 flex flex-col gap-3 rounded-md border bg-muted/30 p-3">
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
               <span>
-                节点 <code className="font-mono">#{node.id}</code>
+                {tr("节点") + " "}<code className="font-mono">#{node.id}</code>
               </span>
               <span>{tr("类型")}{meta.label}</span>
               <span>{tr("来源")}{node.origin || "system"}</span>
@@ -647,8 +647,7 @@ export function BroadcastTab({ taskId }: { taskId: string }) {
           className="flex w-full items-center justify-center gap-1.5 border-b bg-primary/10 py-1.5 text-xs font-medium text-primary hover:bg-primary/15"
         >
           <ArrowUpToLineIcon className="size-3.5" />
-          {pending > 99 ? "99+" : pending} 条新播报 · 回到最新
-        </button>
+          {pending > 99 ? "99+" : pending} {" " + tr("条新播报 · 回到最新")}</button>
       )}
 
       <CardContent className="px-4 py-0">
@@ -697,8 +696,7 @@ export function BroadcastTab({ taskId }: { taskId: string }) {
             <SelectGroup>
               {PAGE_SIZES.map((n) => (
                 <SelectItem key={n} value={String(n)}>
-                  {n} / 页
-                </SelectItem>
+                  {n} {" " + tr("/ 页")}</SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>

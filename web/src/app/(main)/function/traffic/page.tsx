@@ -359,8 +359,7 @@ export default function TrafficPage() {
           </span>
           {traffic?.proxy && <span className="font-mono text-xs text-muted-foreground">{traffic.proxy}</span>}
           <span className="text-xs text-muted-foreground">
-            共 <span className="tabular-nums">{traffic?.count ?? 0}</span> 条
-          </span>
+            {tr("共") + " "}<span className="tabular-nums">{traffic?.count ?? 0}</span> {" " + tr("条")}</span>
         </div>
       </div>
 
@@ -397,7 +396,7 @@ export default function TrafficPage() {
                         {hostCountSortDirection === "desc" ? <ArrowDownWideNarrowIcon /> : <ArrowUpNarrowWideIcon />}
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>按数据包数量{hostCountSortDirection === "desc" ? tr("倒序") : tr("正序")}</TooltipContent>
+                    <TooltipContent>{tr("按数据包数量")}{hostCountSortDirection === "desc" ? tr("倒序") : tr("正序")}</TooltipContent>
                   </Tooltip>
                 )}
                 {hosts.length > 0 && (
@@ -448,7 +447,7 @@ export default function TrafficPage() {
                   setPickerOpen(false);
                 }}
               >
-                删除选中（{selectedHosts.length}）
+                {tr("删除选中（{n0}）", { n0: selectedHosts.length })}
               </Button>
             </div>
           </PopoverContent>
@@ -509,8 +508,7 @@ export default function TrafficPage() {
           <SelectContent>
             {PAGE_SIZES.map((n) => (
               <SelectItem key={n} value={String(n)}>
-                {n} / 页
-              </SelectItem>
+                {n} {" " + tr("/ 页")}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -604,7 +602,7 @@ export default function TrafficPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted-foreground">已选 {selectedFlows.size} 条流量</span>
+        <span className="text-sm text-muted-foreground">{tr("已选") + " "}{selectedFlows.size} {" " + tr("条流量")}</span>
         <Button variant="outline" size="sm" disabled={selectedFlows.size === 0} onClick={() => setLinking(true)}>
           {tr("关联到漏洞")}
         </Button>

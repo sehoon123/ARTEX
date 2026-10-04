@@ -278,8 +278,7 @@ export function MentionTextarea({ value, onValueChange, onKeyDown, className, in
             )}
             {!categories.length && !loading && error && (
               <div role="alert" className="p-3 text-destructive text-sm">
-                搜索失败：{error}。请重新输入重试。
-              </div>
+                {tr("搜索失败：")}{error}{tr("。请重新输入重试。")}</div>
             )}
             {!categories.length && !loading && !error && !items.length && (
               <div role="status" className="p-3 text-muted-foreground text-sm">

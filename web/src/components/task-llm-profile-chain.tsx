@@ -41,7 +41,7 @@ function ProfileRoleBadge({ index, currentIndex }: { index: number; currentIndex
       </Badge>
     );
   }
-  return <Badge variant="secondary">备用 {index - currentIndex}</Badge>;
+  return <Badge variant="secondary">{tr("备用") + " "}{index - currentIndex}</Badge>;
 }
 
 export function TaskLLMProfileChain({

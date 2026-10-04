@@ -296,7 +296,7 @@ export default function LLMRecordsPage() {
               tasks.map((t) => (
                 <SelectItem key={t.task_id} value={t.task_id}>
                   <span className="font-mono">#{t.task_id}</span>
-                  <span className="ml-2 text-muted-foreground">（{t.count}）</span>
+                  <span className="ml-2 text-muted-foreground">{tr("（")}{t.count}{tr("）")}</span>
                 </SelectItem>
               ))
             )}
@@ -320,8 +320,7 @@ export default function LLMRecordsPage() {
           <SelectContent>
             {PAGE_SIZES.map((n) => (
               <SelectItem key={n} value={String(n)}>
-                {n} / 页
-              </SelectItem>
+                {n} {" " + tr("/ 页")}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -472,7 +471,7 @@ export default function LLMRecordsPage() {
               </Badge>
               {selected.task_id && (
                 <Badge variant="outline" className="text-xs font-mono">
-                  任务 #{selected.task_id}
+                  {tr("任务 #")}{selected.task_id}
                 </Badge>
               )}
               <span className="text-xs text-muted-foreground">
@@ -556,7 +555,7 @@ export default function LLMRecordsPage() {
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除任务「{pickedTask}」的全部 LLM 对话？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除任务「")}{pickedTask}{tr("」的全部 LLM 对话？")}</AlertDialogTitle>
             <AlertDialogDescription>
               {tr("将永久删除该任务的所有 LLM 调用记录（含请求/响应原文），此操作不可撤销。")}
             </AlertDialogDescription>

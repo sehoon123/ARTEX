@@ -342,7 +342,7 @@ export default function SystemSettingsPage() {
               <Input
                 id="global-proxy"
                 autoComplete="off"
-                placeholder="socks5://user:pass@host:1080 或 http://host:port（留空=直连）"
+                placeholder={tr("socks5://user:pass@host:1080 或 http://host:port（留空=直连）")}
                 value={globalProxyInput}
                 disabled={!loaded || savingGlobalProxy}
                 onChange={(e) => setGlobalProxyInput(e.target.value)}
@@ -564,7 +564,7 @@ export default function SystemSettingsPage() {
                   <Input
                     id="ws-proxy"
                     autoComplete="off"
-                    placeholder="http://host:port 或 socks5://host:port（留空=直连）"
+                    placeholder={tr("http://host:port 或 socks5://host:port（留空=直连）")}
                     value={proxyInput}
                     disabled={!loaded || savingProxy}
                     onChange={(e) => setProxyInput(e.target.value)}

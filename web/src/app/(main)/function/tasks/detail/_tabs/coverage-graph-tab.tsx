@@ -272,8 +272,7 @@ function RefList({ title, items }: { title: string; items: CoverageAssetRef[] })
   return (
     <div>
       <h4 className="text-muted-foreground mb-1 text-xs font-medium">
-        {title}（{items.length}）
-      </h4>
+        {title}{tr("（")}{items.length}{tr("）")}</h4>
       <div className="flex flex-col gap-1">
         {items.map((r) => (
           <div
@@ -285,8 +284,7 @@ function RefList({ title, items }: { title: string; items: CoverageAssetRef[] })
             <span className="min-w-32 flex-1 break-words text-foreground">{r.summary || "—"}</span>
             {r.inherited && r.source_task_id && (
               <Badge variant="outline" className="shrink-0">
-                来源 #{r.source_task_id} · 只读
-              </Badge>
+                {tr("来源 #")}{r.source_task_id} {" " + tr("· 只读")}</Badge>
             )}
           </div>
         ))}
@@ -415,8 +413,7 @@ function FoldSheet({
           <>
             <SheetHeader className="border-b p-4">
               <SheetTitle className="text-base">
-                未展示的{meta.label}（{fold.hidden.length}）
-              </SheetTitle>
+                {tr("未展示的")}{meta.label}{tr("（")}{fold.hidden.length}{tr("）")}</SheetTitle>
               <p className="text-muted-foreground text-xs">{tr("已测优先展示。点「展示更多」把下一批拉进图里。")}</p>
             </SheetHeader>
             <ScrollArea className="min-h-0 flex-1">
@@ -446,7 +443,7 @@ function FoldSheet({
             </ScrollArea>
             <div className="border-t p-3">
               <Button className="w-full" variant="outline" onClick={() => onShowMore(fold.groupId)}>
-                展示更多（+{FOLD_STEP}）
+                {tr("展示更多（+{n0}）", { n0: FOLD_STEP })}
               </Button>
             </div>
           </>
@@ -645,11 +642,11 @@ function GraphInner({ taskId, coverageEnabled = true }: { taskId: string; covera
         <div className="flex items-center justify-between gap-3">
           {total > 0 ? (
             <span className="text-muted-foreground">
-              范围内 <span className="text-foreground font-semibold tabular-nums">{inScope}</span>
+              {tr("范围内") + " "}<span className="text-foreground font-semibold tabular-nums">{inScope}</span>
               {coverageEnabled && (
                 <>
                   {" "}
-                  · 已测{" "}
+                  {tr("· 已测")}{" "}
                   <span className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{tested}</span>
                 </>
               )}
@@ -679,20 +676,16 @@ function GraphInner({ taskId, coverageEnabled = true }: { taskId: string; covera
           {coverageEnabled && (
             <>
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-3 rounded-full bg-emerald-500" /> 已测（高亮）
-              </span>
+                <span className="size-3 rounded-full bg-emerald-500" /> {" " + tr("已测（高亮）")}</span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-3 rounded-full bg-neutral-400" /> 未测
-              </span>
+                <span className="size-3 rounded-full bg-neutral-400" /> {" " + tr("未测")}</span>
             </>
           )}
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-3 rounded-full border border-dashed border-neutral-400 bg-neutral-200" /> 范围外
-          </span>
+            <span className="size-3 rounded-full border border-dashed border-neutral-400 bg-neutral-200" /> {" " + tr("范围外")}</span>
         </div>
         <p className="text-muted-foreground/80 border-border/60 border-t pt-2 leading-relaxed">
-          力导向布局，可拖拽节点、滚轮缩放；灰色「⋯」是折叠节点，点开可展开更多。
-        </p>
+          {tr("力导向布局，可拖拽节点、滚轮缩放；灰色「⋯」是折叠节点，点开可展开更多。")}</p>
       </div>
 
       <AssetSheet node={selectedAsset} taskId={taskId} onOpenChange={(o) => !o && setSelectedAsset(null)} />

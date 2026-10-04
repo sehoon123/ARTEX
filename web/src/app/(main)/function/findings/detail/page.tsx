@@ -119,8 +119,7 @@ function FindingDetailInner() {
         {loaded && (
           <Button asChild variant="outline">
             <Link href="/function/findings">
-              <ArrowLeftIcon /> 返回发现列表
-            </Link>
+              <ArrowLeftIcon /> {" " + tr("返回发现列表")}</Link>
           </Button>
         )}
       </div>
@@ -149,7 +148,7 @@ function FindingDetailInner() {
           <StatusBadge domain="severity" value={finding.severity} dot />
           <StatusBadge domain="finding" value={finding.status} dot />
           {finding.inherited && finding.source_task_id && (
-            <Badge variant="outline">来源任务 #{finding.source_task_id} · 只读</Badge>
+            <Badge variant="outline">{tr("来源任务 #")}{finding.source_task_id} {" " + tr("· 只读")}</Badge>
           )}
         </div>
         <TabsList>

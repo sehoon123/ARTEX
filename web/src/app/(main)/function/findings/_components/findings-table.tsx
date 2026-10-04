@@ -214,7 +214,7 @@ export function FindingsTable({
                       <span className="truncate font-medium">{f.name || f.vulnclass || tr("未分类")}</span>
                     )}
                     <span className="truncate text-xs text-muted-foreground">{f.summary}</span>
-                    <Badge variant="outline">流量证据 {f.traffic_count ?? 0} 条</Badge>
+                    <Badge variant="outline">{tr("流量证据") + " "}{f.traffic_count ?? 0} {" " + tr("条")}</Badge>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -309,12 +309,10 @@ export function FindingsTable({
                           <AlertDialogHeader>
                             <AlertDialogTitle>{tr("确认删除该漏洞？")}</AlertDialogTitle>
                             <AlertDialogDescription className="break-words">
-                              「
-                              <span className="break-all">
+                              {tr("「")}<span className="break-all">
                                 {f.name || f.vulnclass || f.summary || `#${f.finding_id}`}
                               </span>
-                              」将被永久删除， 同时从发现列表、任务发现 Tab 与探索图中移除，此操作不可撤销。
-                            </AlertDialogDescription>
+                              {tr("」将被永久删除， 同时从发现列表、任务发现 Tab 与探索图中移除，此操作不可撤销。")}</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>{tr("取消")}</AlertDialogCancel>
@@ -379,15 +377,13 @@ export function FindingsTable({
                         {tr("证据")}
                         {f.vulnclass && (
                           <span>
-                            · 类型：
-                            <code className="rounded bg-muted px-1.5 py-0.5 font-mono">{f.vulnclass}</code>
+                            {tr("· 类型：")}<code className="rounded bg-muted px-1.5 py-0.5 font-mono">{f.vulnclass}</code>
                           </span>
                         )}
                         {f.param_id && <code className="rounded bg-muted px-1.5 py-0.5 font-mono">{f.param_id}</code>}
                         {f.assets && f.assets.length > 0 && (
                           <span className="flex flex-wrap items-center gap-1">
-                            · 资产：
-                            {f.assets.map((a) => (
+                            {tr("· 资产：")}{f.assets.map((a) => (
                               <code key={a.id} className="rounded bg-muted px-1.5 py-0.5 font-mono" title={a.type}>
                                 {a.label}
                               </code>

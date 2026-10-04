@@ -308,8 +308,7 @@ function TaskDetailInner() {
         {loaded && (
           <Button asChild variant="outline">
             <Link href="/function/tasks">
-              <ArrowLeftIcon /> 返回任务列表
-            </Link>
+              <ArrowLeftIcon /> {" " + tr("返回任务列表")}</Link>
           </Button>
         )}
       </div>

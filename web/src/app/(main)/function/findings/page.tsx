@@ -1009,7 +1009,7 @@ export default function FindingsPage() {
                     </button>
                   </React.Fragment>
                 ))}
-                <span className="ml-auto shrink-0 text-xs tabular-nums">共 {flat.total} 条</span>
+                <span className="ml-auto shrink-0 text-xs tabular-nums">{tr("共") + " "}{flat.total} {" " + tr("条")}</span>
               </div>
               {flatListCard}
             </div>
@@ -1214,12 +1214,10 @@ export default function FindingsPage() {
               <span className="text-xs text-muted-foreground">{tr("导出范围")}</span>
               <RadioGroup value={exportScope} onValueChange={(v) => setExportScope(v as typeof exportScope)}>
                 <label htmlFor="export-scope-filtered" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-scope-filtered" value="filtered" /> 导出当前筛选结果（共 {filteredTotal}{" "}
-                  条）
-                </label>
+                  <RadioGroupItem id="export-scope-filtered" value="filtered" /> {" " + tr("导出当前筛选结果（共") + " "}{filteredTotal}{" "}
+                  {tr("条）")}</label>
                 <label htmlFor="export-scope-all" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-scope-all" value="all" /> 导出全部
-                </label>
+                  <RadioGroupItem id="export-scope-all" value="all" /> {" " + tr("导出全部")}</label>
                 <label
                   htmlFor="export-scope-selected"
                   className={cn("flex items-center gap-2 text-sm", selectedIds.size === 0 && "text-muted-foreground")}
@@ -1234,17 +1232,13 @@ export default function FindingsPage() {
               <span className="text-xs text-muted-foreground">{tr("导出格式")}</span>
               <RadioGroup value={exportFormat} onValueChange={(v) => setExportFormat(v as typeof exportFormat)}>
                 <label htmlFor="export-format-md-single" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-format-md-single" value="md-single" /> Markdown 汇总报告（单个 .md 文件）
-                </label>
+                  <RadioGroupItem id="export-format-md-single" value="md-single" /> {" " + tr("Markdown 汇总报告（单个 .md 文件）")}</label>
                 <label htmlFor="export-format-md-zip" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-format-md-zip" value="md-zip" /> Markdown 分文件（一漏洞一 .md,打包 .zip）
-                </label>
+                  <RadioGroupItem id="export-format-md-zip" value="md-zip" /> {" " + tr("Markdown 分文件（一漏洞一 .md,打包 .zip）")}</label>
                 <label htmlFor="export-format-csv" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-format-csv" value="csv" /> CSV 表格（.csv）
-                </label>
+                  <RadioGroupItem id="export-format-csv" value="csv" /> {" " + tr("CSV 表格（.csv）")}</label>
                 <label htmlFor="export-format-json" className="flex items-center gap-2 text-sm">
-                  <RadioGroupItem id="export-format-json" value="json" /> JSON（.json）
-                </label>
+                  <RadioGroupItem id="export-format-json" value="json" /> {" " + tr("JSON（.json）")}</label>
               </RadioGroup>
             </div>
           </div>

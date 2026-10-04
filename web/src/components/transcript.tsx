@@ -371,7 +371,9 @@ function ToolBlock({
   // effect below re-fetches — so the output shows up instead of being cached out.
   const loadedKey = React.useRef<string | null>(null);
   const { use, result } = group;
-  const toolName = use?.tool || result?.tool || tr("工具");
+  const providedToolName = use?.tool || result?.tool;
+  const toolName = providedToolName || "工具"; // Stable protocol fallback for stored summaries.
+  const toolLabel = providedToolName || tr("工具");
   const ToolIcon = toolName === "Bash" ? Terminal : Wrench;
   const running = !result;
   const ok = !!result && !result.is_error;
@@ -391,20 +393,20 @@ function ToolBlock({
   React.useEffect(() => {
     if (!open || loadedKey.current === detailKey) return;
     let live = true;
-    const segs: { label: string; seq: number }[] = [];
-    if (use) segs.push({ label: tr("命令"), seq: use.seq });
-    if (result) segs.push({ label: tr("输出") + (result.is_error ? " ✕" : " ✓"), seq: result.seq });
+    const segs: { label: string; seq: number; input: boolean }[] = [];
+    if (use) segs.push({ label: tr("命令"), seq: use.seq, input: true });
+    if (result) segs.push({ label: tr("输出") + (result.is_error ? " ✕" : " ✓"), seq: result.seq, input: false });
     void Promise.all(
       segs.map((x) =>
         getDetail(x.seq)
           .then((d) => d || tr("（空）"))
-          .catch(() => "（加载失败）"),
+          .catch(() => tr("（加载失败）")),
       ),
     ).then((parts) => {
       if (!live) return;
       setDetail(
         segs
-          .map((x, i) => tr("【{n0}】\\n{n1}", { n0: x.label, n1: x.label === "命令" ? toolInputText(toolName, parts[i]) : parts[i] }))
+          .map((x, i) => `[${x.label}]\n${x.input ? toolInputText(toolName, parts[i]) : parts[i]}`)
           .join("\n\n"),
       );
       loadedKey.current = detailKey;
@@ -467,7 +469,7 @@ function ToolBlock({
         </span>
         <ToolIcon className={"mt-0.5 size-3.5 shrink-0 " + (running ? "text-sky-600 dark:text-sky-400" : statusTone)} />
         {showWorker && <span className={chip(group.worker)}>{group.worker}</span>}
-        <span className="shrink-0 font-medium text-sky-600 dark:text-sky-400">{toolName}</span>
+        <span className="shrink-0 font-medium text-sky-600 dark:text-sky-400">{toolLabel}</span>
         {cmd && <span className="min-w-0 flex-1 truncate font-mono text-muted-foreground">{cmd}</span>}
         <span className={"ml-auto shrink-0 font-medium " + statusTone}>{statusText}</span>
       </button>

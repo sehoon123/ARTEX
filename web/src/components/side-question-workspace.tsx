@@ -96,7 +96,7 @@ function SidePanel({
             <p>{tr("上下文更新于 {n0}", { n0: new Date(side.snapshot.captured_at).toLocaleString() })}</p>
           </>
         ) : (
-          "主 Agent 首次运行后即可提问"
+          tr("主 Agent 首次运行后即可提问")
         )}
       </div>
       <div

@@ -120,6 +120,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { api } from "@/lib/api";
+import enStrings from "@/lib/i18n/en.json";
+import koStrings from "@/lib/i18n/ko.json";
 import { getLocalStorageValue, setLocalStorageValue } from "@/lib/local-storage.client";
 import { type SortDirection, useStoredSortPreference } from "@/lib/sort-preference";
 import type {
@@ -146,18 +148,19 @@ function fmtBytes(n: number): string {
 
 // UPLOAD_MARKER labels the auto-appended block of uploaded-file paths inside the task
 // description, so re-uploads append under the same block instead of adding a new header.
-const UPLOAD_MARKER = tr("【上传文件（绝对路径）】");
+const UPLOAD_MARKER = "【上传文件（绝对路径）】"; // Stable stored marker, not a display label.
+const UPLOAD_MARKERS = [UPLOAD_MARKER, enStrings[UPLOAD_MARKER], koStrings[UPLOAD_MARKER]];
 
 // appendUploads folds newly-uploaded files' ABSOLUTE paths into the description as a
 // Read/Bash-friendly manifest — the worker opens them by path. Keeps one marked block:
 // first upload adds the header, later uploads append bullets under it.
 function appendUploads(desc: string, atts: ChatAttachment[]): string {
   const bullets = atts.map((a) => `- ${a.abs ?? a.path}（${fmtBytes(a.size)}）`).join("\n");
-  if (desc.includes(UPLOAD_MARKER)) {
+  if (UPLOAD_MARKERS.some((marker) => desc.includes(marker))) {
     return `${desc.replace(/\s*$/, "")}\n${bullets}\n`;
   }
   const head = desc.trim() ? `${desc.replace(/\s*$/, "")}\n\n` : "";
-  return tr("{n0}{n1} worker 可用 Read/Bash 按路径打开：\\n{n2}\\n", { n0: head, n1: UPLOAD_MARKER, n2: bullets });
+  return tr("{n0}{n1} worker 可用 Read/Bash 按路径打开：\n{n2}\n", { n0: head, n1: UPLOAD_MARKER, n2: bullets });
 }
 
 // POLL_MS is the task-list refresh interval. Task state moves on the server (planner /
@@ -2182,12 +2185,10 @@ function DeleteTaskDialog({
           <AlertDialogDescription className="break-words">
             {task.description ? (
               <>
-                「
-                <span className="break-all">
+                {tr("「")}<span className="break-all">
                   {task.description.length > 80 ? `${task.description.slice(0, 80)}…` : task.description}
                 </span>
-                」
-              </>
+                {tr("」")}</>
             ) : (
               tr("该任务")
             )}
@@ -3379,8 +3380,7 @@ function CreateTaskSheet({
                       checked={seedFirstIntent}
                       onCheckedChange={(v) => setSeedFirstIntent(!!v)}
                     />
-                    直接下发首个意图（描述+目标）
-                  </label>
+                    {tr("直接下发首个意图（描述+目标）")}</label>
                   <p className="text-muted-foreground text-xs">
                     {tr("开启后创建即把「描述+目标」作为一条意图下发，worker 免等首轮规划直接开跑，跑完再由 planner")}
                     {tr("接手判定/补充。CTF 等常一个 work 直接解决的场景推荐开启；关闭则走标准的先规划再执行。")}

@@ -1,15 +1,11 @@
-// One-shot i18n sync: translate every new Chinese string, then wrap it in tr().
-// Use after merging upstream changes.  node scripts/i18n/sync.mjs
-import { execSync } from "node:child_process";
+// Translate first; a nonzero translator/check result stops the pipeline.
+import { execFileSync } from "node:child_process";
+import { ROOT } from "./extract.mjs";
 
-function run(cmd) {
-  console.error(`\n$ ${cmd}`);
-  execSync(cmd, { stdio: "inherit" });
-}
-
-// 1) fill en.json + ko.json for any new Chinese (LLM; needs ANTHROPIC_API_KEY or OPENAI_API_KEY)
-run("node scripts/i18n/translate.mjs");
-// 2) wrap newly-translated Chinese in the source (idempotent, exact-key-gated)
-run("node scripts/i18n/wrap.mjs");
-
-console.error("\ni18n sync complete. Review `git diff`, then `cd web && npx next build` to verify.");
+try {
+  for (const script of ["translate", "wrap"]) {
+    console.error(`\n$ node scripts/i18n/${script}.mjs`);
+    execFileSync(process.execPath, [`scripts/i18n/${script}.mjs`], { cwd: ROOT, stdio: "inherit" });
+  }
+  console.error("\ni18n sync complete. Review git diff, run i18n:test and build:static before committing.");
+} catch (error) { console.error("i18n sync failed; source wrapping/completion stopped."); process.exitCode = error.status || 1; }

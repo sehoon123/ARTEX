@@ -240,22 +240,19 @@ export default function MCPPage() {
               variant={form.transport === "stdio" ? "default" : "outline"}
               onClick={() => setF({ transport: "stdio" })}
             >
-              stdio（本地）
-            </Button>
+              {tr("stdio（本地）")}</Button>
             <Button
               type="button"
               variant={form.transport === "http" ? "default" : "outline"}
               onClick={() => setF({ transport: "http" })}
             >
-              http（远程）
-            </Button>
+              {tr("http（远程）")}</Button>
             <Button
               type="button"
               variant={form.transport === "sse" ? "default" : "outline"}
               onClick={() => setF({ transport: "sse" })}
             >
-              sse（旧版）
-            </Button>
+              {tr("sse（旧版）")}</Button>
           </div>
         </div>
         <div className="grid gap-2">
@@ -333,7 +330,7 @@ export default function MCPPage() {
     return (
       <div className="flex flex-col gap-3 py-4">
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground text-sm">{tools.length} 个工具</span>
+          <span className="text-muted-foreground text-sm">{tools.length} {" " + tr("个工具")}</span>
           <Button size="sm" variant="outline" disabled={refreshing} onClick={refreshTools}>
             <RefreshCwIcon className={refreshing ? "animate-spin" : ""} /> {tr("刷新")}
           </Button>
@@ -438,8 +435,7 @@ export default function MCPPage() {
           <SheetHeader>
             <SheetTitle>{editing ? editing.name : tr("添加 MCP 服务器")}</SheetTitle>
             <SheetDescription>
-              stdio（本地起进程）或 http（远程 Streamable HTTP）
-            </SheetDescription>
+              {tr("stdio（本地起进程）或 http（远程 Streamable HTTP）")}</SheetDescription>
           </SheetHeader>
 
           {editing ? (
@@ -451,7 +447,7 @@ export default function MCPPage() {
               <TabsList>
                 <TabsTrigger value="config">{tr("配置")}</TabsTrigger>
                 <TabsTrigger value="tools">
-                  工具列表{tools.length ? `（${tools.length}）` : ""}
+                  {tr("工具列表")}{tools.length ? tr("（{n0}）", { n0: String(tools.length) }) : ""}
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="config" className="min-h-0 flex-1 overflow-y-auto">

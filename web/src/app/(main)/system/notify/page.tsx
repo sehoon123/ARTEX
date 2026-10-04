@@ -464,8 +464,7 @@ export default function NotifyPage() {
 
               {fields.length === 0 ? (
                 <p className="text-muted-foreground text-sm">
-                  该渠道的表单尚未定义（前端缺 CHANNEL_FIELDS 条目），请补全后再试。
-                </p>
+                  {tr("该渠道的表单尚未定义（前端缺 CHANNEL_FIELDS 条目），请补全后再试。")}</p>
               ) : (
                 fields.map((d) => (
                   <ConfigField
@@ -490,8 +489,7 @@ export default function NotifyPage() {
                   </SelectContent>
                 </Select>
                 <p className="text-muted-foreground text-xs">
-                  想做「高危实时、其余汇总」就建两个渠道：一个实时 + 门槛高危，一个汇总 + 不限级别。
-                </p>
+                  {tr("想做「高危实时、其余汇总」就建两个渠道：一个实时 + 门槛高危，一个汇总 + 不限级别。")}</p>
               </div>
 
               <div className="grid gap-2">
@@ -534,13 +532,12 @@ export default function NotifyPage() {
                     <Label htmlFor="n-inc">{tr("只推这些漏洞类型")}</Label>
                     <Textarea
                       id="n-inc"
-                      placeholder={tr("SQL注入\\n命令执行")}
+                      placeholder={tr("SQL注入\n命令执行")}
                       value={form.includeText}
                       onChange={(e) => setF({ includeText: e.target.value })}
                     />
                     <p className="text-muted-foreground text-xs">
-                      每行一个关键词，大小写不敏感的子串匹配。留空=全部类型。
-                    </p>
+                      {tr("每行一个关键词，大小写不敏感的子串匹配。留空=全部类型。")}</p>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="n-exc">{tr("排除这些漏洞类型")}</Label>
@@ -594,8 +591,7 @@ export default function NotifyPage() {
               </Button>
               {editing && (
                 <Button variant="outline" onClick={testChannel} disabled={testing}>
-                  <SendIcon /> 发送测试消息
-                </Button>
+                  <SendIcon /> {" " + tr("发送测试消息")}</Button>
               )}
             </div>
           </div>

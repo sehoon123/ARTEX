@@ -106,7 +106,7 @@ function AgentGridCard({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>删除 Agent「{agent.name}」？</AlertDialogTitle>
+              <AlertDialogTitle>{tr("删除 Agent「")}{agent.name}{tr("」？")}</AlertDialogTitle>
               <AlertDialogDescription>
                 {tr("将一并删除它的提示词、变量、可见性与工具绑定。此操作不可撤销。")}
               </AlertDialogDescription>
@@ -153,8 +153,7 @@ function CreateAgentDialog({ onCreated }: { onCreated: (key: string) => void }) 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">
-          <PlusIcon /> 新建 Agent
-        </Button>
+          <PlusIcon /> {" " + tr("新建 Agent")}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -240,7 +239,7 @@ export default function AgentsPage() {
       <Card>
         <CardHeader>
           <CardTitle>{tr("Agent 清单")}</CardTitle>
-          <CardDescription>共 {agents.length} 个</CardDescription>
+          <CardDescription>{tr("共 {n0} 个 Agent", { n0: agents.length })}</CardDescription>
         </CardHeader>
         <CardContent>
           {agents.length === 0 ? (

@@ -228,8 +228,7 @@ function AssetCard({
               <SelectGroup>
                 {PAGE_SIZES.map((value) => (
                   <SelectItem key={value} value={String(value)}>
-                    {value} / 页
-                  </SelectItem>
+                    {value} {" " + tr("/ 页")}</SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>

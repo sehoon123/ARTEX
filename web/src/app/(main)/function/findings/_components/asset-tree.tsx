@@ -234,9 +234,9 @@ export function AssetTree({
     [isExpanded],
   );
 
-  let emptyHint = "当前筛选下没有关联到资产的发现。";
-  if (loading) emptyHint = "加载中…";
-  else if (searching) emptyHint = "没有匹配的资产。";
+  let emptyHint = tr("当前筛选下没有关联到资产的发现。");
+  if (loading) emptyHint = tr("加载中…");
+  else if (searching) emptyHint = tr("没有匹配的资产。");
 
   const rows: React.ReactNode[] = [];
   const pushRows = (list: TreeNode[]) => {

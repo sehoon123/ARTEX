@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { EllipsisVertical, Globe, KeyRound, LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { useI18n, tr } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -32,7 +33,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const [pwOpen, setPwOpen] = React.useState(false);
-  const { locale, setLocale, t } = useI18n(); // t from context for reactivity
+  const { locale, setLocale } = useI18n();
 
   const localeLabels: Record<Locale, string> = { en: "English", ko: "한국어" };
   const nextLocale: Locale = locale === "en" ? "ko" : "en";
@@ -87,7 +88,9 @@ export function NavUser({
               <KeyRound />
               {tr("修改密码")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setLocale(nextLocale)}>
+            <DropdownMenuItem onClick={() => {
+              if (setLocale(nextLocale) === false) toast.error(tr("无法保存语言设置，请允许浏览器存储后重试"));
+            }}>
               <Globe />
               {localeLabels[nextLocale]}
             </DropdownMenuItem>

@@ -169,7 +169,7 @@ function DataSourceCard({
             <div className="grid gap-3 md:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>{tr("MCP 地址")}</Label>
-                <Input placeholder="http://<主机>:8082/mcp" value={url} onChange={(e) => setUrl(e.target.value)} />
+                <Input placeholder={tr("http://<主机>:8082/mcp")} value={url} onChange={(e) => setUrl(e.target.value)} />
               </div>
               <div className="space-y-1.5">
                 <Label>{tr("API Key（X-API-Key，留空保留原值）")}</Label>
@@ -434,7 +434,7 @@ function SyncWorkbench() {
           <Button variant="outline" size="sm" disabled={page <= 1 || loading} onClick={() => setPage((p) => p - 1)}>
             {tr("上一页")}
           </Button>
-          <span className="text-muted-foreground text-xs">第 {page} 页</span>
+          <span className="text-muted-foreground text-xs">{tr("第 {n0} 页", { n0: page })}</span>
           <Button
             variant="outline"
             size="sm"

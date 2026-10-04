@@ -135,11 +135,11 @@ export function UpdateCard() {
     if (!info) return;
     const from = info.current;
     const ok = window.confirm(
-      tr("确定更新到 {n0}？\\n\\n", { n0: info.latest }) +
-        "更新会重启程序，正在运行的任务会被中断。\n" +
+      tr("确定更新到 {n0}？\n\n", { n0: info.latest }) +
+        tr("更新会重启程序，正在运行的任务会被中断。\n") +
         (info.mode === "docker"
-          ? tr("\\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；") +
-            "若新版本依赖新工具，请改用 docker compose pull。"
+          ? tr("\n注意：容器内更新只替换程序本身，不会更新镜像里的 playwright / nmap 等工具链；") +
+            tr("若新版本依赖新工具，请改用 docker compose pull。")
           : ""),
     );
     if (!ok) return;
@@ -159,7 +159,7 @@ export function UpdateCard() {
     if (!info) return;
     if (
       !window.confirm(
-        "回滚到上一版本？\n\n程序会重启，正在运行的任务会被中断。\n注意：数据库结构不会回退，旧版本可能无法识别新版写入的数据。",
+        tr("回滚到上一版本？\n\n程序会重启，正在运行的任务会被中断。\n注意：数据库结构不会回退，旧版本可能无法识别新版写入的数据。"),
       )
     )
       return;
@@ -239,8 +239,7 @@ export function UpdateCard() {
           <p className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
             <TriangleAlertIcon className="mt-0.5 size-3.5 shrink-0" />
             {tr("无法连接 GitHub：{n0}", { n0: info.error })}
-            {"　"}可在上方配置全局代理后重试。
-          </p>
+            {"　"}{tr("可在上方配置全局代理后重试。")}</p>
         )}
 
         {info && !info.comparable && info.reason && <p className="text-xs text-muted-foreground">{info.reason}</p>}
@@ -248,15 +247,13 @@ export function UpdateCard() {
         {info?.has_update && info.asset_available === false && (
           <p className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
             <TriangleAlertIcon className="mt-0.5 size-3.5 shrink-0" />
-            {info.latest} 没有提供 {info.os}/{info.arch} 的发布包（缺少 {info.asset}），无法自动更新。
-          </p>
+            {info.latest} {" " + tr("没有提供") + " "}{info.os}/{info.arch} {" " + tr("的发布包（缺少") + " "}{info.asset}{tr("），无法自动更新。")}</p>
         )}
 
         {info?.has_update && info.asset_available !== false && (
           <p className="text-xs text-muted-foreground">
-            将下载 <span className="font-mono">{info.asset}</span>
-            {info.size ? `（${humanSize(info.size)}）` : ""}，校验 SHA256 并冒烟测试后才会替换，失败自动保留当前版本。
-          </p>
+            {tr("将下载") + " "}<span className="font-mono">{info.asset}</span>
+            {info.size ? tr("（{n0}）", { n0: String(humanSize(info.size)) }) : ""}{tr("，校验 SHA256 并冒烟测试后才会替换，失败自动保留当前版本。")}</p>
         )}
 
         {info && !info.has_update && info.comparable && !info.error && (
@@ -268,11 +265,9 @@ export function UpdateCard() {
 
         {info?.mode === "docker" && info.has_update && (
           <p className="text-xs text-muted-foreground">
-            Docker 下的更新只替换程序本身，不更新镜像里的 playwright / nmap 等工具链，且
-            <span className="font-mono"> docker compose up -d </span>
+            {tr("Docker 下的更新只替换程序本身，不更新镜像里的 playwright / nmap 等工具链，且")}<span className="font-mono"> docker compose up -d </span>
             {tr("重建容器后会退回镜像自带的版本。需要连镜像一起升级请执行")}
-            <span className="font-mono"> docker compose pull artex &amp;&amp; docker compose up -d artex</span>。
-          </p>
+            <span className="font-mono"> docker compose pull artex &amp;&amp; docker compose up -d artex</span>{tr("。")}</p>
         )}
 
         {showProgress && (
@@ -306,9 +301,7 @@ export function UpdateCard() {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          一键更新依赖守护脚本重启程序。请通过 <span className="font-mono">start.sh</span>（Windows 为
-          <span className="font-mono"> start.bat</span>）启动 ARTEX；直接运行 artex 本体时，程序退出后不会被自动拉起。
-        </p>
+          {tr("一键更新依赖守护脚本重启程序。请通过") + " "}<span className="font-mono">start.sh</span>{tr("（Windows 为")}<span className="font-mono"> start.bat</span>{tr("）启动 ARTEX；直接运行 artex 本体时，程序退出后不会被自动拉起。")}</p>
       </CardContent>
     </Card>
   );

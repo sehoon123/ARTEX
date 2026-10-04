@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Locale = "en" | "ko";
 
@@ -8,7 +8,7 @@ export type Locale = "en" | "ko";
 import en from "./en.json";
 import ko from "./ko.json";
 
-const maps: Record<string, Record<string, string>> = { en, ko };
+const maps: Record<Locale, Record<string, string>> = { en, ko };
 
 const STORAGE_KEY = "artex_locale";
 
@@ -17,10 +17,10 @@ function detectLocale(): Locale {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "en" || stored === "ko") return stored;
-    return navigator.language.toLowerCase().startsWith("ko") ? "ko" : "en";
   } catch {
-    return "en";
+    // Storage can be blocked even when the browser language is available.
   }
+  return navigator.language.toLowerCase().startsWith("ko") ? "ko" : "en";
 }
 
 // Resolved once at module load (synchronously from localStorage on the client).
@@ -38,13 +38,13 @@ export function tr(
   zh: string,
   params?: Record<string, string | number | boolean | null | undefined>,
 ): string {
-  let str = maps[currentLocale]?.[zh] ?? zh;
-  if (params) {
-    for (const [k, v] of Object.entries(params)) {
-      str = str.replaceAll(`{${k}}`, v == null ? "" : String(v));
-    }
-  }
-  return str;
+  const dict = maps[currentLocale];
+  const str = Object.hasOwn(dict, zh) ? dict[zh] : zh;
+  if (!params) return str;
+  // One pass, with a function replacement: values containing $& or {n1} stay literal.
+  return str.replace(/\{([^{}]+)\}/g, (match, key: string) =>
+    Object.hasOwn(params, key) ? (params[key] == null ? "" : String(params[key])) : match,
+  );
 }
 
 export function getLocale(): Locale {
@@ -53,26 +53,37 @@ export function getLocale(): Locale {
 
 interface I18nCtx {
   locale: Locale;
-  setLocale: (l: Locale) => void;
+  setLocale: (l: Locale) => boolean | null; // null: user cancelled; false: persistence failed.
   t: typeof tr;
 }
 
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const setLocale = (l: Locale) => {
-    if (l === currentLocale) return;
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    document.documentElement.lang = currentLocale;
+    setReady(true);
+  }, []);
+
+  const setLocale = (l: Locale): boolean | null => {
+    if (l !== "en" && l !== "ko") return false;
+    if (l === currentLocale) return true;
+    // ponytail: warn on every reload; track dirty forms only if this becomes noisy.
+    if (!window.confirm(tr("切换语言会重新加载页面，未保存的更改将丢失。是否继续？"))) return null;
     try {
       localStorage.setItem(STORAGE_KEY, l);
     } catch {
-      /* ignore */
+      return false; // Do not reload into a different locale when persistence failed.
     }
     currentLocale = l;
-    // Full reload so module-level constants (label maps, option arrays) that
-    // called tr() at import time re-evaluate under the new locale.
+    // Full reload also refreshes labels translated at module initialization.
     window.location.reload();
+    return true;
   };
 
+  // Static HTML and the first client render must agree, even for saved Korean.
+  if (!ready) return null;
   return <Ctx.Provider value={{ locale: currentLocale, setLocale, t: tr }}>{children}</Ctx.Provider>;
 }
 

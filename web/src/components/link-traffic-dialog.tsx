@@ -86,7 +86,7 @@ export function LinkTrafficDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{tr("关联到漏洞")}</DialogTitle>
-          <DialogDescription>将所选 {trafficIds.length} 条流量保存为已有漏洞的证据。</DialogDescription>
+          <DialogDescription>{tr("将所选") + " "}{trafficIds.length} {" " + tr("条流量保存为已有漏洞的证据。")}</DialogDescription>
         </DialogHeader>
         <FieldGroup>
           <Field>
@@ -136,8 +136,7 @@ export function LinkTrafficDialog({
             {tr("上一页")}
           </Button>
           <span className="text-xs">
-            第 {page} 页 · 共 {data?.total ?? 0} 条
-          </span>
+            {tr("第") + " "}{page} {" " + tr("页 · 共") + " "}{data?.total ?? 0} {" " + tr("条")}</span>
           <Button
             variant="outline"
             size="sm"

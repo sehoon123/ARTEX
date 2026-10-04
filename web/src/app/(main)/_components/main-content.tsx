@@ -1,4 +1,6 @@
 "use client";
+import { tr } from "@/lib/i18n";
+
 
 import { type ReactNode, useEffect, useState } from "react";
 
@@ -66,7 +68,7 @@ export function MainContent({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-2">
             {version && (
-              <span className="font-medium text-muted-foreground text-xs tabular-nums">版本 · {version}</span>
+              <span className="font-medium text-muted-foreground text-xs tabular-nums">{tr("版本 ·") + " "}{version}</span>
             )}
             <UpdateBadge />
             <LayoutControls />

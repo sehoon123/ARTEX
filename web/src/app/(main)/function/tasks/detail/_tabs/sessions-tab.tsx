@@ -1638,8 +1638,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  输入 {taskTokens.input_tokens.toLocaleString()} · 输出 {taskTokens.output_tokens.toLocaleString()} ·
-                  缓存读取 {taskTokens.cache_read_tokens.toLocaleString()} · 缓存写入{" "}
+                  {tr("输入") + " "}{taskTokens.input_tokens.toLocaleString()} {" " + tr("· 输出") + " "}{taskTokens.output_tokens.toLocaleString()} {" " + tr("· 缓存读取") + " "}{taskTokens.cache_read_tokens.toLocaleString()} {" " + tr("· 缓存写入")}{" "}
                   {taskTokens.cache_write_tokens.toLocaleString()}
                 </TooltipContent>
               </Tooltip>
@@ -1817,9 +1816,9 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      输入 {activeTokens.input_tokens.toLocaleString()} · 输出{" "}
-                      {activeTokens.output_tokens.toLocaleString()} · 缓存读取{" "}
-                      {activeTokens.cache_read_tokens.toLocaleString()} · 缓存写入{" "}
+                      {tr("输入") + " "}{activeTokens.input_tokens.toLocaleString()} {" " + tr("· 输出")}{" "}
+                      {activeTokens.output_tokens.toLocaleString()} {" " + tr("· 缓存读取")}{" "}
+                      {activeTokens.cache_read_tokens.toLocaleString()} {" " + tr("· 缓存写入")}{" "}
                       {activeTokens.cache_write_tokens.toLocaleString()}
                     </TooltipContent>
                   </Tooltip>
@@ -1842,8 +1841,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   <div className="min-w-0">
                     <span className="font-medium text-destructive">{tr("此意图已被用户删除")}</span>
                     <span className="text-muted-foreground">
-                      （已停止执行，规划者已收到通知；意图与产出保留，可在下方查看历史）
-                    </span>
+                      {tr("（已停止执行，规划者已收到通知；意图与产出保留，可在下方查看历史）")}</span>
                     {dm.deleteReason && (
                       <p className="mt-1 break-words text-foreground">
                         <span className="text-muted-foreground">{tr("删除原因：")}</span>
@@ -1884,7 +1882,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                 ) : activeState?.error ? (
                   <div className="flex items-center gap-2 pl-9 text-xs text-red-500">
                     <CircleXIcon className="size-3.5" />
-                    加载失败：{activeState.error}
+                    {tr("加载失败：")}{activeState.error}
                     <Button
                       size="sm"
                       variant="ghost"
@@ -2071,7 +2069,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                           {controllingIntent === active.intent_id ? (
                             <Loader2Icon className="animate-spin" />
                           ) : (
-                            "直接继续"
+                            tr("直接继续")
                           )}
                         </InputGroupButton>
                         <InputGroupButton
@@ -2123,9 +2121,7 @@ export function SessionsTab({ taskId }: { taskId: string }) {
                   </>
                 ) : (
                   <>
-                    <strong>{tr("假删除")}</strong>会把该意图置为「已删除」并记录删除原因，意图节点、执行记录、
-                    已登记的事实和漏洞<strong>{tr("都会保留")}</strong>。规划者会收到「该意图由用户删除 + 原因」并据此重新规划。
-                  </>
+                    <strong>{tr("假删除")}</strong>{tr("会把该意图置为「已删除」并记录删除原因，意图节点、执行记录、 已登记的事实和漏洞")}<strong>{tr("都会保留")}</strong>{tr("。规划者会收到「该意图由用户删除 + 原因」并据此重新规划。")}</>
                 )}
               </AlertDialogDescription>
             </AlertDialogHeader>

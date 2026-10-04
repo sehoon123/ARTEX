@@ -296,7 +296,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                         <SelectItem value="__follow__">{tr("跟随任务 / 全局激活配置")}</SelectItem>
                         {llmProfiles.map((p) => (
                           <SelectItem key={p.id} value={String(p.id)}>
-                            {p.name}（{p.model}）{p.is_default ? tr(" · 默认") : ""}
+                            {p.name}{tr("（")}{p.model}{tr("）")}{p.is_default ? tr(" · 默认") : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -1129,7 +1129,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
               </div>
               <div className="text-muted-foreground grid gap-0.5 text-xs">
                 {t.interval_sec > 0 && t.interval_message && <div className="line-clamp-1">{tr("定时：{n0}", { n0: t.interval_message })}</div>}
-                {t.on_finding && t.finding_message && <div className="line-clamp-1">finding：{t.finding_message}</div>}
+                {t.on_finding && t.finding_message && <div className="line-clamp-1">{tr("finding：")}{t.finding_message}</div>}
                 {t.on_goal_met && t.goal_message && <div className="line-clamp-1">{tr("目标：{n0}", { n0: t.goal_message })}</div>}
                 {t.on_task_timeout && t.task_timeout_message && <div className="line-clamp-1">{tr("超时：{n0}", { n0: t.task_timeout_message })}</div>}
                 {t.on_task_create && t.task_create_message && <div className="line-clamp-1">{tr("任务创建：{n0}", { n0: t.task_create_message })}</div>}

@@ -303,8 +303,7 @@ export default function WorkspacePage() {
                     {edit.file.too_large ? tr("文件过大，不支持在线预览/编辑。") : tr("二进制文件，不支持在线预览/编辑。")}
                   </p>
                   <Button variant="outline" onClick={() => api.workspaceDownload(edit.file.path)}>
-                    <DownloadIcon /> 下载文件
-                  </Button>
+                    <DownloadIcon /> {" " + tr("下载文件")}</Button>
                 </div>
               ) : (
                 <>

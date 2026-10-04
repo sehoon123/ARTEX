@@ -712,7 +712,7 @@ function CustomToolDialog({
 
           {kind === "command" && (
             <div className="grid gap-1.5">
-              <Label className="text-xs">命令模板（占位符 {"{param}"}，如 nmap -p {"{ports}"} {"{target}"}）</Label>
+              <Label className="text-xs">{tr("命令模板（占位符") + " "}{"{param}"}{tr("，如 nmap -p") + " "}{"{ports}"} {"{target}"}{tr("）")}</Label>
               <Textarea className="font-mono text-xs" rows={2} value={ex.command}
                 onChange={(e) => setEx({ ...ex, command: e.target.value })} />
             </div>
@@ -733,17 +733,17 @@ function CustomToolDialog({
                   <Input className="w-24" value={ex.method} onChange={(e) => setEx({ ...ex, method: e.target.value })} />
                 </div>
                 <div className="grid flex-1 gap-1.5">
-                  <Label className="text-xs">URL（可含 {"{param}"}）</Label>
+                  <Label className="text-xs">{tr("URL（可含") + " "}{"{param}"}{tr("）")}</Label>
                   <Input className="font-mono text-xs" value={ex.url} onChange={(e) => setEx({ ...ex, url: e.target.value })} />
                 </div>
               </div>
               <div className="grid gap-1.5">
-                <Label className="text-xs">Headers（JSON，可含 {"{param}"}）</Label>
+                <Label className="text-xs">{tr("Headers（JSON，可含") + " "}{"{param}"}{tr("）")}</Label>
                 <Textarea className="font-mono text-xs" rows={2} value={ex.headers}
                   placeholder={'{"Authorization": "Bearer {token}"}'} onChange={(e) => setEx({ ...ex, headers: e.target.value })} />
               </div>
               <div className="grid gap-1.5">
-                <Label className="text-xs">Body（可含 {"{param}"}）</Label>
+                <Label className="text-xs">{tr("Body（可含") + " "}{"{param}"}{tr("）")}</Label>
                 <Textarea className="font-mono text-xs" rows={2} value={ex.body} onChange={(e) => setEx({ ...ex, body: e.target.value })} />
               </div>
               <div className="flex items-center gap-4">
@@ -771,7 +771,7 @@ function CustomToolDialog({
           {kind !== "shell" && (
             <div className="grid gap-1.5">
               <Label className="text-xs">
-                参数 JSON Schema{kind === "http" ? tr("（http 工具必填，需含 properties）") : tr("（留空 = 自动给 {args} 薄壳）")}
+                {tr("参数 JSON Schema")}{kind === "http" ? tr("（http 工具必填，需含 properties）") : tr("（留空 = 自动给 {args} 薄壳）")}
               </Label>
               <Textarea className="font-mono text-xs" rows={4} value={schemaText}
                 placeholder={'{"type":"object","properties":{"target":{"type":"string"}},"required":["target"]}'}
@@ -797,8 +797,7 @@ function CustomToolDialog({
             </label>
             {kind !== "shell" && (
               <label className="flex items-center gap-2 text-sm">
-                <Switch checked={deferred} onCheckedChange={setDeferred} /> deferred（大量不常用工具才开）
-              </label>
+                <Switch checked={deferred} onCheckedChange={setDeferred} /> {" " + tr("deferred（大量不常用工具才开）")}</label>
             )}
           </div>
 
@@ -806,7 +805,7 @@ function CustomToolDialog({
             <div className="grid gap-1.5 rounded-md border p-3">
               <Label className="text-xs font-medium">{tr("测试运行（用当前表单，不会保存）")}</Label>
               <Textarea className="font-mono text-xs" rows={2} value={paramsText}
-                placeholder={'示例参数 JSON，如 {"target":"example.com"}'}
+                placeholder={tr("示例参数 JSON，如 {\"target\":\"example.com\"}")}
                 onChange={(e) => setParamsText(e.target.value)} />
               <div>
                 <Button size="sm" variant="outline" onClick={runTest} disabled={testing}>

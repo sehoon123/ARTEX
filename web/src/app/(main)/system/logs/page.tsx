@@ -179,8 +179,8 @@ export default function LogsPage() {
             {tr("清空")}
           </Button>
           <span className="ml-auto text-xs text-muted-foreground">
-            {counts.total} 行 ·{" "}
-            <span className="text-amber-600 dark:text-amber-400">{counts.warn} 警告</span> ·{" "}
+            {counts.total} {" " + tr("行 ·")}{" "}
+            <span className="text-amber-600 dark:text-amber-400">{counts.warn} {" " + tr("警告")}</span> ·{" "}
             <span className="text-red-600 dark:text-red-400">{counts.error} {tr("错误")}</span>
           </span>
         </div>

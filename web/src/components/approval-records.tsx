@@ -484,7 +484,7 @@ export function ApprovalDetail({
                 </Collapsible>
               ) : null}
               <CodeBlock
-                label={`${initialLabel}：${actionLabels[audit.initial_action] ?? audit.initial_action}`}
+                label={tr("{n0}：{n1}", { n0: String(initialLabel), n1: String(actionLabels[audit.initial_action] ?? audit.initial_action) })}
                 text={audit.initial_reason.replace(/^\[模型\]\s*/, "")}
               />
               <CodeBlock
@@ -504,9 +504,9 @@ export function ApprovalDetail({
               <dl className="grid gap-2 text-muted-foreground text-xs [overflow-wrap:anywhere]">
                 <div>{tr("工具调用 ID：{n0}", { n0: audit.tool_use_id || tr("未记录") })}</div>
                 <div>{tr("参数摘要 SHA-256：{n0}", { n0: audit.input_digest })}</div>
-                <div>审查配置指纹 SHA-256：{audit.config_digest || tr("未记录")}</div>
-                {audit.model_input_digest ? <div>模型审查输入 SHA-256：{audit.model_input_digest}</div> : null}
-                {audit.execution_ended_at ? <div>结果记录时间：{fmtTime(audit.execution_ended_at)}</div> : null}
+                <div>{tr("审查配置指纹 SHA-256：")}{audit.config_digest || tr("未记录")}</div>
+                {audit.model_input_digest ? <div>{tr("模型审查输入 SHA-256：")}{audit.model_input_digest}</div> : null}
+                {audit.execution_ended_at ? <div>{tr("结果记录时间：")}{fmtTime(audit.execution_ended_at)}</div> : null}
               </dl>
             </div>
           </CollapsibleContent>
@@ -849,27 +849,26 @@ export function ApprovalRecords({ taskId }: { taskId?: string }) {
       </FieldGroup>
       {error ? (
         <Alert variant="destructive">
-          <AlertDescription>记录加载失败：{error}。请点击刷新重试。</AlertDescription>
+          <AlertDescription>{tr("记录加载失败：")}{error}{tr("。请点击刷新重试。")}</AlertDescription>
         </Alert>
       ) : null}
       {pendingError ? (
         <Alert variant="destructive">
-          <AlertDescription>待审批加载失败：{pendingError}。请点击刷新重试。</AlertDescription>
+          <AlertDescription>{tr("待审批加载失败：")}{pendingError}{tr("。请点击刷新重试。")}</AlertDescription>
         </Alert>
       ) : null}
       {pending.length ? (
         <section className="overflow-hidden rounded-xl border">
           <div className="flex items-center gap-2 border-b bg-muted/40 px-4 py-3 font-medium text-sm">
             <ShieldAlertIcon className="size-4" />
-            待处理（{pending.length}）<span className="text-muted-foreground text-xs">{tr("展开后允许或拒绝")}</span>
+            {tr("待处理（")}{pending.length}{tr("）")}<span className="text-muted-foreground text-xs">{tr("展开后允许或拒绝")}</span>
           </div>
           <ApprovalTable rows={pending} busy={deciding} decide={decide} revision={revision} label={tr("待处理审批")} />
         </section>
       ) : null}
       <section className="overflow-hidden rounded-xl border">
         <div className="border-b px-4 py-3 font-medium text-sm">
-          {filtered ? tr("筛选结果") : tr("全部记录")}（{total}）
-        </div>
+          {filtered ? tr("筛选结果") : tr("全部记录")}{tr("（")}{total}{tr("）")}</div>
         {loading ? (
           <div className="flex flex-col gap-3 p-4">
             <Skeleton className="h-10 w-full" />

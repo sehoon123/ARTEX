@@ -57,7 +57,7 @@ export function ConfigField({
       <div className="flex items-center gap-2 text-sm">
         <Switch checked={value === true} onCheckedChange={onChange} aria-label={def.label} />
         {def.label}
-        {def.help && <span className="text-muted-foreground">（{def.help}）</span>}
+        {def.help && <span className="text-muted-foreground">{tr("（")}{def.help}{tr("）")}</span>}
       </div>
     );
   }
@@ -121,8 +121,7 @@ export function ConfigField({
   const hint = masked ? (
     <p className="text-muted-foreground flex items-center gap-1 text-xs">
       <CheckIcon className="size-3" />
-      已保存{maskedTail ? tr("（尾号 {n0}）", { n0: maskedTail }) : ""} · 填入新值即覆盖，清空则删除该项
-    </p>
+      {tr("已保存")}{maskedTail ? tr("（尾号 {n0}）", { n0: maskedTail }) : ""} {" " + tr("· 填入新值即覆盖，清空则删除该项")}</p>
   ) : (
     def.help && <p className="text-muted-foreground text-xs">{def.help}</p>
   );

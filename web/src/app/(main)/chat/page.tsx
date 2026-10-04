@@ -328,7 +328,7 @@ function LLMProfileRow({
               selected == null && "bg-accent",
             )}
           >
-            <span className="text-sm">{tr("默认")}{activeDefault ? `（${activeDefault.name}）` : ""}</span>
+            <span className="text-sm">{tr("默认")}{activeDefault ? tr("（{n0}）", { n0: String(activeDefault.name) }) : ""}</span>
             {activeDefault && (
               <span className="text-muted-foreground text-[11px]">
                 {activeDefault.format} · {activeDefault.model}
@@ -451,7 +451,7 @@ function DraftChat({
         <div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
           <Bot className="text-primary size-6" />
         </div>
-        <div className="text-sm font-medium">开始和「{agent?.name ?? "Agent"}」对话</div>
+        <div className="text-sm font-medium">{tr("开始和「")}{agent?.name ?? "Agent"}{tr("」对话")}</div>
         {agent?.description && <p className="text-muted-foreground max-w-md text-xs">{agent.description}</p>}
       </div>
 
@@ -780,8 +780,7 @@ function ChatView({
         <div className="text-muted-foreground ml-auto flex min-w-0 max-w-full items-center justify-end gap-x-3 gap-y-1 text-xs max-sm:w-full max-sm:flex-wrap">
           {tokenTotal.turns > 0 && (
             <span title={tr("agent 循环轮次（模型调用次数）")} className="tabular-nums">
-              {tokenTotal.turns} 轮
-            </span>
+              {tokenTotal.turns} {" " + tr("轮")}</span>
           )}
           {tokenTotal.any && (
             <span title="input / cache(read) / output tokens" className="min-w-0 truncate tabular-nums">
@@ -798,8 +797,7 @@ function ChatView({
         <div className="min-w-0 max-w-full px-4 py-3" ref={contentRef}>
           {messages.length === 0 && !running ? (
             <div className="text-muted-foreground py-10 text-center text-sm">
-              开始和「{agent?.name ?? conv.agent_key}」对话
-            </div>
+              {tr("开始和「")}{agent?.name ?? conv.agent_key}{tr("」对话")}</div>
           ) : (
             <>
               {hasMore && (
@@ -992,7 +990,7 @@ const ConversationItem = React.memo(function ConversationItem({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除对话「{conv.title || tr("新对话")}」？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除对话「{n0}」？", { n0: conv.title || tr("新对话") })}</AlertDialogTitle>
             <AlertDialogDescription>{tr("此操作不可撤销。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1356,8 +1354,7 @@ export default function ChatPage() {
         <div className="bg-card flex flex-col overflow-hidden rounded-lg border">
           <div className="flex flex-col gap-2 border-b p-2">
             <Button size="sm" className="w-full" onClick={() => selectConversation(null)}>
-              <PlusIcon /> 新建对话
-            </Button>
+              <PlusIcon /> {" " + tr("新建对话")}</Button>
             <Select
               value={agentFilter === null ? "all" : `agent:${agentFilter}`}
               onValueChange={(value) => changeAgentFilter(value === "all" ? null : value.slice(6))}
@@ -1372,8 +1369,7 @@ export default function ChatPage() {
                   <SelectItem value="all">{tr("全部 Agent")}</SelectItem>
                   {agentFilterOptions.map((agent) => (
                     <SelectItem key={agent.key} value={`agent:${agent.key}`}>
-                      {agent.name}（{agent.count}）
-                    </SelectItem>
+                      {agent.name}{tr("（")}{agent.count}{tr("）")}</SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
@@ -1546,7 +1542,7 @@ export default function ChatPage() {
       <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>删除选中的 {selectedConversationCount} 个对话？</AlertDialogTitle>
+            <AlertDialogTitle>{tr("删除选中的 {n0} 个对话？", { n0: selectedConversationCount })}</AlertDialogTitle>
             <AlertDialogDescription>{tr("对话消息和执行记录将一并删除，此操作不可撤销。")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

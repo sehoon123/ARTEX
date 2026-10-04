@@ -232,8 +232,7 @@ function SkillsOverview({
                   />
                 </span>
                 <span className="w-16 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
-                  {s.calls} 次
-                </span>
+                  {s.calls} {" " + tr("次")}</span>
               </button>
             ))}
           </div>
@@ -267,7 +266,7 @@ function SkillsOverview({
         <div className="space-y-2">
           <Label className="text-xs text-muted-foreground">
             {tr("未使用的 Skill")}
-            {agg.neverUsed.length > 0 && <span className="ml-1 font-normal">（{agg.neverUsed.length}）</span>}
+            {agg.neverUsed.length > 0 && <span className="ml-1 font-normal">{tr("（")}{agg.neverUsed.length}{tr("）")}</span>}
           </Label>
           {agg.neverUsed.length === 0 ? (
             <p className="text-muted-foreground text-xs">{tr("所有 Skill 都被调用过。")}</p>
@@ -369,7 +368,7 @@ export default function SkillsPage() {
       const msg = (e as Error).message;
       // offer overwrite when the skill already exists
       if (!overwrite && msg.includes("已存在")) {
-        if (window.confirm(tr("{n0}\\n\\n是否覆盖同名 Skill？", { n0: msg }))) {
+        if (window.confirm(tr("{n0}\n\n是否覆盖同名 Skill？", { n0: msg }))) {
           await uploadZip(file, true);
           return;
         }
@@ -714,18 +713,16 @@ export default function SkillsPage() {
             <PopoverTrigger asChild>
               <Button size="sm" variant="outline" className="ml-auto">
                 <AlertTriangleIcon className="size-3.5 text-amber-500" />
-                {missing.length} 个未命中调用
-              </Button>
+                {missing.length} {" " + tr("个未命中调用")}</Button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-80">
               <p className="mb-2 text-xs text-muted-foreground">
-                Agent 点名调用、但技能库里不存在的 skill。按被点名次数排序。
-              </p>
+                {tr("Agent 点名调用、但技能库里不存在的 skill。按被点名次数排序。")}</p>
               <div className="space-y-1">
                 {missing.map((m) => (
                   <div key={m.skill} className="flex items-center gap-2 text-sm">
                     <code className="min-w-0 flex-1 truncate font-mono text-xs" title={m.skill}>{m.skill}</code>
-                    <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{m.calls} 次</span>
+                    <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{m.calls} {" " + tr("次")}</span>
                     <span className="shrink-0 text-xs text-muted-foreground">{fmtTime(m.last_used)}</span>
                   </div>
                 ))}
@@ -896,7 +893,7 @@ export default function SkillsPage() {
                     <p className="text-xs text-muted-foreground">{tr("加载调用明细…")}</p>
                   ) : usageCalls.length > 0 ? (
                     <div className="rounded-md border">
-                      <div className="border-b px-2 py-1 text-xs text-muted-foreground">最近 {usageCalls.length} 次调用</div>
+                      <div className="border-b px-2 py-1 text-xs text-muted-foreground">{tr("最近") + " "}{usageCalls.length} {" " + tr("次调用")}</div>
                       <div className="max-h-56 overflow-y-auto">
                         {usageCalls.map((c, i) => (
                           <div key={`${c.ts}-${i}`} className="flex items-center gap-2 border-b px-2 py-1 text-xs last:border-b-0">
@@ -1067,7 +1064,7 @@ export default function SkillsPage() {
                 <Label htmlFor="sk-inst">{tr("正文")} <span className="text-muted-foreground text-xs font-normal">{tr("（留空自动生成骨架）")}</span></Label>
                 <Textarea id="sk-inst"
                   className="min-h-40 flex-1 resize-none font-mono text-sm leading-relaxed"
-                  placeholder={tr("## 执行方法\\n\\n1. 先探测错误\\n2. 区分盲注类型\\n\\n脚本放 scripts/ 目录。")}
+                  placeholder={tr("## 执行方法\n\n1. 先探测错误\n2. 区分盲注类型\n\n脚本放 scripts/ 目录。")}
                   value={newInst} onChange={(e) => setNewInst(e.target.value)} />
               </div>
             </TabsContent>

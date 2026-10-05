@@ -1,4 +1,6 @@
 "use client";
+import { tr } from "@/lib/i18n";
+
 
 import { Monitor, Moon, Sun } from "lucide-react";
 
@@ -21,7 +23,7 @@ export function ThemeSwitcher() {
   };
 
   return (
-    <Button size="icon" onClick={cycleTheme} aria-label={`Current theme: ${themeMode}. Click to cycle themes`}>
+    <Button size="icon" onClick={cycleTheme} aria-label={tr("Current theme: {n0}. Click to cycle themes", { n0: tr(themeMode === "light" ? "Light" : themeMode === "dark" ? "Dark" : "System") })}>
       {/* SYSTEM */}
       <Monitor className="hidden [html[data-theme-mode=system]_&]:block" />
 

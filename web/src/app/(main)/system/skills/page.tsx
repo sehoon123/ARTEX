@@ -732,9 +732,9 @@ export default function SkillsPage() {
           </Popover>
         )}
       </div>
-      <div className="flex flex-1 overflow-hidden">
-        {/* ── 左侧文件树 ── */}
-        <div className="flex w-64 shrink-0 flex-col border-r">
+      <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
+        {/* ── 左侧文件树（窄屏时置顶并限高，宽屏时固定左栏） ── */}
+        <div className="flex max-h-56 w-full shrink-0 flex-col border-b md:max-h-none md:w-64 md:border-r md:border-b-0">
           <div className="flex flex-col gap-2 border-b p-2">
             <Button size="sm" variant="outline" className="w-full" onClick={() => setNewOpen(true)}>
               <PlusIcon className="size-3.5" />{tr("新建 Skill")}
@@ -851,7 +851,7 @@ export default function SkillsPage() {
                 )}
                 <div className="mt-2 flex flex-wrap gap-2">
                   {selectedSkill.license && (
-                    <Badge variant="outline" className="text-xs font-normal">License: {selectedSkill.license}</Badge>
+                    <Badge variant="outline" className="text-xs font-normal">{tr("License:") + " "}{selectedSkill.license}</Badge>
                   )}
                   {selectedSkill.compatibility && (
                     <Badge variant="secondary" className="text-xs font-normal">{selectedSkill.compatibility}</Badge>
@@ -1053,11 +1053,11 @@ export default function SkillsPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-1.5">
-                  <Label className="text-muted-foreground text-xs">license</Label>
+                  <Label className="text-muted-foreground text-xs">{tr("license")}</Label>
                   <Input placeholder="MIT / Proprietary" value={newLicense} onChange={(e) => setNewLicense(e.target.value)} />
                 </div>
                 <div className="grid gap-1.5">
-                  <Label className="text-muted-foreground text-xs">compatibility</Label>
+                  <Label className="text-muted-foreground text-xs">{tr("compatibility")}</Label>
                   <Input placeholder={tr("需要 sqlmap、python3")} value={newCompat} onChange={(e) => setNewCompat(e.target.value)} />
                 </div>
               </div>

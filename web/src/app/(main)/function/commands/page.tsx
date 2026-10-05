@@ -40,6 +40,20 @@ function toolInput(raw: string): string {
   return raw;
 }
 
+// inputPreview is the single-line list preview: bare bash command, or compact
+// one-line JSON (so a {"note":"..."} object does not collapse to just "{"), else raw.
+// The detail sheet still uses toolInput() for the full pretty-printed form.
+function inputPreview(raw: string): string {
+  try {
+    const obj = JSON.parse(raw);
+    if (obj && typeof obj.command === "string") return obj.command;
+    return JSON.stringify(obj);
+  } catch {
+    /* not JSON */
+  }
+  return raw;
+}
+
 // truncate clips a string to maxLen characters.
 function truncate(s: string, maxLen: number): string {
   const first = s.split("\n")[0]; // single-line preview
@@ -249,7 +263,7 @@ export default function CommandsPage() {
                       </TableCell>
                       <TableCell className="max-w-0">
                         <code className="block truncate font-mono text-xs">
-                          {truncate(toolInput(cmd.command), CMD_MAX_LEN)}
+                          {truncate(inputPreview(cmd.command), CMD_MAX_LEN)}
                         </code>
                       </TableCell>
                       <TableCell>

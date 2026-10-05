@@ -20,6 +20,7 @@
     "i18n:test": "cd .. && node --test scripts/i18n/test.mjs",
     "i18n:sync": "cd .. && node scripts/i18n/sync.mjs",
     "i18n:catalog": "cd .. && node scripts/i18n/catalog-check.mjs --update",
+    "i18n:unused": "cd .. && node scripts/i18n/unused.mjs",
     "i18n:verify": "npm run i18n:test && npm run i18n:check && npm run build:static"
   },
   "lint-staged": {

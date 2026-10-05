@@ -1,6 +1,6 @@
 // Parser-backed, dictionary-checked display edits. --check never writes source.
 import { relative } from "node:path";
-import { loadJSON, writeAtomic, EN, KO, ROOT, sourceFiles, scanSource, ts } from "./extract.mjs";
+import { loadJSON, writeAtomic, EN, KO, ROOT, sourceFiles, scanSource, rawCjk, ts } from "./extract.mjs";
 
 try {
   const check = process.argv.includes("--check");
@@ -9,6 +9,12 @@ try {
   const issues = [];
   for (const path of sourceFiles()) {
     const file = scanSource(path);
+    // Residual Chinese that never became a display candidate (join separators, parse
+    // prefixes, comparisons, mock) must be a dictionary key or an intentional-raw entry.
+    for (const r of file.residual) {
+      if ((Object.hasOwn(dictionaries.en, r.key) && Object.hasOwn(dictionaries.ko, r.key)) || rawCjk(r.key, file.rel)) continue;
+      issues.push(`${relative(ROOT, path)}:${r.line}: unwrapped Chinese not in dictionaries or intentional-raw.json: ${JSON.stringify(r.key)}`);
+    }
     const edits = [];
     for (const candidate of file.candidates) {
       const location = `${relative(ROOT, path)}:${candidate.line}`;

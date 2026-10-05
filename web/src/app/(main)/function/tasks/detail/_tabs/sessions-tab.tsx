@@ -327,7 +327,7 @@ function intentToSession(n: TaskNode): Session {
   return {
     id: n.id,
     role: "worker",
-    title: label || `Intent ${n.id}`,
+    title: label || tr("Intent {n0}", { n0: n.id }),
     status: state,
     live: !n.inherited && state === "running",
     last_activity: n.ts,

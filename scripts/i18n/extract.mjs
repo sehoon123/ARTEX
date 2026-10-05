@@ -18,6 +18,16 @@ const displayProperties = new Set(["label", "title", "description", "placeholder
 // ponytail: explicit display sinks only; add type/data-flow analysis if broader
 // automation is needed. Uncertain object fields and nested branches fail closed.
 
+// Intentional-raw allowlist: display strings that must stay untranslated (brand/tech/
+// code/protocol/mock). Anything NOT here and NOT in the dictionaries fails i18n:check.
+const RAW = JSON.parse(readFileSync(join(ROOT, "scripts/i18n/intentional-raw.json"), "utf8"));
+const matchesRaw = (list, value, rel) => list.some((e) => (e.prefix ? value.startsWith(e.prefix) : e.text === value) && (!e.file || rel.includes(e.file)));
+export const rawEnglish = (value, rel) => matchesRaw(RAW.english, value, rel);
+export const rawCjk = (value, rel) => matchesRaw(RAW.cjk, value, rel);
+// Latin-script display text still needs Korean (the English-source gap); Chinese uses hasHan.
+// Strip {placeholder} tokens first so a key like "{n0}…" is not treated as English via its 'n'.
+const translatableEnglish = (value) => /[A-Za-z]/u.test(value.replace(/\{[^{}]+\}/g, "")) && !hasHan(value);
+
 export function sourceFiles(dir = WEB_SRC) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -89,6 +99,7 @@ function jsxValue(node, source) {
 export function scanSource(path, text = readFileSync(path, "utf8")) {
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true);
   if (source.parseDiagnostics.length) throw new Error(`Cannot parse ${relative(ROOT, path)}: ${ts.flattenDiagnosticMessageText(source.parseDiagnostics[0].messageText, " ")}`);
+  const rel = relative(WEB_SRC, path).replaceAll("\\", "/");
   const imports = source.statements.filter(ts.isImportDeclaration).filter((node) => node.moduleSpecifier.text === "@/lib/i18n");
   const translationNames = new Set(imports.filter((node) => !node.importClause?.isTypeOnly).flatMap((node) => node.importClause?.namedBindings?.elements ?? []).filter((node) => !node.isTypeOnly && (node.propertyName ?? node.name).text === "tr").map((node) => node.name.text));
   const identifiers = new Set();
@@ -124,20 +135,20 @@ export function scanSource(path, text = readFileSync(path, "utf8")) {
     const translation = ts.isCallExpression(node) && ts.isIdentifier(node.expression) && translationNames.has(node.expression.text);
     if (translation && node.arguments[0] && ts.isStringLiteralLike(node.arguments[0])) add(node.arguments[0], node.arguments[0].text, null, "key");
     if (!insideTranslation && !translation) {
-      if (ts.isJsxText(node) && (hasHan(node.text) || /&#(?:x[\da-f]+|\d+);/i.test(node.text))) {
+      if (ts.isJsxText(node)) {
         const value = jsxValue(node, source);
         const key = value.trim();
-        if (hasHan(key)) {
+        if (key && (hasHan(key) || (translatableEnglish(key) && !rawEnglish(key, rel)))) {
           const leading = value.slice(0, value.indexOf(key));
           const trailing = value.slice(value.indexOf(key) + key.length);
           add(node, key, `{${leading ? `${JSON.stringify(leading)} + ` : ""}${alias}(${JSON.stringify(key)})${trailing ? ` + ${JSON.stringify(trailing)}` : ""}}`);
         }
       } else if (ts.isStringLiteralLike(node) && displayPosition(node, source)) {
         const value = ts.isJsxAttribute(node.parent) ? jsxValue(node, source) : node.text;
-        if (hasHan(value)) add(node, value, ts.isJsxAttribute(node.parent) ? `{${alias}(${JSON.stringify(value)})}` : `${alias}(${JSON.stringify(value)})`, manual ? "manual" : displayPosition(node, source));
+        if (hasHan(value) || (translatableEnglish(value) && !rawEnglish(value, rel))) add(node, value, ts.isJsxAttribute(node.parent) ? `{${alias}(${JSON.stringify(value)})}` : `${alias}(${JSON.stringify(value)})`, manual ? "manual" : displayPosition(node, source));
       } else if (ts.isTemplateExpression(node) && displayPosition(node, source)) {
         const key = node.head.text + node.templateSpans.map((span, index) => `{n${index}}${span.literal.text}`).join("");
-        if (hasHan(key)) {
+        if (hasHan(key) || (translatableEnglish(key) && !rawEnglish(key, rel))) {
           const params = node.templateSpans.map((span, index) => {
             const expression = source.text.slice(span.expression.getFullStart(), span.literal.getStart(source));
             return `n${index}: \`\${${expression}}\``; // Preserve native coercion and comment trivia.
@@ -152,8 +163,35 @@ export function scanSource(path, text = readFileSync(path, "utf8")) {
     }
     ts.forEachChild(node, (child) => visit(child, insideTranslation || translation, manual));
   }
-  if (!relative(WEB_SRC, path).replaceAll("\\", "/").startsWith("config/app-config.ts")) visit(source);
-  return { path, text, candidates, alias, needsImport, clientSafe, importOffset: directives.at(-1)?.end ?? 0 };
+  if (!rel.startsWith("config/app-config.ts")) visit(source);
+  // Residual guard: any Han string/jsxtext literal that did NOT become a display
+  // candidate and is not a tr() argument must be covered by the dictionaries or the
+  // intentional-raw allowlist, else it renders Chinese silently in every locale.
+  // Also inventory dynamic tr(expr) sites whose keys cannot be found statically.
+  const candidateSpans = new Set(candidates.map((c) => `${c.start}:${c.end}`));
+  const residual = [];
+  const dynamic = [];
+  (function scan(node) {
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && translationNames.has(node.expression.text) && node.arguments[0] && !ts.isStringLiteralLike(node.arguments[0])) {
+      dynamic.push({ rel, line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1, text: node.getText(source).slice(0, 100) });
+    }
+    const literal = ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node);
+    if ((literal || ts.isJsxText(node)) && hasHan(node.text)) {
+      const parent = node.parent;
+      const inTranslation = parent && ts.isCallExpression(parent) && ts.isIdentifier(parent.expression) && translationNames.has(parent.expression.text) && parent.arguments[0] === node;
+      if (!inTranslation && !candidateSpans.has(`${node.getStart(source)}:${node.end}`)) {
+        residual.push({ rel, key: literal ? node.text : jsxValue(node, source).trim(), line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1 });
+      }
+    }
+    // Template literals too: a Chinese template outside a recognized display position
+    // (e.g. passed to an unlisted sink) must still be covered or explicitly raw.
+    if (ts.isTemplateExpression(node) && !candidateSpans.has(`${node.getStart(source)}:${node.end}`)) {
+      const key = node.head.text + node.templateSpans.map((span, index) => `{n${index}}${span.literal.text}`).join("");
+      if (hasHan(key)) residual.push({ rel, key, line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1 });
+    }
+    ts.forEachChild(node, scan);
+  })(source);
+  return { path, rel, text, candidates, residual, dynamic, alias, needsImport, clientSafe, importOffset: directives.at(-1)?.end ?? 0 };
 }
 
 export function extractStrings() {

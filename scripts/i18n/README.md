@@ -123,7 +123,8 @@ after fixing it to expose later catalog issues.
 
 | Message/situation | Next action |
 | --- | --- |
-| `missing en/ko` | Extract → fill both dictionaries manually or with a provider → wrap. |
+| `missing en/ko` | Extract → fill both dictionaries manually or with a provider → wrap. Applies to Chinese AND English display text (English keys use an identity `en` value plus a Korean `ko` value). |
+| `unwrapped Chinese not in dictionaries or intentional-raw.json` | A Chinese literal renders outside a recognized display position (join separator, parse prefix, comparison, mock). If it is display text, wrap it; if it is data/protocol/mock, add an exact entry to `scripts/i18n/intentional-raw.json` with a reason. |
 | `file(s) need wrapping` | Run `i18n:wrap`, then review the diff. |
 | `review these display/key or nested-expression semantics manually` | Trace the reported value. Manually translate a display-only field or inner expression first; preserve stored/transmitted values and adjust the display boundary/check appropriately. Do not blindly exempt it. |
 | `needs a reviewed client boundary` | Verify client use. Do not add `"use client"` or a translation import to server settings/metadata merely to silence the check; move translation to the client display site. |
@@ -135,6 +136,12 @@ after fixing it to expose later catalog issues.
 When upstream rewords a string, look for a similar old translation and review its
 meaning before reuse. Do not bulk-delete keys absent from extraction: dynamic uses
 may remain. Existing translations are intentionally not overwritten automatically.
+
+`npm run i18n:unused` is a report-only aid (never run by `i18n:check`): it lists
+dictionary keys with no matching source literal or catalog key, any `ko`-only keys,
+and every dynamic `tr(expr)` site whose key cannot be inventoried statically. Treat
+its output as review hints, not a delete list — a key absent from static literals
+may still be produced by `tr(variable)`.
 
 ## Safety and scope
 
@@ -149,6 +156,19 @@ may remain. Existing translations are intentionally not overwritten automaticall
   error/message setter arguments. Conditional/fallback strings are changed only in
   those positions. Object properties such as `label` or `description` are inventoried
   but require manual review: their names alone do not prove display-only semantics.
+- Both Chinese AND Latin-script English display text in those positions are
+  translation candidates, closing the English-source gap: new English UI fails
+  `i18n:check` until it is translated or allowlisted. Keep genuinely raw display
+  text (product/provider/protocol names, code/URL/placeholder examples, enum/API
+  values, single-character badges, fonts, theme presets) in
+  `scripts/i18n/intentional-raw.json`. Scope an entry with `file` (a web/src-relative
+  substring) so a global exemption cannot hide a real label elsewhere; `prefix`
+  matches long literals. Keep this list minimal and reviewed.
+- A residual guard additionally requires every Chinese literal that is NOT a
+  recognized display candidate and NOT a `tr()` argument to be either a dictionary
+  key (covers values reached through `tr(variable)`, e.g. status labels, retry
+  triggers) or an `intentional-raw.json` `cjk` entry. This catches Chinese that
+  would otherwise render silently from an unrecognized call/attribute/property.
 - Protocol values (`value`, IDs, names, comparisons, arbitrary templates/setters),
   type declarations, comments, and unknown code contexts are not translated blindly.
   The upload marker is deliberately stable across languages.
@@ -201,10 +221,14 @@ environments and `.env*` do NOT enable `NEXT_PUBLIC_MOCK=1`.
   its mock switch enabled; `daily=[]` hides its chart/tooltips. Use separate inert
   examples for uncovered states; do not report them as inspected.
 - Inspect new/changed pages, lists, menus, tabs, dialogs and tooltips in BOTH locales.
-  Extraction focuses on Han/Chinese punctuation and existing `tr()` keys, so new
-  English UI needing Korean translation also needs manual review. Check dynamic
-  defaults and custom/edited fallback behavior; compare inert save payloads with
-  originals. Demo success is not production database or exhaustive UI coverage.
+  Extraction now covers Han/Chinese punctuation AND Latin-script English in recognized
+  display positions (plus existing `tr()` keys), so new English UI fails `i18n:check`
+  until translated or allowlisted. Still review manually what source checks cannot see:
+  text assigned to a variable before JSX, variable-fed accessible names, English in
+  unrecognized sinks/templates, number/date formatting, dynamic `tr(variable)` keys,
+  backend-origin labels, live mock content, phrase composition and translation quality.
+  Check dynamic defaults and custom/edited fallback behavior; compare inert save
+  payloads with originals. Demo success is not production database or exhaustive UI coverage.
 
 ## Installing the localized fork
 

@@ -1,5 +1,5 @@
 "use client";
-import { tr } from "@/lib/i18n";
+import { tr, getLocale } from "@/lib/i18n";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -93,7 +93,7 @@ function SidePanel({
         {side.snapshot ? (
           <>
             <p>{side.snapshot.model.model}</p>
-            <p>{tr("上下文更新于 {n0}", { n0: new Date(side.snapshot.captured_at).toLocaleString() })}</p>
+            <p>{tr("上下文更新于 {n0}", { n0: new Date(side.snapshot.captured_at).toLocaleString(getLocale()) })}</p>
           </>
         ) : (
           tr("主 Agent 首次运行后即可提问")
@@ -128,7 +128,7 @@ function SidePanel({
               <div className="flex flex-wrap items-center gap-2 text-muted-foreground text-xs">
                 <Badge variant="secondary">{status[item.status]}</Badge>
                 <span className="truncate">{item.model.model}</span>
-                <time dateTime={item.snapshot_at} title={new Date(item.snapshot_at).toLocaleString()}>
+                <time dateTime={item.snapshot_at} title={new Date(item.snapshot_at).toLocaleString(getLocale())}>
                   {tr("上下文 {n0}", { n0: new Date(item.snapshot_at).toLocaleTimeString() })}
                 </time>
               </div>

@@ -716,7 +716,7 @@ for (const locale of ["en", "ko"]) {
 }
 
 test("conditional display hints are wrapped but logical predicates/protocol comparisons are preserved", async () => {
-  const f = fixture('"use client"; export function Demo({loading,flag}) { const protocol = flag === "立即同步"; return <p>{loading && "立即同步"}{flag === "立即同步" && <i>ok</i>}</p> }');
+  const f = fixture('"use client"; export function Demo({loading,flag}) { const protocol = flag === "立即同步"; return <p>{loading && "立即同步"}{flag === "立即同步" && <i>{flag}</i>}</p> }');
   try {
     const result = await f.run("wrap");
     assert.equal(result.code, 0, result.stderr);
@@ -771,4 +771,54 @@ test("UI date formatters cannot silently reintroduce forced Chinese locale after
     }
     visit(source);
   }
+});
+
+test("English display text needs Korean or an intentional-raw entry; allowlisted brand terms stay raw", async () => {
+  const f = fixture('"use client"; export const Demo=()=> <p>Settings</p>;', { "Settings": ["Settings", "설정"] });
+  try {
+    assert.equal((await f.run("wrap")).code, 0);
+    assert.ok(read(f.file).includes('tr("Settings")'));
+    assert.equal((await f.run("wrap", ["--check"])).code, 0);
+    writeFileSync(f.file, '"use client"; export const Demo=()=> <p>Dashboard</p>;');
+    const miss = await f.run("wrap", ["--check"]);
+    assert.equal(miss.code, 1);
+    assert.match(miss.stderr, /Dashboard/);
+    writeFileSync(f.file, '"use client"; export const Demo=()=> <p>ARTEX</p>;');
+    const ok = await f.run("wrap", ["--check"]);
+    assert.equal(ok.code, 0, ok.stderr);
+    assert.ok(read(f.file).includes("<p>ARTEX</p>"));
+  } finally { f.close(); }
+});
+
+test("Chinese outside a display position must be a dictionary key or intentional-raw; comparisons are not wrapped", async () => {
+  const f = fixture('"use client"; export function Demo(x){ return x === "归档不存在" ? 1 : 2; }', { "归档不存在": ["Archive missing", "아카이브 없음"] });
+  try {
+    assert.equal((await f.run("wrap", ["--check"])).code, 0);
+    assert.ok(read(f.file).includes('=== "归档不存在"'));
+    writeFileSync(f.file, '"use client"; export function Demo(x){ return x === "未登记错误" ? 1 : 2; }');
+    const miss = await f.run("wrap", ["--check"]);
+    assert.equal(miss.code, 1);
+    assert.match(miss.stderr, /未登记错误/);
+    writeFileSync(f.file, '"use client"; export const parts = ["a", "b"].join("、");');
+    assert.equal((await f.run("wrap", ["--check"])).code, 0);
+  } finally { f.close(); }
+});
+
+test("file-scoped intentional-raw entries do not exempt the same text in another file", async () => {
+  const f = fixture('"use client"; export const Demo=()=> <p>host</p>;', {});
+  try {
+    const r = await f.run("wrap", ["--check"]);
+    assert.equal(r.code, 1); // "host" is allowlisted only inside function/traffic/page.tsx
+    assert.match(r.stderr, /host/);
+  } finally { f.close(); }
+});
+
+test("unused-key report lists orphan keys and dynamic tr(expr) sites without failing", async () => {
+  const f = fixture('"use client"; import {tr} from "@/lib/i18n"; export const Demo=({k})=> <p>{tr(k)}</p>;', { "孤立键": ["Orphan", "고아"] });
+  try {
+    const r = await f.run("unused");
+    assert.equal(r.code, 0);
+    assert.match(r.stdout, /孤立键/);
+    assert.match(r.stdout, /tr\(k\)/);
+  } finally { f.close(); }
 });

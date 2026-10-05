@@ -490,8 +490,7 @@ export default function SystemSettingsPage() {
             {webSearch && backend === "brave-free" && (
               <div className="flex flex-col gap-2">
                 <Label htmlFor="brave-key" className="text-sm font-normal text-muted-foreground">
-                  Brave Search API Key
-                  {braveKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
+                  {tr("Brave Search API Key")}{braveKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input
@@ -525,8 +524,7 @@ export default function SystemSettingsPage() {
             {webSearch && backend === "tavily" && (
               <div className="flex flex-col gap-2">
                 <Label htmlFor="tavily-key" className="text-sm font-normal text-muted-foreground">
-                  Tavily Search API Key
-                  {tavilyKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
+                  {tr("Tavily Search API Key")}{tavilyKeySet && <span className="ml-2 text-xs text-emerald-500">{tr("已配置")}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input

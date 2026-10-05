@@ -276,7 +276,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
         <TabsTrigger value="wrapup">{tr("收尾提示词")}</TabsTrigger>
         <TabsTrigger value="mcp">MCP</TabsTrigger>
         <TabsTrigger value="skill">Skill</TabsTrigger>
-        <TabsTrigger value="tools">Tools</TabsTrigger>
+        <TabsTrigger value="tools">{tr("Tools")}</TabsTrigger>
         {isCustom && <TabsTrigger value="triggers">{tr("触发")}</TabsTrigger>}
       </TabsList>
 

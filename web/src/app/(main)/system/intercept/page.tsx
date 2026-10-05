@@ -586,9 +586,9 @@ export default function InterceptPage() {
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="w-[72px]">{tr("优先级")}</TableHead>
                   <TableHead>{tr("名称")}</TableHead>
-                  <TableHead className="w-[90px]">{tr("目标")}</TableHead>
+                  <TableHead className="w-[90px]">{tr("匹配对象")}</TableHead>
                   <TableHead className="w-[80px]">{tr("类型")}</TableHead>
-                  <TableHead>{tr("模式")}</TableHead>
+                  <TableHead>{tr("匹配模式")}</TableHead>
                   <TableHead className="w-[72px]">{tr("策略")}</TableHead>
                   <TableHead className="w-[64px] text-center">{tr("启用")}</TableHead>
                   <TableHead className="w-[80px]" />
@@ -710,7 +710,7 @@ export default function InterceptPage() {
               </Select>
             </Field>
 
-            <Field label={tr("模式")}>
+            <Field label={tr("匹配模式")}>
               <Input
                 placeholder={form.match_type === "regex" ? "^Bash$" : "rm -rf"}
                 value={form.pattern}

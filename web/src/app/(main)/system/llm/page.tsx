@@ -42,7 +42,7 @@ const fromStore = (v?: string) => (v ? v : NONE);
 const toStore = (v: string) => (v === NONE ? "" : v);
 const THINKING_TYPES: { value: string; label: string }[] = [
   { value: NONE, label: tr("不发送（默认）") },
-  { value: "disabled", label: tr("关闭") },
+  { value: "disabled", label: tr("停用") },
   { value: "enabled", label: tr("开启") },
 ];
 // 输出上限用哪个请求字段名（仅 openai 格式有意义）。NONE ↔ "" 走同一套哨兵转换。
@@ -580,7 +580,7 @@ function ProfileSheet({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="p-api-key">API Key</Label>
+            <Label htmlFor="p-api-key">{tr("API Key")}</Label>
             <Input
               id="p-api-key"
               type="password"

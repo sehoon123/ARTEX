@@ -396,7 +396,7 @@ export default function TrafficPage() {
                         {hostCountSortDirection === "desc" ? <ArrowDownWideNarrowIcon /> : <ArrowUpNarrowWideIcon />}
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>{tr("按数据包数量")}{hostCountSortDirection === "desc" ? tr("倒序") : tr("正序")}</TooltipContent>
+                    <TooltipContent>{hostCountSortDirection === "desc" ? tr("按数据包数量，降序") : tr("按数据包数量，升序")}</TooltipContent>
                   </Tooltip>
                 )}
                 {hosts.length > 0 && (
@@ -453,7 +453,7 @@ export default function TrafficPage() {
           </PopoverContent>
         </Popover>
         <div className="relative w-48">
-          <Input placeholder="host…" value={host} onChange={(e) => setHost(e.target.value)} className="h-8" />
+          <Input placeholder={tr("host…")} value={host} onChange={(e) => setHost(e.target.value)} className="h-8" />
         </div>
         <Button
           variant="destructive"

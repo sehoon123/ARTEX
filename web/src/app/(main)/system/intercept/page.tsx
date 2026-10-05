@@ -1,6 +1,6 @@
 "use client";
 import { tr } from "@/lib/i18n";
-import { toolDescription as displayToolDescription } from "@/lib/builtin-labels";
+import { toolDescription as displayToolDescription, interceptRuleName as displayInterceptRuleName } from "@/lib/builtin-labels";
 
 import * as React from "react";
 import { toast } from "sonner";
@@ -600,7 +600,7 @@ export default function InterceptPage() {
                     <TableCell>
                       <span className="font-mono text-xs tabular-nums">{rule.priority}</span>
                     </TableCell>
-                    <TableCell className="font-medium text-sm">{rule.name}</TableCell>
+                    <TableCell className="font-medium text-sm">{displayInterceptRuleName(rule.name)}</TableCell>
                     <TableCell>
                       <span className="text-xs text-muted-foreground">
                         {rule.match_target === "tool_name" ? tr("工具名") : tr("输入内容")}

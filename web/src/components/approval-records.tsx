@@ -1,5 +1,6 @@
 "use client";
 import { tr, getLocale } from "@/lib/i18n";
+import { interceptRuleName as displayInterceptRuleName } from "@/lib/builtin-labels";
 
 import * as React from "react";
 
@@ -119,7 +120,7 @@ function MatchCell({ row, showReason = true }: { row: InterceptApprovalRow; show
           {tr("模型判定")}
         </Badge>
       ) : (
-        <span className="truncate">{row.rule_name || tr("规则未记录或已删除")}</span>
+        <span className="truncate">{displayInterceptRuleName(row.rule_name) || tr("规则未记录或已删除")}</span>
       )}
       {showReason ? (
         <p className="truncate text-muted-foreground text-xs" title={reason}>
@@ -387,7 +388,7 @@ export function ApprovalDetail({
             {audit?.rule_name ? (
               <>
                 <dt className="text-muted-foreground">{tr("规则快照")}</dt>
-                <dd>{audit.rule_name}</dd>
+                <dd>{displayInterceptRuleName(audit.rule_name)}</dd>
               </>
             ) : null}
             {audit?.profile_id ? (

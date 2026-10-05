@@ -43,4 +43,13 @@ export function toolDescription(tool: Pick<Tool, "key" | "description" | "system
   return tool.description;
 }
 
-// Command-rule names remain original: their API provides no builtin provenance.
+// Built-in command-rule names: the rule API carries no `builtin` flag, so provenance
+// comes from an exact match against the source-extracted catalogue (db/db.go `[内置]`
+// names in builtin-metadata.json). A catalogued name shows its reviewed translation;
+// any other name (user-created) stays raw. This is display-only; stored rule.name,
+// matching, and saved payloads are never changed. A user rule copying a built-in name
+// verbatim would show the same translated text — cosmetic and harmless.
+const builtinInterceptNames = new Set<string>(metadata.interceptNames);
+export function interceptRuleName(name: string | null | undefined): string {
+  return name && builtinInterceptNames.has(name) ? tr(name) : (name ?? "");
+}

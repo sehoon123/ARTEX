@@ -612,11 +612,18 @@ for (const locale of ["en", "ko"]) {
     assert.equal(labels.agentDescription({ ...agent, builtin: false }), agent.description);
     assert.equal(labels.agentDescription({ ...agent, description: "任务总目标" }), "任务总目标", "Edited builtin descriptions stay original");
     assert.equal(labels.agentDescription({ builtin: true }), "");
-    assert.equal(labels.interceptName, undefined, "Name matches cannot prove builtin command-rule provenance");
-    assert.match(read(join(root, "web/src/app/(main)/system/intercept/page.tsx")), /\{rule\.name\}/);
+    // Built-in command-rule names are localized via an exact match against the catalogued
+    // set; user-created names stay raw. Display-only; stored rule.name is unchanged.
+    assert.equal(typeof labels.interceptRuleName, "function");
+    const builtinRule = json(join(root, "web/src/lib/builtin-metadata.json")).interceptNames[0];
+    assert.ok(builtinRule, "catalogue has built-in command-rule names");
+    assert.equal(labels.interceptRuleName(builtinRule), dictionaries[locale][builtinRule]);
+    assert.equal(labels.interceptRuleName("用户自定义命令规则"), "用户自定义命令规则", "user-created rule names stay raw");
+    assert.equal(labels.interceptRuleName(""), "");
+    assert.match(read(join(root, "web/src/app/(main)/system/intercept/page.tsx")), /InterceptRuleName\(rule\.name\)/);
     const approvals = read(join(root, "web/src/components/approval-records.tsx"));
-    assert.match(approvals, /\{row\.rule_name \|\| tr\(/);
-    assert.match(approvals, /\{audit\.rule_name\}/);
+    assert.match(approvals, /InterceptRuleName\(row\.rule_name\)/);
+    assert.match(approvals, /InterceptRuleName\(audit\.rule_name\)/);
     const metadata = json(join(root, "web/src/lib/builtin-metadata.json"));
     assert.equal(labels.variableDescription({ name: "Now", description: metadata.globalVariables.Now }), dictionaries[locale][metadata.globalVariables.Now]);
     assert.equal(labels.variableDescription({ name: "Now", description: "任务总目标" }), "任务总目标", "Global help must match the same name, not any other known variable");

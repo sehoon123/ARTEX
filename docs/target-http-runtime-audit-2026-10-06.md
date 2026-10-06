@@ -187,7 +187,9 @@ failure, or disruption:
 ## Follow-up hardening and re-test
 
 The first audit above describes deployed commit `39e054d`. The same work session
-then applied two focused hardening commits and rebuilt the deployment:
+then applied three focused hardening commits. The Go/web hardening tree was rebuilt
+and deployed; the final api-recon/container follow-up did not change the native
+service binary:
 
 - `c7fa5ed`: replaces Norma WebFetch with an ARTEX-owned proxy-only implementation.
   Missing/invalid/dead proxy configuration fails closed, redirects reuse the same
@@ -199,13 +201,14 @@ then applied two focused hardening commits and rebuilt the deployment:
   inherited subprocess `NO_PROXY`; fixes native custom-tool local-proxy URL
   construction; sets the seeded browser MCP UA unless the user supplied one; and
   removes contradictory `Sec-CH-UA*` headers when the shared profile is used.
+- `9ea3cf6`: aligns the shipped container on Node 22 with Puppeteer's `>=22.12`
+  requirement, disables Chromium's implicit loopback proxy bypass in api-recon,
+  and corrects the documented Git/scanner boundaries.
 - The api-recon Python scripts now use the shared profile from their environment.
   Its Node forward path uses an explicit Undici `ProxyAgent` rather than assuming
   built-in fetch honors proxy environment variables. Puppeteer and its lockfile
-  were updated, the shipped container uses Node 22 for Puppeteer's `>=22.12`
-  requirement, and Chromium disables its implicit loopback proxy bypass. Both the
-  skill and main web dependency trees audited at zero known npm vulnerabilities at
-  re-test time.
+  were updated. Both the skill and main web dependency trees audited at zero known
+  npm vulnerabilities at re-test time.
 - Remote Markdown images and company logos now use `no-referrer`, preventing the
   operator browser from disclosing the local UI origin/path in an image request.
 
@@ -219,6 +222,15 @@ custom UA remained unchanged. No origin request contained `X-Artex-*`,
 SQLite exchange count again remained `1 -> 1`. The browser MCP row contained the
 local proxy, an explicit common-UA argument, and only the expected CA environment
 key. No existing traffic row contents were read.
+
+After `9ea3cf6`, the exact `runtime_harvest.js` was also run against a loopback-only
+origin through the deployed proxy using Puppeteer 25 and system Chromium. The
+origin received four proxy-routed requests with the common UA and without
+`Sec-CH-UA*`, `X-Artex-*`, or `Proxy-Connection`; the capture-off count remained
+`1 -> 1`. A separate dead-proxy comparison confirmed that Chromium reached a
+loopback origin through its implicit bypass without the new flag and failed closed
+through the dead proxy with `<-loopback>` enabled. The Dockerfile was linted with
+`docker build --check`; no container image was built or deployed.
 
 ## Remaining conclusions
 

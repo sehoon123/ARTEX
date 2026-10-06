@@ -93,9 +93,9 @@ function neutralize(txt, n) {
   const cfg = loadCfg(process.argv[2] || 'config.json');
   const origin = new URL(cfg.baseUrl).origin;
   const host = new URL(cfg.baseUrl).hostname;
-  // Node 20's built-in fetch ignores HTTP(S)_PROXY. An explicit dispatcher keeps
-  // forwarded API calls on the same local target proxy as Chromium, with no
-  // direct retry if that proxy fails.
+  // Built-in fetch does not consistently honor HTTP(S)_PROXY across supported
+  // Node releases. An explicit dispatcher keeps forwarded API calls on the same
+  // local target proxy as Chromium, with no direct retry if that proxy fails.
   const forwardDispatcher = cfg.proxy ? new ProxyAgent(cfg.proxy) : undefined;
   const rec = [];           // {m,u,b,resp,ct}
   const chunks = new Set();
@@ -107,7 +107,12 @@ function neutralize(txt, n) {
     process.env.HTTPS_PROXY = cfg.proxy;
   }
   const launchArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--ignore-certificate-errors'];
-  if (cfg.proxy) launchArgs.push(`--proxy-server=${cfg.proxy}`);
+  if (cfg.proxy) {
+    launchArgs.push(`--proxy-server=${cfg.proxy}`);
+    // Chromium otherwise bypasses proxies for loopback destinations implicitly,
+    // which makes local audits (and loopback targets) escape normalization.
+    launchArgs.push('--proxy-bypass-list=<-loopback>');
+  }
   const browser = await puppeteer.launch({
     executablePath: cfg.chromium, headless: cfg.headless ? 'new' : false,
     args: launchArgs

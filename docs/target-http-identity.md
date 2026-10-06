@@ -2,15 +2,17 @@
 
 ARTEX uses one desktop-browser `User-Agent` for target-facing HTTP requests when
 the original value is missing or is a recognizable default from an automation
-client (for example Norma, Go, curl, wget, Python requests, scanners, or headless
-Chrome). An explicit non-tool `User-Agent` is preserved.
+client (for example Norma, Go, curl, wget, Python requests, known HTTP scanner
+UAs, or headless Chrome). An explicit non-tool `User-Agent` is preserved.
 
 The shared policy is applied to enrichment probes (when invoked) and native
 custom HTTP tools. ARTEX owns the Agent WebFetch implementation: it requires the
 local target proxy and fails closed instead of retrying directly. Bash
-subprocesses, scanners, and the seeded Playwright MCP also use the embedded local
-proxy, which applies the same policy before forwarding request headers. Inherited
-`NO_PROXY` values are cleared for Agent subprocesses.
+subprocesses and the seeded Playwright MCP are given the embedded local proxy,
+which applies the same policy before forwarding intercepted request headers.
+Proxy-aware scanner modes can use that environment, but raw sockets and clients
+that ignore proxy settings are not forced through it. Inherited `NO_PROXY` values
+are cleared for Agent subprocesses.
 
 Turning **Traffic capture** off disables persistence and traffic inspection tools;
 it does not disable the local normalization hop. No request or response is stored
@@ -24,7 +26,10 @@ header shape/order, JavaScript browser APIs, request timing, payloads, and sourc
 IP can still identify automation. Contradictory Chromium UA client hints and
 proxy-only headers are removed only on successfully intercepted requests. Hosts
 placed in the proxy's TLS pass-through list cannot have encrypted request headers
-rewritten.
+rewritten. Application protocols can also be self-identifying: Git smart-HTTP,
+for example, necessarily retains Git paths, media types, payloads, and the optional
+`Git-Protocol` negotiation header even though its implementation/version UA is
+normalized.
 
 Implementation:
 

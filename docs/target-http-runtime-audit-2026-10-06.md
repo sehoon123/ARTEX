@@ -193,22 +193,25 @@ then applied two focused hardening commits and rebuilt the deployment:
   Missing/invalid/dead proxy configuration fails closed, redirects reuse the same
   proxy-bound client, the common target UA is set before the request, and there is
   no direct retry carrying `norma/0.4`.
-- `b2e4e8d`: removes the product-named preserve marker from native HTTP requests;
+- `bec89a8`: removes the product-named preserve marker from native HTTP requests;
   strips any `X-Artex-*`, `Proxy-Connection`, and `Proxy-Authorization` headers at
   the local boundary; recognizes Node, Git, and shipped api-recon defaults; clears
   inherited subprocess `NO_PROXY`; fixes native custom-tool local-proxy URL
   construction; sets the seeded browser MCP UA unless the user supplied one; and
   removes contradictory `Sec-CH-UA*` headers when the shared profile is used.
 - The api-recon Python scripts now use the shared profile from their environment.
-  Its Node 20 forward path uses an explicit Undici `ProxyAgent` rather than assuming
+  Its Node forward path uses an explicit Undici `ProxyAgent` rather than assuming
   built-in fetch honors proxy environment variables. Puppeteer and its lockfile
-  were updated; both the skill and main web dependency trees audited at zero known
-  npm vulnerabilities at re-test time.
+  were updated, the shipped container uses Node 22 for Puppeteer's `>=22.12`
+  requirement, and Chromium disables its implicit loopback proxy bypass. Both the
+  skill and main web dependency trees audited at zero known npm vulnerabilities at
+  re-test time.
 - Remote Markdown images and company logos now use `no-referrer`, preventing the
   operator browser from disclosing the local UI origin/path in an image request.
 
-After deploying `b2e4e8d`, a second loopback-only receiver observed nine HTTP
-requests: real curl, real Node fetch, real Git smart-HTTP, simulated Node/Git,
+After deploying the hardening tree later committed as `bec89a8`, a second
+loopback-only receiver observed nine HTTP requests: real curl, real Node fetch,
+real Git smart-HTTP, simulated Node/Git,
 headless/client-hint, a legacy product-marker request, and an explicit custom UA.
 For every default/tool case the origin saw the common profile; the arbitrary
 custom UA remained unchanged. No origin request contained `X-Artex-*`,
@@ -219,9 +222,13 @@ key. No existing traffic row contents were read.
 
 ## Remaining conclusions
 
-The standard intercepted HTTP paths no longer expose an `ARTEX`, `norma`,
-`spa-api-recon`, Node, Git, curl, Python, Go, scanner, or headless token in the
-User-Agent/header samples tested locally. This is **not an anonymity guarantee**:
+The standard intercepted HTTP samples no longer exposed an `ARTEX`, `norma`,
+`spa-api-recon`, Node, Git, curl, Python, Go, or headless implementation/version
+identifier in `User-Agent`; no scanner CLI was available for a runtime claim.
+Product-named coordination and proxy/client-hint headers were absent after the
+hardening re-test. Git smart-HTTP still necessarily identifies the application
+protocol through its URL, media types, payloads, and `Git-Protocol` negotiation
+header. This is **not an anonymity guarantee**:
 
 1. A host automatically moved into TLS pass-through after a qualifying MITM
    protocol error carries the original encrypted client traffic, which cannot be

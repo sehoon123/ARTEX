@@ -23,7 +23,10 @@ func TestProxyEnvSetsAllProxyForSocks5(t *testing.T) {
 		}
 		return false
 	}
-	for _, want := range []string{"HTTP_PROXY=", "HTTPS_PROXY=", "ALL_PROXY=", "all_proxy="} {
+	for _, want := range []string{
+		"HTTP_PROXY=", "HTTPS_PROXY=", "ALL_PROXY=", "all_proxy=",
+		"NO_PROXY=", "no_proxy=", "TARGET_HTTP_USER_AGENT=",
+	} {
 		if !has(want) {
 			t.Errorf("proxyEnv missing %s: %v", want, env)
 		}
@@ -31,6 +34,20 @@ func TestProxyEnvSetsAllProxyForSocks5(t *testing.T) {
 	if has("SSL_CERT_FILE=") || has("CURL_CA_BUNDLE=") {
 		t.Errorf("proxyEnv without CA must not inject CA vars: %v", env)
 	}
+	for _, exact := range []string{"NO_PROXY=", "no_proxy="} {
+		if !containsExact(env, exact) {
+			t.Errorf("proxyEnv must clear inherited bypass %s: %v", exact, env)
+		}
+	}
+}
+
+func containsExact(values []string, want string) bool {
+	for _, value := range values {
+		if value == want {
+			return true
+		}
+	}
+	return false
 }
 
 func TestProxyEnvInjectsCAWhenRecording(t *testing.T) {

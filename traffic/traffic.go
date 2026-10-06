@@ -408,7 +408,7 @@ func (s *sink) Requestheaders(f *mproxy.Flow) {
 	if f == nil || f.Request == nil {
 		return
 	}
-	targethttp.NormalizeProxyUserAgent(f.Request.Header)
+	targethttp.NormalizeProxyHeaders(f.Request.Header)
 }
 
 func (s *sink) Response(f *mproxy.Flow) {

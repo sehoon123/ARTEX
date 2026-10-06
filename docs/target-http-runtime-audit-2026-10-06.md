@@ -184,14 +184,67 @@ failure, or disruption:
   `close`; client hints and other end-to-end headers were forwarded unchanged.
 - The global upstream-proxy setting was neither read nor changed.
 
-## Recommended follow-up
+## Follow-up hardening and re-test
 
-1. Strip `Proxy-Connection` and other hop-by-hop proxy headers before forwarding.
-2. Decide whether Node/Git and shipped script UAs should normalize, and add
-   runtime regression cases for every supported client.
-3. Align or suppress Chromium client hints with the selected profile, or document
-   that the policy is only UA de-branding rather than browser impersonation.
-4. Scope the internal preserve marker strictly to the embedded local proxy and
-   prevent direct fallback paths from bypassing target policy/global routing.
-5. Add verified IP-SAN MITM coverage and capture-off integration tests for
-   redirects, chunking, large bodies, and persistence.
+The first audit above describes deployed commit `39e054d`. The same work session
+then applied two focused hardening commits and rebuilt the deployment:
+
+- `c7fa5ed`: replaces Norma WebFetch with an ARTEX-owned proxy-only implementation.
+  Missing/invalid/dead proxy configuration fails closed, redirects reuse the same
+  proxy-bound client, the common target UA is set before the request, and there is
+  no direct retry carrying `norma/0.4`.
+- `b2e4e8d`: removes the product-named preserve marker from native HTTP requests;
+  strips any `X-Artex-*`, `Proxy-Connection`, and `Proxy-Authorization` headers at
+  the local boundary; recognizes Node, Git, and shipped api-recon defaults; clears
+  inherited subprocess `NO_PROXY`; fixes native custom-tool local-proxy URL
+  construction; sets the seeded browser MCP UA unless the user supplied one; and
+  removes contradictory `Sec-CH-UA*` headers when the shared profile is used.
+- The api-recon Python scripts now use the shared profile from their environment.
+  Its Node 20 forward path uses an explicit Undici `ProxyAgent` rather than assuming
+  built-in fetch honors proxy environment variables. Puppeteer and its lockfile
+  were updated; both the skill and main web dependency trees audited at zero known
+  npm vulnerabilities at re-test time.
+- Remote Markdown images and company logos now use `no-referrer`, preventing the
+  operator browser from disclosing the local UI origin/path in an image request.
+
+After deploying `b2e4e8d`, a second loopback-only receiver observed nine HTTP
+requests: real curl, real Node fetch, real Git smart-HTTP, simulated Node/Git,
+headless/client-hint, a legacy product-marker request, and an explicit custom UA.
+For every default/tool case the origin saw the common profile; the arbitrary
+custom UA remained unchanged. No origin request contained `X-Artex-*`,
+`Proxy-Connection`, `Proxy-Authorization`, or `Sec-CH-UA*`. The capture-off
+SQLite exchange count again remained `1 -> 1`. The browser MCP row contained the
+local proxy, an explicit common-UA argument, and only the expected CA environment
+key. No existing traffic row contents were read.
+
+## Remaining conclusions
+
+The standard intercepted HTTP paths no longer expose an `ARTEX`, `norma`,
+`spa-api-recon`, Node, Git, curl, Python, Go, scanner, or headless token in the
+User-Agent/header samples tested locally. This is **not an anonymity guarantee**:
+
+1. A host automatically moved into TLS pass-through after a qualifying MITM
+   protocol error carries the original encrypted client traffic, which cannot be
+   normalized. This fail-open compatibility path remains.
+2. Raw/proxy-unaware tools (for example TCP/UDP scanners), arbitrary MCP servers,
+   and a user-configured external proxy can bypass the HTTP normalization boundary.
+   Their packet formats, probes, banners, payloads, and request sequences can
+   identify the underlying tool even without a branded UA.
+3. Successful interception still replaces client details with a recognizable Go
+   proxy TLS/HTTP stack rather than a real Chrome stack. Header set/order, ALPN and
+   HTTP/2 settings, TLS JA3/JA4, de-chunking, timing/concurrency, JavaScript browser
+   APIs, favicon behavior, payloads, and source/NAT IP remain observable.
+4. The browser profile is static and will age. The proxy suppresses contradictory
+   wire client hints for the shared profile, but page JavaScript can still inspect
+   the actual browser environment unless the browser context emulates it.
+5. GitHub self-update deliberately retains `artex-selfupdate`; it is control-plane
+   traffic to GitHub, not target-facing traffic. LLM, notification, MCP-control,
+   and web-search-provider requests remain purpose-specific and outside this policy.
+6. IP-literal HTTPS leaf-SAN compatibility and packet-level JA3/JA4 were not fixed
+   or measured. The enrichment engine remains instantiated but dormant because no
+   current caller invokes its DNS/HTTP methods.
+
+For a stricter no-bypass mode, the next design decision is whether to disable TLS
+pass-through and enforce target egress at the OS/network layer. That would reduce
+leaks but can break targets and raw tooling, so it was not silently enabled during
+this audit.

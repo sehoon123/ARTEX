@@ -32,13 +32,21 @@
  *   "waitMs": 1200, "perRouteMs": 900, "headless": true
  * }
  */
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const fs = require('fs');
 const path = require('path');
 
-let puppeteer;
-try { puppeteer = require('puppeteer-core'); }
-catch (e) { console.error("[!] run `npm install` in the scripts/ dir first (needs puppeteer-core)"); process.exit(1); }
+let puppeteer, ProxyAgent;
+try {
+  puppeteer = require('puppeteer-core');
+  ({ ProxyAgent } = require('undici'));
+} catch (e) {
+  console.error("[!] run `npm install` in the scripts/ dir first (needs puppeteer-core + undici)");
+  process.exit(1);
+}
+
+const TARGET_UA = process.env.TARGET_HTTP_USER_AGENT ||
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+  '(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
 
 function loadCfg(p) {
   const c = JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -85,6 +93,10 @@ function neutralize(txt, n) {
   const cfg = loadCfg(process.argv[2] || 'config.json');
   const origin = new URL(cfg.baseUrl).origin;
   const host = new URL(cfg.baseUrl).hostname;
+  // Node 20's built-in fetch ignores HTTP(S)_PROXY. An explicit dispatcher keeps
+  // forwarded API calls on the same local target proxy as Chromium, with no
+  // direct retry if that proxy fails.
+  const forwardDispatcher = cfg.proxy ? new ProxyAgent(cfg.proxy) : undefined;
   const rec = [];           // {m,u,b,resp,ct}
   const chunks = new Set();
   const ws = [];            // {url,dir,data}  WebSocket frames
@@ -101,6 +113,24 @@ function neutralize(txt, n) {
     args: launchArgs
   });
   const page = await browser.newPage();
+  await page.setUserAgent({
+    userAgent: TARGET_UA,
+    platform: 'Win32',
+    userAgentMetadata: {
+      brands: [
+        { brand: 'Google Chrome', version: '141' },
+        { brand: 'Chromium', version: '141' },
+        { brand: 'Not_A Brand', version: '24' }
+      ],
+      fullVersionList: [
+        { brand: 'Google Chrome', version: '141.0.0.0' },
+        { brand: 'Chromium', version: '141.0.0.0' },
+        { brand: 'Not_A Brand', version: '24.0.0.0' }
+      ],
+      fullVersion: '141.0.0.0', platform: 'Windows', platformVersion: '10.0.0',
+      architecture: 'x86', bitness: '64', model: '', mobile: false, wow64: false
+    }
+  });
 
   // ---- WebSocket frame capture via CDP (fetch/XHR interception can't see WS) ----
   if (cfg.recordWs) {
@@ -167,9 +197,12 @@ function neutralize(txt, n) {
     }
     // forward real request, then rewrite the unauthorized code field
     try {
-      const headers = Object.assign({}, req.headers());
+      const headers = Object.assign({}, req.headers(), { 'user-agent': TARGET_UA });
       if (cfg.cookies) headers.cookie = cfg.cookies.map(c => `${c.name}=${cookieValue(c.value)}`).join('; ');
-      const r = await fetch(u, { method: m, headers, body: (m !== 'GET' && m !== 'HEAD') ? req.postData() : undefined });
+      const r = await fetch(u, {
+        method: m, headers, body: (m !== 'GET' && m !== 'HEAD') ? req.postData() : undefined,
+        dispatcher: forwardDispatcher
+      });
       const t = await r.text();
       if (cfg.captureResponses) { entry.resp = t.slice(0, cfg.respMax); entry.ct = r.headers.get('content-type') || ''; }
       req.respond({ status: 200, contentType: 'application/json', body: neutralize(t, cfg.neutralize) });
@@ -225,4 +258,5 @@ function neutralize(txt, n) {
   console.log(`[+] merged unique paths: ${merged.size}  -> api_merged.txt`);
   console.log(`[+] full detail -> runtime_api.json (per-route + bodies + ws frames + sse)`);
   await browser.close();
+  if (forwardDispatcher) await forwardDispatcher.close();
 })();

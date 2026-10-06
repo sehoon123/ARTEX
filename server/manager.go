@@ -19,6 +19,7 @@ import (
 	"github.com/Autumn-27/artex/enrich"
 	"github.com/Autumn-27/artex/guard"
 	"github.com/Autumn-27/artex/intercept"
+	"github.com/Autumn-27/artex/targethttp"
 	"github.com/Autumn-27/artex/traffic"
 	actool "github.com/Autumn-27/norma/tool"
 )
@@ -240,10 +241,9 @@ type Manager struct {
 	braveKey         string
 	tavilyKey        string
 	webSearchProxy   string
-	// globalProxy is the egress proxy all target traffic routes through
-	// (http/https/socks5, optional user:pass). Empty = direct. When traffic
-	// capture is on it becomes the MITM's upstream; when capture is off it is
-	// injected into agent bash env / WebFetch directly. See ProxyAddr.
+	// globalProxy is the local target proxy's upstream egress
+	// (http/https/socks5, optional user:pass). Empty = direct from the local proxy.
+	// Capture controls persistence only. See ProxyAddr.
 	globalProxy string
 }
 
@@ -662,6 +662,9 @@ func (m *Manager) syncBrowserMCPProxy() {
 	delete(env, "NODE_EXTRA_CA_CERTS")
 	if proxy != "" {
 		args = append(args, "--proxy-server", proxy)
+		if !hasUserAgentArg(args) {
+			args = append(args, "--user-agent", targethttp.DefaultUserAgent)
+		}
 		if cert != "" {
 			env["NODE_EXTRA_CA_CERTS"] = cert
 		}
@@ -677,6 +680,20 @@ func (m *Manager) syncBrowserMCPProxy() {
 	} else {
 		log.Printf("[mcp] browser MCP 已移除捕获代理配置")
 	}
+}
+
+// hasUserAgentArg detects an explicit browser-MCP override so sync never replaces
+// a user's custom UA.
+func hasUserAgentArg(args []string) bool {
+	for i, arg := range args {
+		if strings.HasPrefix(arg, "--user-agent=") && strings.TrimSpace(strings.TrimPrefix(arg, "--user-agent=")) != "" {
+			return true
+		}
+		if arg == "--user-agent" && i+1 < len(args) && strings.TrimSpace(args[i+1]) != "" {
+			return true
+		}
+	}
+	return false
 }
 
 // stripProxyArgs removes any --proxy-server/--proxy-bypass flags (both "--flag val"

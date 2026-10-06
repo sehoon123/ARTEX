@@ -18,6 +18,9 @@ const components: Components = {
   a: ({ node, ...p }) => (
     <a className="text-primary underline underline-offset-2" target="_blank" rel="noreferrer" {...p} />
   ),
+  // Remote evidence images must not disclose the ARTEX UI origin/path through
+  // the browser's Referer header. This does not proxy or anonymize the request.
+  img: ({ node, ...p }) => <img referrerPolicy="no-referrer" {...p} />,
   hr: () => <hr className="my-2 border-border" />,
   blockquote: ({ node, ...p }) => (
     <blockquote className="my-1 border-l-2 border-border pl-2.5 text-muted-foreground" {...p} />

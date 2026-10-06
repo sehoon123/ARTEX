@@ -442,18 +442,13 @@ func (s *Server) runHTTPTool(ctx context.Context, execRaw json.RawMessage, param
 	for k, v := range spec.Headers {
 		req.Header.Set(k, renderTemplate(v, params, identity))
 	}
-	// Explicit custom-tool UAs win, including values that happen to resemble a
-	// known client. The internal marker is added only for the local-proxy path and
-	// is stripped there before forwarding; it can never reach a target directly.
-	explicitUA := strings.TrimSpace(req.Header.Get("User-Agent")) != ""
-	tr := s.httpProxyTransport(spec)
-	if explicitUA {
-		if tr != nil {
-			req.Header.Set(targethttp.PreserveUserAgentHeader, "1")
-		}
-	} else {
+	// Preserve an explicit UA on direct/arbitrary-proxy native requests. When the
+	// embedded target proxy is selected it independently normalizes recognizable
+	// tool UAs; no product-named coordination header is ever placed on the wire.
+	if strings.TrimSpace(req.Header.Get("User-Agent")) == "" {
 		targethttp.NormalizeUserAgent(req.Header)
 	}
+	tr := s.httpProxyTransport(spec)
 	client := &http.Client{Timeout: timeoutOr(spec.TimeoutMs, 30000)}
 	if tr != nil {
 		client.Transport = tr
@@ -474,9 +469,9 @@ func (s *Server) runHTTPTool(ctx context.Context, execRaw json.RawMessage, param
 func (s *Server) httpProxyTransport(spec httpExec) *http.Transport {
 	proxyStr := strings.TrimSpace(spec.Proxy)
 	var caFile string
-	if spec.UseRecordingProxy {
+	if spec.UseRecordingProxy && s.m != nil {
 		if addr := s.m.ProxyAddr(); addr != "" {
-			proxyStr = "http://" + addr
+			proxyStr = addr
 			caFile = s.m.ProxyCACert()
 		}
 	}

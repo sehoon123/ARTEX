@@ -19,6 +19,9 @@ func TestNormalizeUserAgent(t *testing.T) {
 		{"requests", "python-requests/2.32.5", DefaultUserAgent, true},
 		{"scanner", "sqlmap/1.9", DefaultUserAgent, true},
 		{"headless", "Mozilla/5.0 HeadlessChrome/141.0.0.0 Safari/537.36", DefaultUserAgent, true},
+		{"node", "node", DefaultUserAgent, true},
+		{"git", "git/2.55.0", DefaultUserAgent, true},
+		{"api recon", "Mozilla/5.0 (spa-api-recon spider)", DefaultUserAgent, true},
 		{"explicit browser", "Mozilla/5.0 CustomBrowser/1.0", "Mozilla/5.0 CustomBrowser/1.0", false},
 		{"explicit api client", "AcmeSecurityClient/2.0", "AcmeSecurityClient/2.0", false},
 	}
@@ -38,19 +41,41 @@ func TestNormalizeUserAgent(t *testing.T) {
 	}
 }
 
-func TestNormalizeProxyUserAgentPreservesExplicitMarkerAndStripsIt(t *testing.T) {
-	const custom = "curl/8.99 custom-audit-profile"
+func TestNormalizeProxyHeadersRemovesFingerprintingHopHeaders(t *testing.T) {
 	h := http.Header{
-		"User-Agent":            {custom},
-		PreserveUserAgentHeader: {"1"},
+		"User-Agent":                           {"curl/8.99"},
+		"Proxy-Connection":                     {"Keep-Alive"},
+		"Proxy-Authorization":                  {"Basic internal"},
+		"X-Artex-Internal-Preserve-User-Agent": {"1"},
+		"Sec-Ch-Ua":                            {`"Chromium";v="152"`},
+		"Sec-Ch-Ua-Platform":                   {`"Linux"`},
 	}
-	if NormalizeProxyUserAgent(h) {
-		t.Fatal("marked explicit User-Agent was normalized")
+	if !NormalizeProxyHeaders(h) {
+		t.Fatal("recognizable tool User-Agent was not normalized")
+	}
+	if got := h.Get("User-Agent"); got != DefaultUserAgent {
+		t.Fatalf("User-Agent = %q, want %q", got, DefaultUserAgent)
+	}
+	for _, key := range []string{
+		"Proxy-Connection", "Proxy-Authorization",
+		"X-Artex-Internal-Preserve-User-Agent", "Sec-Ch-Ua", "Sec-Ch-Ua-Platform",
+	} {
+		if got := h.Get(key); got != "" {
+			t.Fatalf("%s leaked: %q", key, got)
+		}
+	}
+}
+
+func TestNormalizeProxyHeadersPreservesExplicitNonToolUserAgent(t *testing.T) {
+	const custom = "CustomerApprovedClient/2.0"
+	h := http.Header{"User-Agent": {custom}, "Proxy-Connection": {"keep-alive"}}
+	if NormalizeProxyHeaders(h) {
+		t.Fatal("explicit non-tool User-Agent was normalized")
 	}
 	if got := h.Get("User-Agent"); got != custom {
 		t.Fatalf("User-Agent = %q, want %q", got, custom)
 	}
-	if got := h.Get(PreserveUserAgentHeader); got != "" {
-		t.Fatalf("internal preserve header leaked: %q", got)
+	if got := h.Get("Proxy-Connection"); got != "" {
+		t.Fatalf("Proxy-Connection leaked: %q", got)
 	}
 }

@@ -200,9 +200,9 @@ func (w *Worker) SetWebSearch(o WebSearchOpts) { w.webSearch = o }
 // a different CA var (verified empirically): SSL_CERT_FILE→curl/urllib/Go/openssl,
 // REQUESTS_CA_BUNDLE→python requests (it ignores SSL_CERT_FILE), CURL_CA_BUNDLE→curl,
 // GIT_SSL_CAINFO→git, NODE_EXTRA_CA_CERTS→node; NODE_USE_ENV_PROXY makes Node 24+
-// honor the proxy vars. ALL_PROXY is set too so a socks5 egress proxy (which curl
-// only reads from ALL_PROXY, not HTTP(S)_PROXY) works in the capture-off path.
-// Empty proxyAddr → nil (direct, unchanged env).
+// honor the proxy vars. ALL_PROXY is set too for clients that prefer it. Inherited
+// NO_PROXY is cleared so scoped targets such as loopback/private hosts cannot
+// silently bypass normalization. Empty proxyAddr → nil (direct, unchanged env).
 func proxyEnv(proxyAddr, caCert string) []string {
 	if proxyAddr == "" {
 		return nil
@@ -210,8 +210,10 @@ func proxyEnv(proxyAddr, caCert string) []string {
 	env := []string{
 		"HTTP_PROXY=" + proxyAddr, "HTTPS_PROXY=" + proxyAddr,
 		"http_proxy=" + proxyAddr, "https_proxy=" + proxyAddr,
-		"ALL_PROXY=" + proxyAddr, "all_proxy=" + proxyAddr, // socks5 egress: curl reads only this
+		"ALL_PROXY=" + proxyAddr, "all_proxy=" + proxyAddr,
+		"NO_PROXY=", "no_proxy=",
 		"NODE_USE_ENV_PROXY=1", // Node 24+: honor HTTP(S)_PROXY in built-in fetch/http
+		"TARGET_HTTP_USER_AGENT=" + targethttp.DefaultUserAgent,
 	}
 	if caCert != "" {
 		env = append(env,

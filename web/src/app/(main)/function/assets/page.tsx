@@ -944,7 +944,7 @@ function CompanyAvatar({ name, logo }: { name: string; logo?: string }) {
   const initial = (name.trim()[0] ?? "?").toUpperCase();
   return (
     <Avatar className="size-7 shrink-0">
-      {logo ? <AvatarImage src={logo} alt={name} /> : null}
+      {logo ? <AvatarImage src={logo} alt={name} referrerPolicy="no-referrer" /> : null}
       <AvatarFallback className="text-xs">{initial}</AvatarFallback>
     </Avatar>
   );

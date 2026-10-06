@@ -31,18 +31,20 @@ func TestSinkPreservesExplicitNonToolUserAgent(t *testing.T) {
 	}
 }
 
-func TestSinkPreserveMarkerIsConsumedBeforeForwarding(t *testing.T) {
-	const custom = "curl/8.99 custom-audit-profile"
+func TestSinkStripsProxyAndProductHeadersBeforeForwarding(t *testing.T) {
 	flow := &mproxy.Flow{Request: &mproxy.Request{Header: http.Header{
-		"User-Agent":                       {custom},
-		targethttp.PreserveUserAgentHeader: {"1"},
+		"User-Agent":                           {"curl/8.99"},
+		"Proxy-Connection":                     {"Keep-Alive"},
+		"X-Artex-Internal-Preserve-User-Agent": {"1"},
 	}}}
 	(&sink{t: &Traffic{}}).Requestheaders(flow)
-	if got := flow.Request.Header.Get("User-Agent"); got != custom {
-		t.Fatalf("User-Agent = %q, want %q", got, custom)
+	if got := flow.Request.Header.Get("User-Agent"); got != targethttp.DefaultUserAgent {
+		t.Fatalf("User-Agent = %q, want %q", got, targethttp.DefaultUserAgent)
 	}
-	if got := flow.Request.Header.Get(targethttp.PreserveUserAgentHeader); got != "" {
-		t.Fatalf("internal preserve header leaked: %q", got)
+	for _, key := range []string{"Proxy-Connection", "X-Artex-Internal-Preserve-User-Agent"} {
+		if got := flow.Request.Header.Get(key); got != "" {
+			t.Fatalf("%s leaked: %q", key, got)
+		}
 	}
 }
 

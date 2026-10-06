@@ -13,11 +13,6 @@ import (
 // ARTEX tool produced a request.
 const DefaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 
-// PreserveUserAgentHeader is an internal hop-by-hop signal used when ARTEX can
-// prove a UA was explicitly supplied. The local proxy always removes it before
-// forwarding, so it must never appear in target logs.
-const PreserveUserAgentHeader = "X-Artex-Internal-Preserve-User-Agent"
-
 var recognizableToolUserAgents = []string{
 	"norma/",
 	"go-http-client/",
@@ -45,6 +40,15 @@ var recognizableToolUserAgents = []string{
 	"masscan/",
 	"headlesschrome/",
 	"playwright/",
+	"git/",
+	"spa-api-recon",
+	"okhttp/",
+	"java/",
+	"powershell/",
+}
+
+var exactToolUserAgents = map[string]bool{
+	"node": true,
 }
 
 // NormalizeUserAgent replaces a missing or recognizable tool-default UA with
@@ -62,18 +66,32 @@ func NormalizeUserAgent(header http.Header) bool {
 	return true
 }
 
-// NormalizeProxyUserAgent applies the target policy at the local proxy boundary.
-// An internal preserve signal wins once and is always stripped before forwarding.
-func NormalizeProxyUserAgent(header http.Header) bool {
+// NormalizeProxyHeaders applies the target policy at the local proxy boundary.
+// It also removes proxy-only and ARTEX-internal headers. When a tool UA is
+// replaced, Chromium client hints are removed so they cannot contradict the
+// shared Windows/Chrome profile. The origin can still fingerprint TLS, header
+// shape, JavaScript APIs, and behavior; this is de-branding, not impersonation.
+func NormalizeProxyHeaders(header http.Header) bool {
 	if header == nil {
 		return false
 	}
-	preserve := header.Get(PreserveUserAgentHeader) != ""
-	header.Del(PreserveUserAgentHeader)
-	if preserve {
-		return false
+	for key := range header {
+		lower := strings.ToLower(key)
+		if strings.HasPrefix(lower, "x-artex-") {
+			delete(header, key)
+		}
 	}
-	return NormalizeUserAgent(header)
+	header.Del("Proxy-Connection")
+	header.Del("Proxy-Authorization")
+	changed := NormalizeUserAgent(header)
+	if changed || header.Get("User-Agent") == DefaultUserAgent {
+		for key := range header {
+			if strings.HasPrefix(strings.ToLower(key), "sec-ch-ua") {
+				delete(header, key)
+			}
+		}
+	}
+	return changed
 }
 
 // IsRecognizableToolUserAgent reports whether a UA exposes a common automation
@@ -81,6 +99,9 @@ func NormalizeProxyUserAgent(header http.Header) bool {
 // not rewritten.
 func IsRecognizableToolUserAgent(ua string) bool {
 	lower := strings.ToLower(strings.TrimSpace(ua))
+	if exactToolUserAgents[lower] {
+		return true
+	}
 	for _, marker := range recognizableToolUserAgents {
 		if strings.Contains(lower, marker) {
 			return true

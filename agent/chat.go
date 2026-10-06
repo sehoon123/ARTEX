@@ -63,8 +63,7 @@ func (c *ChatAgent) maxTokens() int {
 	return c.maxTokensFn()
 }
 
-// SetProxy points the chat agent's WebFetch/Bash at the recording proxy plus the
-// CA cert it trusts (empty addr = direct). Kept for parity with the other agents.
+// SetProxy points the chat agent's WebFetch/Bash at the local target proxy and CA.
 func (c *ChatAgent) SetProxy(addr, caCert string) { c.proxyAddr, c.proxyCACert = addr, caCert }
 
 // SetWebSearch selects the web_search backend for the chat agent (off by default).
@@ -132,7 +131,7 @@ func (c *ChatAgent) Chat(ctx context.Context, agentKey, sessionID, message strin
 		DeferredTools:   def.Deferred,
 		UnlockSet:       def.Unlock,
 		PermissionMode:  permission.ModeBypass,
-		EnableWebFetch:  true, // 走记录代理留痕；载入代理 CA 验证 MITM 重签的 HTTPS 证书
+		EnableWebFetch:  true, // target proxy: record or normalize-only; verify its MITM CA
 		WebFetchProxy:   c.proxyAddr,
 		WebFetchCACert:  c.proxyCACert,
 		// 联网搜索(可选)。ddgs 无需 key；brave-free 需 BraveKey；tavily 需 TavilyKey。

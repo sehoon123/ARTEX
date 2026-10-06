@@ -31,6 +31,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/Autumn-27/artex/db"
+	"github.com/Autumn-27/artex/targethttp"
 	"github.com/Autumn-27/norma/permission"
 	actool "github.com/Autumn-27/norma/tool"
 	mproxy "github.com/lqqyt2423/go-mitmproxy/proxy"
@@ -135,12 +136,13 @@ const TrafficSearchDescription = "查询记录代理已抓取的目标流量（�
 
 // Traffic runs the recording proxy and owns the file tree + index.
 type Traffic struct {
-	dir   string
-	addr  string
-	db    *sql.DB
-	wmu   sync.Mutex // serializes record() vs DeleteHost (incl. blob GC)
-	seq   atomic.Int64
-	proxy *mproxy.Proxy
+	dir       string
+	addr      string
+	db        *sql.DB
+	wmu       sync.Mutex // serializes record() vs DeleteHost (incl. blob GC)
+	seq       atomic.Int64
+	proxy     *mproxy.Proxy
+	recording atomic.Bool // false = normalize/forward only; never persist exchanges
 	// fts reports whether the full-text index is available. False on a driver
 	// build without FTS5: recording and metadata search still work, body search
 	// degrades to unsupported rather than erroring.
@@ -196,6 +198,9 @@ func Open(dir, addr string) (*Traffic, error) {
 		return nil, err
 	}
 	t := &Traffic{dir: dir, addr: addr, db: db, closed: make(chan struct{})}
+	// Preserve Open's historical standalone behavior. Manager immediately applies
+	// the persisted capture toggle before any agent is constructed.
+	t.recording.Store(true)
 	if err := t.initIndex(); err != nil {
 		db.Close()
 		return nil, err
@@ -309,7 +314,14 @@ func (t *Traffic) ProxyAddr() string {
 	return "http://" + t.addr
 }
 
-// SetUpstreamProxy points every captured request at a global egress proxy
+// SetRecordingEnabled controls persistence only. The proxy keeps forwarding and
+// normalizing target requests while disabled, so capture-off never writes traffic
+// yet target logs still receive the same non-tool User-Agent profile.
+func (t *Traffic) SetRecordingEnabled(on bool) { t.recording.Store(on) }
+
+func (t *Traffic) RecordingEnabled() bool { return t.recording.Load() }
+
+// SetUpstreamProxy points every target request at a global egress proxy
 // (http/https/socks5, optional user:pass in the URL). An empty raw string clears
 // it, restoring direct dialing. The change is atomic and takes effect on the next
 // connection — no restart, no proxy rebuild. go-mitmproxy dials all three schemes
@@ -389,8 +401,18 @@ type sink struct {
 	t *Traffic
 }
 
+// Requestheaders runs before request bodies are buffered/streamed, so it covers
+// ordinary and large requests alike. The upstream sees no client-tool UA unless
+// the caller deliberately supplied an unrecognized custom value.
+func (s *sink) Requestheaders(f *mproxy.Flow) {
+	if f == nil || f.Request == nil {
+		return
+	}
+	targethttp.NormalizeProxyUserAgent(f.Request.Header)
+}
+
 func (s *sink) Response(f *mproxy.Flow) {
-	if f.Request == nil || f.Response == nil {
+	if !s.t.RecordingEnabled() || f.Request == nil || f.Response == nil {
 		return
 	}
 	s.t.record(f)

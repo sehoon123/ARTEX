@@ -50,6 +50,10 @@ AI 자율 침투 테스트 시스템 (Go 백엔드 + Next.js 프론트엔드)
 
 글로벌 "승인 기록", 작업 내 "인터셉트 승인", 대화 중 승인 카드 모두 펼쳐서 상세 내용을 확인할 수 있습니다.
 
+## 대상 HTTP 식별 정보
+
+대상에 보내는 자동화 요청은 공통 브라우저형 `User-Agent`를 사용합니다. 트래픽 캡처를 꺼도 요청을 저장하지 않은 채 식별 정보를 정규화합니다. 범위와 한계는 [Target HTTP identity](docs/target-http-identity.md)를 참고하세요.
+
 ## 자산 동기화 (ScopeSentry)
 
 [ScopeSentry](https://github.com/Autumn-27/ScopeSentry)에서 직접 자산 데이터를 동기화할 수 있습니다:

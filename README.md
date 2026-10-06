@@ -50,6 +50,10 @@ AI Autonomous Penetration Testing System (Go Backend + Next.js Frontend)
 
 Global "Approval Records", in-task "Intercept Approvals", and approval cards in chat all support expanding to view details.
 
+## Target HTTP Identity
+
+Target-facing automation uses a shared browser-like `User-Agent`; capture-off still normalizes without storing traffic. See [Target HTTP identity](docs/target-http-identity.md) for scope and limitations.
+
 ## Asset Sync (ScopeSentry)
 
 Supports syncing asset data directly from [ScopeSentry](https://github.com/Autumn-27/ScopeSentry):

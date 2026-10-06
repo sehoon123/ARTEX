@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/Autumn-27/artex/targethttp"
 )
 
 func TestRenderTemplateCommand(t *testing.T) {
@@ -34,6 +36,42 @@ func TestRenderTemplateHTTP(t *testing.T) {
 	got := renderTemplate("https://x/submit?flag={flag}", map[string]any{"flag": "CTF{abc}"}, identity)
 	if got != "https://x/submit?flag=CTF{abc}" {
 		t.Fatalf("http render: %q", got)
+	}
+}
+
+func TestRunHTTPToolNormalizesDefaultUserAgent(t *testing.T) {
+	seen := make(chan string, 1)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		seen <- r.Header.Get("User-Agent")
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer ts.Close()
+
+	raw, _ := json.Marshal(httpExec{Method: http.MethodGet, URL: ts.URL})
+	if _, err := (&Server{}).runHTTPTool(context.Background(), raw, nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if got := <-seen; got != targethttp.DefaultUserAgent {
+		t.Fatalf("User-Agent = %q, want %q", got, targethttp.DefaultUserAgent)
+	}
+}
+
+func TestRunHTTPToolPreservesExplicitUserAgent(t *testing.T) {
+	seen := make(chan string, 1)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		seen <- r.Header.Get("User-Agent")
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer ts.Close()
+
+	// Even a recognizable tool-like value is preserved when the user supplied it.
+	const custom = "curl/8.99 custom-audit-profile"
+	raw, _ := json.Marshal(httpExec{Method: http.MethodGet, URL: ts.URL, Headers: map[string]string{"User-Agent": custom}})
+	if _, err := (&Server{}).runHTTPTool(context.Background(), raw, nil, nil); err != nil {
+		t.Fatal(err)
+	}
+	if got := <-seen; got != custom {
+		t.Fatalf("User-Agent = %q, want %q", got, custom)
 	}
 }
 

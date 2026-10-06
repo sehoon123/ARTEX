@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/Autumn-27/artex/db"
+	"github.com/Autumn-27/artex/targethttp"
 
 	"github.com/miekg/dns"
 	"github.com/projectdiscovery/dnsx/libs/dnsx"
@@ -54,16 +55,11 @@ const (
 	cooldown    = 5 * time.Minute
 	httpTimeout = 12 * time.Second
 	queueSize   = 1024
-
-	// defaultUserAgent intentionally looks like an ordinary desktop browser.
-	// Asset enrichment probes are target-facing, so a product-specific UA would
-	// unnecessarily disclose ARTEX and make otherwise normal GET probes stand out.
-	defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 )
 
-// New builds the engine. proxy() returns the recording-proxy address to route HTTP
-// probes through (so they land in the traffic store), evaluated per request so the
-// runtime traffic-capture toggle takes effect live; "" = direct. Returns a usable
+// New builds the engine. proxy() returns the local target-proxy address, evaluated
+// per request. The proxy records only when capture is enabled but always applies
+// the target HTTP profile; "" is the degraded direct fallback. Returns a usable
 // engine even if the resolver fails to init (DNS becomes a no-op).
 func New(as *db.AssetStore, proxy func() string, workers int) *Engine {
 	if workers <= 0 {
@@ -257,7 +253,7 @@ func newProbeRequest(rawURL string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", defaultUserAgent)
+	targethttp.NormalizeUserAgent(req.Header)
 	return req, nil
 }
 

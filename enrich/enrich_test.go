@@ -3,6 +3,8 @@ package enrich
 import (
 	"strings"
 	"testing"
+
+	"github.com/Autumn-27/artex/targethttp"
 )
 
 func TestProbeRequestUsesBrowserUserAgent(t *testing.T) {
@@ -11,8 +13,8 @@ func TestProbeRequestUsesBrowserUserAgent(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := req.Header.Get("User-Agent")
-	if got != defaultUserAgent {
-		t.Fatalf("User-Agent = %q, want %q", got, defaultUserAgent)
+	if got != targethttp.DefaultUserAgent {
+		t.Fatalf("User-Agent = %q, want %q", got, targethttp.DefaultUserAgent)
 	}
 	if !strings.HasPrefix(got, "Mozilla/5.0 ") || !strings.Contains(got, "Chrome/") {
 		t.Fatalf("User-Agent does not look like a common browser: %q", got)

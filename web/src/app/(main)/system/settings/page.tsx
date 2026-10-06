@@ -283,7 +283,7 @@ export default function SystemSettingsPage() {
           </CardHeader>
           <CardContent className="flex items-center justify-between gap-4">
             <Label htmlFor="traffic-capture" className="text-sm font-normal text-muted-foreground">
-              {trafficCapture ? tr("已开启 · 正在记录流量并注入代理") : tr("已关闭 · 不记录、不注入代理")}
+              {trafficCapture ? tr("已开启 · 正在记录目标流量") : tr("已关闭 · 不记录，目标请求仍规范化")}
             </Label>
             <Switch
               id="traffic-capture"
@@ -329,9 +329,9 @@ export default function SystemSettingsPage() {
             <CardDescription>
               {tr("所有 Agent 的目标流量经此代理出网（隐藏源 IP / 走跳板）。支持 http / https / socks5，可带 user:pass 认证。留空=直连。")}
               <br />
-              {tr("开启流量捕获时，它作为记录代理的上游（流量仍全量落库，再经此代理出网）；关闭捕获时，直接注入 Agent 的 bash / WebFetch 出网。与网络搜索代理、LLM 代理相互独立。")}
+              {tr("它始终作为本地目标代理的上游；开启流量捕获时请求/响应会落库，关闭时只转发并规范化目标 User-Agent、不保存流量。与网络搜索代理、LLM 代理相互独立。")}
               <br />
-              {tr("提示：socks5 在关闭捕获时依赖各命令行工具对 ALL_PROXY 的支持（curl 可用，部分工具可能忽略）；若主要用 socks5，建议开启流量捕获——此路径由 MITM 亲自拨号，工具无感知、稳定生效。")}
+              {tr("提示：本地目标代理统一处理 http/https/socks5 上游，因此各命令行工具无需单独支持 socks5。")}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">

@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/Autumn-27/artex/db"
+	"github.com/Autumn-27/artex/targethttp"
 	"github.com/Autumn-27/norma/permission"
 	actool "github.com/Autumn-27/norma/tool"
 )
@@ -441,8 +442,20 @@ func (s *Server) runHTTPTool(ctx context.Context, execRaw json.RawMessage, param
 	for k, v := range spec.Headers {
 		req.Header.Set(k, renderTemplate(v, params, identity))
 	}
+	// Explicit custom-tool UAs win, including values that happen to resemble a
+	// known client. The internal marker is added only for the local-proxy path and
+	// is stripped there before forwarding; it can never reach a target directly.
+	explicitUA := strings.TrimSpace(req.Header.Get("User-Agent")) != ""
+	tr := s.httpProxyTransport(spec)
+	if explicitUA {
+		if tr != nil {
+			req.Header.Set(targethttp.PreserveUserAgentHeader, "1")
+		}
+	} else {
+		targethttp.NormalizeUserAgent(req.Header)
+	}
 	client := &http.Client{Timeout: timeoutOr(spec.TimeoutMs, 30000)}
-	if tr := s.httpProxyTransport(spec); tr != nil {
+	if tr != nil {
 		client.Transport = tr
 	}
 	resp, err := client.Do(req)

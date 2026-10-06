@@ -25,8 +25,8 @@ type MainAgent struct {
 	window          int                                    // context window in tokens (for compaction)
 	windowFn        func() int                             // optional dynamic task-chain minimum
 	maxTurns        int                                    // max agent turns per run (0 = unlimited)
-	proxyAddr       string                                 // recording proxy for WebFetch (empty = direct)
-	proxyCACert     string                                 // recording proxy's CA cert path (HTTPS verify)
+	proxyAddr       string                                 // local target proxy for WebFetch
+	proxyCACert     string                                 // local proxy CA (HTTPS verify)
 	webSearch       WebSearchOpts                          // web_search tool backend selection (off by default)
 	workDir         string                                 // shared work dir (surfaced in prompt as artifact-output target)
 	steerWork       func(intentID int64, msg string) error // engine callback: steer a running work (nil = off)
@@ -70,8 +70,7 @@ func (m *MainAgent) compactionWindow() int {
 	return m.window
 }
 
-// SetProxy points the main agent's WebFetch at the recording proxy plus the CA
-// cert it trusts to verify HTTPS through it (empty addr = direct).
+// SetProxy points the main agent's WebFetch at the local target proxy and trusted CA.
 func (m *MainAgent) SetProxy(addr, caCert string) { m.proxyAddr, m.proxyCACert = addr, caCert }
 
 // SetWebSearch selects the web_search backend for the main agent (off by default).
@@ -140,7 +139,7 @@ func (m *MainAgent) Chat(ctx context.Context, taskID int64, mainSeg int, as *db.
 		DeferredTools:   def.Deferred,
 		UnlockSet:       def.Unlock,
 		PermissionMode:  permission.ModeBypass,
-		EnableWebFetch:  true, // 走记录代理留痕；载入代理 CA 验证 MITM 重签的 HTTPS 证书
+		EnableWebFetch:  true, // target proxy: record or normalize-only; verify its MITM CA
 		WebFetchProxy:   m.proxyAddr,
 		WebFetchCACert:  m.proxyCACert,
 		// 联网搜索(可选)。ddgs 无需 key；brave-free 需 BraveKey；tavily 需 TavilyKey。

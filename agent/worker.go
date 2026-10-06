@@ -21,7 +21,7 @@ import (
 )
 
 // Worker is an LLM work agent (docs §4.4): it claims ONE intent, completes it
-// with real tools (Bash: kali tooling through the recording proxy), writes the
+// with real tools (Bash: kali tooling through the local target proxy), writes the
 // FACTS it found back into the graph, and stops. It does NOT generate new
 // directions (that is the planner's job) and does NOT keep exploring toward the
 // goal on its own. Multiple workers run concurrently as goroutines.
@@ -52,17 +52,18 @@ type WebSearchOpts struct {
 }
 
 type Worker struct {
-	findingRecorder FindingRecorder
-	prov            llm.Provider
-	model           string
-	workDir         string
-	proxyAddr       string
-	proxyCACert     string            // recording proxy's CA cert path (for WebFetch HTTPS verify)
-	webSearch       WebSearchOpts     // web_search tool backend selection (off by default)
-	tx              *transcript.Store // raw LLM conversation persistence (nil = off)
-	window          int               // context window in tokens (for compaction)
-	windowFn        func() int        // optional dynamic task-chain minimum
-	maxTurns        int               // max agent turns per run (0 = unlimited)
+	findingRecorder  FindingRecorder
+	prov             llm.Provider
+	model            string
+	workDir          string
+	proxyAddr        string
+	proxyCACert      string            // local target proxy CA for HTTPS verification
+	trafficRecording bool              // traffic-tool prompt gate; proxy may normalize without recording
+	webSearch        WebSearchOpts     // web_search tool backend selection (off by default)
+	tx               *transcript.Store // raw LLM conversation persistence (nil = off)
+	window           int               // context window in tokens (for compaction)
+	windowFn         func() int        // optional dynamic task-chain minimum
+	maxTurns         int               // max agent turns per run (0 = unlimited)
 	// runTimeout is the wall-clock budget for the main exploration of one intent
 	// (0 = unlimited). When it fires, the run is cut and a settlement round is
 	// forced so already-identified facts get written back instead of being lost.
@@ -183,17 +184,17 @@ func (w *Worker) compactionWindow() int {
 	return w.window
 }
 
-// SetProxy configures the recording proxy address that workers route target
-// traffic through, plus the CA cert path WebFetch trusts to verify HTTPS through
-// that MITM proxy. Empty addr disables the hint.
-func (w *Worker) SetProxy(addr, caCert string) { w.proxyAddr, w.proxyCACert = addr, caCert }
+// SetProxy configures the local target proxy and whether traffic persistence is
+// enabled. Header normalization remains active when recording is false.
+func (w *Worker) SetProxy(addr, caCert string, recording bool) {
+	w.proxyAddr, w.proxyCACert, w.trafficRecording = addr, caCert, recording
+}
 
 // SetWebSearch selects the web_search backend for this worker (off by default).
 func (w *Worker) SetWebSearch(o WebSearchOpts) { w.webSearch = o }
 
 // proxyEnv builds the Bash-subprocess env that routes child-command HTTP through
-// the egress proxy (the recording MITM when capture is on, or the global proxy
-// directly when it is off) and, only when a MITM CA is present, makes the common
+// the local target proxy (recording or normalize-only) and makes the common
 // toolchain trust it — so tools need no manual -x/--proxy/-k. Each ecosystem reads
 // a different CA var (verified empirically): SSL_CERT_FILE→curl/urllib/Go/openssl,
 // REQUESTS_CA_BUNDLE→python requests (it ignores SSL_CERT_FILE), CURL_CA_BUNDLE→curl,
@@ -285,12 +286,10 @@ func ensureRunDir(base string, taskID, intentID int64) string {
 // cmdOutDir is the SDK large-tool-output spill dir under an agent's run dir.
 func cmdOutDir(dir string) string { return filepath.Join(dir, "cmd-output") }
 
-func workerSystem(proxyAddr, caCert, dataDir, runDir string) string {
+func workerSystem(proxyAddr string, recording bool, dataDir, runDir string) string {
 	body := renderSystem("worker", workerDefaultTmpl, WorkerVars{ProxyAddr: proxyAddr, DataDir: dataDir, Now: nowStr()})
-	// caCert is present only when the recording MITM is on, which is exactly when
-	// the traffic_* tools are registered — so it gates the traffic-tool note.
 	// Optional finding guidance is added for every role after tool resolution.
-	return body + workerTrafficBlock(caCert != "") + workerArtifactSpec(runDir)
+	return body + workerTrafficBlock(recording) + workerArtifactSpec(runDir)
 }
 
 // renderIntentTask formats the claimed intent for the worker's launch USER message:
@@ -393,7 +392,7 @@ func (w *Worker) execute(ctx context.Context, name string, taskID int64, as *db.
 	// inherit a parent run's background into the action reviewer.
 	ctx = intercept.WithReviewContext(ctx, runDir, intercept.ReviewBackground{})
 	overview := renderWorkerGraphOverview(tsx.graphOverviewData())
-	sysBody := workerSystem(w.proxyAddr, w.proxyCACert, w.workDir, runDir)
+	sysBody := workerSystem(w.proxyAddr, w.trafficRecording, w.workDir, runDir)
 	if w.wantConstraints() {
 		sysBody += constraintBlock(ts) // 操作约束(若有)注入系统提示,worker 执行时严格遵守
 	}
@@ -434,8 +433,8 @@ func (w *Worker) execute(ctx context.Context, name string, taskID int64, as *db.
 		DeferredTools:   def.Deferred,
 		UnlockSet:       def.Unlock,
 		PermissionMode:  permission.ModeBypass,
-		// WebFetch 走记录代理，其 HTTP 与 curl 一样被留痕；载入代理 CA 让经 MITM
-		// 重签的 HTTPS 证书能【正常校验通过】（而非关掉校验）。proxy 空则直连。
+		// WebFetch 走本地目标代理；capture 开启时留痕，关闭时仅规范化工具 UA。
+		// 载入代理 CA 以正常验证 MITM 重签的 HTTPS 证书。
 		EnableWebFetch: true,
 		WebFetchProxy:  w.proxyAddr,
 		WebFetchCACert: w.proxyCACert,
@@ -449,7 +448,7 @@ func (w *Worker) execute(ctx context.Context, name string, taskID int64, as *db.
 		DeepSeekSearchAPIKey:  w.webSearch.DeepSeekAPIKey,
 		DeepSeekSearchModel:   w.webSearch.DeepSeekModel,
 		WebSearchProxy:        w.webSearch.Proxy,
-		// Bash 子命令的 HTTP 默认走记录代理 + 信任其 CA（工具无需 -x/-k）。
+		// Bash 子命令默认走目标代理 + 信任其 CA（工具无需 -x/-k）。
 		BashEnv:    proxyEnv(w.proxyAddr, w.proxyCACert),
 		WorkingDir: runDir,
 		MaxTurns:   w.maxTurns, // 0 = unlimited (configurable in agent management)

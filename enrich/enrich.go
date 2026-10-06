@@ -54,6 +54,11 @@ const (
 	cooldown    = 5 * time.Minute
 	httpTimeout = 12 * time.Second
 	queueSize   = 1024
+
+	// defaultUserAgent intentionally looks like an ordinary desktop browser.
+	// Asset enrichment probes are target-facing, so a product-specific UA would
+	// unnecessarily disclose ARTEX and make otherwise normal GET probes stand out.
+	defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 )
 
 // New builds the engine. proxy() returns the recording-proxy address to route HTTP
@@ -226,11 +231,10 @@ func (e *Engine) doHTTP(id int64, rawURL string) {
 	if host == "" {
 		return
 	}
-	req, err := http.NewRequest("GET", rawURL, nil)
+	req, err := newProbeRequest(rawURL)
 	if err != nil {
 		return
 	}
-	req.Header.Set("User-Agent", "artex-enrich/1.0")
 	resp, err := e.client.Do(req)
 	if err != nil {
 		return
@@ -246,6 +250,15 @@ func (e *Engine) doHTTP(id int64, rawURL string) {
 		ContentLength: &bodyLen,
 		PageTitle:     title,
 	})
+}
+
+func newProbeRequest(rawURL string) (*http.Request, error) {
+	req, err := http.NewRequest(http.MethodGet, rawURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", defaultUserAgent)
+	return req, nil
 }
 
 func extractTitle(body []byte) string {

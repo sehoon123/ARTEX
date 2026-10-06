@@ -54,6 +54,15 @@ Global "Approval Records", in-task "Intercept Approvals", and approval cards in 
 
 Target-facing automation uses a shared browser-like `User-Agent`; capture-off still normalizes without storing traffic. See [Target HTTP identity](docs/target-http-identity.md) for scope and limitations.
 
+## HXB-inspired Architecture Roadmap
+
+A design-only plan evaluates how to bring evidence verification, operational
+blackboards, persistent stop-loss budgets, portfolio scheduling, and explainable
+knowledge recall from [`inwpu/hxbai`](https://github.com/inwpu/hxbai) into native
+ARTEX components. It deliberately excludes the nested Python/Claude/Kali runtime.
+See the [ARTEX v2 integration plan](docs/hxbai-architecture-integration-plan-2026-10-06.md)
+and [pinned source record](docs/hxbai-source-lock.json).
+
 ## Asset Sync (ScopeSentry)
 
 Supports syncing asset data directly from [ScopeSentry](https://github.com/Autumn-27/ScopeSentry):

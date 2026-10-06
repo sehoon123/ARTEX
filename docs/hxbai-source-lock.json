@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "design-only-no-code-imported",
+  "recorded_at": "2026-10-06",
+  "artex": {
+    "repository": "https://github.com/sehoon123/ARTEX",
+    "base_commit": "3ce884060268d5670e2d3a0429beb24b91380fd2",
+    "license": "AGPL-3.0"
+  },
+  "reference": {
+    "name": "hxbai",
+    "repository": "https://github.com/inwpu/hxbai",
+    "commit": "6cf8eef60a7e8f3152e4442ebf219e3848c7ce07",
+    "tree": "78075780dc586da59db446a1cb2abdc1ac5256f3",
+    "signature_status": "unsigned",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2026 inwpu"
+  },
+  "imported_files": [],
+  "adapted_destinations": [],
+  "excluded_sources": [
+    "local /home/sehun/Work/hxbai-webui dirty prototype",
+    "hxbai Python/Claude/Kali runtime",
+    "benchmark drivers and gateway/VPN/DNS adapters",
+    "knowledge-card and offensive playbook corpus"
+  ],
+  "notice_required_when_copying": true,
+  "notes": "Conceptual architecture research only. Add full MIT notice and per-file blob provenance before any copied or substantially adapted code/content is committed."
+}

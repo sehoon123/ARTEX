@@ -54,6 +54,14 @@ AI 자율 침투 테스트 시스템 (Go 백엔드 + Next.js 프론트엔드)
 
 대상에 보내는 자동화 요청은 공통 브라우저형 `User-Agent`를 사용합니다. 트래픽 캡처를 꺼도 요청을 저장하지 않은 채 식별 정보를 정규화합니다. 범위와 한계는 [Target HTTP identity](docs/target-http-identity.md)를 참고하세요.
 
+## HXB 기반 아키텍처 개선 로드맵
+
+[`inwpu/hxbai`](https://github.com/inwpu/hxbai)의 증거 검증, 운영 블랙보드,
+지속형 stop-loss 예산, portfolio scheduling, 설명 가능한 지식 검색을 ARTEX의
+Go/PostgreSQL 구조로 재설계하는 계획을 마련했습니다. Python/Claude/Kali 런타임을
+그대로 합치지는 않습니다. [ARTEX v2 통합 계획](docs/hxbai-architecture-integration-plan-2026-10-06.md)과
+[고정 source 기록](docs/hxbai-source-lock.json)을 참고하세요.
+
 ## 자산 동기화 (ScopeSentry)
 
 [ScopeSentry](https://github.com/Autumn-27/ScopeSentry)에서 직접 자산 데이터를 동기화할 수 있습니다:
